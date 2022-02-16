@@ -27,10 +27,14 @@ public:
     void render();
     void invalidate();
 
-    void setCameraState(const QCameraState& state);
+    void setPosition(QVector3D position);
 
-public:
-    QSharedPointer<QCameraControl> m_currentCamera;
+    void setxRotation(int angle);
+    void setyRotation(int angle);
+    void setzRotation(int angle);
+
+    void setFrontClippingPlaneDistance(double distance);
+    void setRearClippingDistance(double distance);
 
 private:
     void loadPLY(const QString& plyFilePath);
@@ -54,6 +58,13 @@ private:
     QMatrix4x4 m_projectionMatrix;
     QMatrix4x4 m_cameraMatrix;
     QMatrix4x4 m_worldMatrix;
+
+    double m_frontClippingPlaneDistance;
+    double m_rearClippingDistance;
+    QVector3D m_position;
+    int m_xRotation;
+    int m_yRotation;
+    int m_zRotation;
 };
 
 #endif // QPOINTCLOUDRENDERER_H

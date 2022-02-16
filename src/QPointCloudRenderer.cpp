@@ -1,4 +1,6 @@
 #include "QPointCloudRenderer.h"
+#include "QCameraControl.h"
+#include "Constant.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -26,7 +28,7 @@ QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     : QObject(parent)
     , m_pointSize(1)
     , m_colorMode(COLOR_BY_Z)
-    , m_vao()
+    , m_vao(new QOpenGLVertexArrayObject)
     , m_vertexBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
     , m_shaders()
 {
@@ -47,17 +49,32 @@ QPointCloudRenderer::~QPointCloudRenderer()
 
 void QPointCloudRenderer::initialize(const QString &plyFilePath)
 {
+    glClearColor(0, 0, 0, 1.0);
     loadPLY(plyFilePath);
 
+    CONSOLE << "Initialize";
+
+    // the world is still for now
+    m_worldMatrix.setToIdentity();
+
+    CONSOLE << "Fucking VAO";
+
     if (m_vao->isCreated())
+    {
+        CONSOLE << "VAO Failed";
         return; // already initialized
+    }
 
     //
     // create shaders and map attributes
     //
     m_shaders.reset(new QOpenGLShaderProgram());
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "qrc:/shader/assest/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "qrc:/shader/assest/fragment_shader.glsl");
+
+    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/vertex_shader.glsl");
+    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/fragment_shader.glsl");
+
+    CONSOLE << "Shader Program Initialized";
+
     assert(vsLoaded && fsLoaded);
     // vector attributes
     m_shaders->bindAttributeLocation("vertex", 0);
@@ -69,8 +86,9 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     m_shaders->link();
     m_shaders->release();
 
+
     if (!m_vao->create())
-            qFatal("Unable to create VAO");
+        qFatal("Unable to create VAO");
 
     m_vao->bind();
 
@@ -85,50 +103,52 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), 0);
     f->glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), reinterpret_cast<void *>(3*sizeof(GLfloat)));
     m_vertexBuffer->release();
+
+    CONSOLE << "Initialized";
 }
 
 void QPointCloudRenderer::render()
 {
+    CONSOLE << "Render";
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     // ensure GL flags
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glEnable(GL_DEPTH_TEST);
-      glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
 
-      //
-      // set camera
-      //
-      const QCameraState camera = m_currentCamera->currentState();
-      // position and angles
-      m_cameraMatrix.setToIdentity();
-      m_cameraMatrix.translate(camera.position.x(), camera.position.y(), camera.position.z());
-      m_cameraMatrix.rotate(camera.rotation.x(), 1, 0, 0);
-      m_cameraMatrix.rotate(camera.rotation.y(), 0, 1, 0);
-      m_cameraMatrix.rotate(camera.rotation.z(), 0, 0, 1);
+    // position and angles
+    m_cameraMatrix.setToIdentity();
+    m_cameraMatrix.translate(m_position.x(), m_position.y(), m_position.z());
+    m_cameraMatrix.rotate(m_xRotation, 1, 0, 0);
+    m_cameraMatrix.rotate(m_yRotation, 0, 1, 0);
+    m_cameraMatrix.rotate(m_zRotation, 0, 0, 1);
 
-      // set clipping planes
-      glEnable(GL_CLIP_PLANE1);
-      glEnable(GL_CLIP_PLANE2);
-      const double rearClippingPlane[] = {0., 0., -1., camera.rearClippingDistance};
-      glClipPlane(GL_CLIP_PLANE1 , rearClippingPlane);
-      const double frontClippingPlane[] = {0., 0., 1., camera.frontClippingDistance};
-      glClipPlane(GL_CLIP_PLANE2 , frontClippingPlane);
+    // set clipping planes
+    glEnable(GL_CLIP_PLANE1);
+    glEnable(GL_CLIP_PLANE2);
+    const double rearClippingPlane[] = {0., 0., -1., m_rearClippingDistance};
+    glClipPlane(GL_CLIP_PLANE1 , rearClippingPlane);
+    const double frontClippingPlane[] = {0., 0., 1., m_frontClippingPlaneDistance};
+    glClipPlane(GL_CLIP_PLANE2 , frontClippingPlane);
 
-      //
-      // draw points cloud
-      //
-      m_vao->bind();
-      const auto viewMatrix = m_projectionMatrix * m_cameraMatrix * m_worldMatrix;
-      m_shaders->bind();
-      m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
-      m_shaders->setUniformValue("viewMatrix", viewMatrix);
-      m_shaders->setUniformValue("pointSize", m_pointSize);
-      m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
-      m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
-      m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
-      glDrawArrays(GL_POINTS, 0, m_pointsData.size());
-      m_shaders->release();
+    //
+    // draw points cloud
+    //
+    const auto viewMatrix = m_projectionMatrix * m_cameraMatrix * m_worldMatrix;
+    m_shaders->bind();
+    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
+    m_shaders->setUniformValue("viewMatrix", viewMatrix);
+    m_shaders->setUniformValue("pointSize", m_pointSize);
+    m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
+    m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
+    m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
 
-      drawFrameAxis();
+    m_vao->bind();
+    glDrawArrays(GL_POINTS, 0, m_pointsData.size());
+    m_shaders->release();
+    m_vao->release();
+
+    // drawFrameAxis();
 }
 
 void QPointCloudRenderer::invalidate()
@@ -214,10 +234,45 @@ void QPointCloudRenderer::drawFrameAxis()
     glEnd();
 }
 
-void QPointCloudRenderer::setCameraState(const QCameraState &state)
-{
-    m_currentCamera->setCurrentState(state);
+void QPointCloudRenderer::setFrontClippingPlaneDistance(double distance) {
+    m_frontClippingPlaneDistance = distance;
+}
 
+
+void QPointCloudRenderer::setRearClippingDistance(double distance) {
+    m_rearClippingDistance = distance;
+}
+
+
+void QPointCloudRenderer::setPosition(QVector3D position) {
+    m_position = position;
+}
+
+
+void QPointCloudRenderer::setxRotation(int angle)
+{
+    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
+    if (angle != m_xRotation) {
+        m_xRotation = angle;
+    }
+}
+
+
+void QPointCloudRenderer::setyRotation(int angle)
+{
+    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
+    if (angle != m_yRotation) {
+        m_yRotation = angle;
+    }
+}
+
+
+void QPointCloudRenderer::setzRotation(int angle)
+{
+    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
+    if (angle != m_zRotation) {
+        m_zRotation = angle;
+    }
 }
 
 

@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QWindow>
 
+#include "Constant.h"
+#include "QCameraControl.h"
+
 class QPointCloudRenderer;
 class QOpenGLContext;
 class QQuickWindow;
@@ -35,11 +38,14 @@ private:
     QOpenGLContext *m_context;
 
     QPointCloudRenderer *m_renderer;
+    QCameraControl *m_camera;
 
     QQuickRenderControl *m_renderControl;
     QQuickWindow *m_quickWindow;
     QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
+
+//    AppConstant *m_constant;
 };
 
 #endif // QPOINTCLOUDVIEWER_H

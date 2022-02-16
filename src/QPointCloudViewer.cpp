@@ -1,6 +1,7 @@
 #include "QPointCloudViewer.h"
 #include "QPointCloudRenderer.h"
 #include "QCameraControl.h"
+#include "Constant.h"
 
 #include <QSurfaceFormat>
 #include <QOpenGLContext>
@@ -39,7 +40,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/bunny.ply";
+    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/bunny.ply";
 
     // create the GL context
 
@@ -54,8 +55,8 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     m_renderer = new QPointCloudRenderer(this);
     m_renderer->initialize(plyPath);
-    QSharedPointer<QCameraControl> currentCamera;
-    m_renderer->m_currentCamera = currentCamera;
+
+    m_camera = new QCameraControl(this);
 
     // set up QtQuick
 
@@ -85,13 +86,14 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     if (!engine->incubationController())
         engine->setIncubationController(m_quickWindow->incubationController());
 
-    // engine->rootContext()->setContextProperty("_camera", m_renderer->m_currentCamera);
+    engine->rootContext()->setContextProperty("_camera", m_camera);
+//    engine->rootContext()->setContextProperty("QmlConstant", DEFS);
     m_qmlComponent = new QQmlComponent(engine, this);
 
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
 
-    m_qmlComponent->loadUrl(QUrl("qrc:/qml/main.qml"));
+    m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/main.qml"));
 
 
 
@@ -121,7 +123,14 @@ void QPointCloudViewer::syncScene()
 {
     m_renderControl->polishItems();
 
-    m_renderer->setCameraState(m_renderer->m_currentCamera->currentState());
+    m_renderer->setPosition(m_camera->position());
+
+    m_renderer->setxRotation(m_camera->xRotation());
+    m_renderer->setyRotation(m_camera->yRotation());
+    m_renderer->setzRotation(m_camera->zRotation());
+
+    m_renderer->setFrontClippingPlaneDistance(m_camera->frontClippingPlaneDistance());
+    m_renderer->setRearClippingDistance(m_camera->rearClippingDistance());
 
     m_renderControl->sync();
     draw();

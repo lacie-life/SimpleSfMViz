@@ -1,5 +1,4 @@
 #include <QGuiApplication>
-
 #include "QPointCloudViewer.h"
 
 int main(int argc, char **argv)

@@ -4,25 +4,17 @@
 #include <QObject>
 #include <QVector3D>
 
-struct QCameraState {
-    QCameraState(const QVector3D& position_, const QVector3D& rotation_,
-                 double frontClippingDistance_, double farClippingDistance_)
-        : position(position_),
-          rotation(rotation_),
-          frontClippingDistance(frontClippingDistance_),
-          rearClippingDistance(farClippingDistance_)
-    {}
-
-    QVector3D position;
-    QVector3D rotation;
-    double frontClippingDistance;
-    double rearClippingDistance;
-};
-
 class QCameraControl : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QCameraState currentState READ currentState WRITE setCurrentState NOTIFY currentStateChanged)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+
+    Q_PROPERTY(int xRotation READ xRotation WRITE setxRotation NOTIFY xRotationChanged)
+    Q_PROPERTY(int yRotation READ yRotation WRITE setyRotation NOTIFY yRotationChanged)
+    Q_PROPERTY(int zRotation READ zRotation WRITE setzRotation NOTIFY zRotationChanged)
+
+    Q_PROPERTY(double frontClippingPlaneDistance READ frontClippingPlaneDistance WRITE setFrontClippingPlaneDistance NOTIFY frontClippingPlaneDistanceChanged)
+    Q_PROPERTY(double rearClippingDistance READ rearClippingDistance WRITE setRearClippingDistance NOTIFY rearClippingDistanceChanged)
 
 public:
     enum RotationSTEP {RK = 1};
@@ -35,32 +27,40 @@ public:
     void right();
     void up();
     void down();
-    void setPosition(const QVector3D& position);
 
     void rotate(int dx, int dy, int dz);
 
-    void setFrontCPDistance(double distance);
-    void setRearCPDistance(double distance);
+    QVector3D position() const;
 
-    QCameraState currentState() const;
+    int xRotation() const;
+    int yRotation() const;
+    int zRotation() const;
+
+    double frontClippingPlaneDistance() const;
+    double rearClippingDistance() const;
 
 
 signals:
-    void changed(const QCameraState& newState);
+    void positionChanged(QVector3D position);
+
     void xRotationChanged(int angle);
     void yRotationChanged(int angle);
     void zRotationChanged(int angle);
 
-    void currentStateChanged(QCameraState state);
+    void frontClippingPlaneDistanceChanged(double distance);
+    void rearClippingDistanceChanged(double distance);
+
 
 
 public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-    void setZRotation(int angle);
+    void setPosition(QVector3D position);
 
-    void setCurrentState(QCameraState state);
+    void setxRotation(int angle);
+    void setyRotation(int angle);
+    void setzRotation(int angle);
 
+    void setFrontClippingPlaneDistance(double distance);
+    void setRearClippingDistance(double distance);
 
 private:
     QVector3D m_position;
@@ -70,8 +70,6 @@ private:
 
     double m_frontClippingPlaneDistance;
     double m_rearClippingDistance;
-
-    void notify() {emit currentStateChanged(currentState());}
 
 };
 

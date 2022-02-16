@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/shader">
+        <file>fragment_shader.glsl</file>
+        <file>vertex_shader.glsl</file>
+    </qresource>
+    <qresource prefix="/qml">
+        <file>main.qml</file>
+        <file>CameraControls.qml</file>
+    </qresource>
+    <qresource prefix="/test">
+        <file>bunny.ply</file>
+    </qresource>
+</RCC>

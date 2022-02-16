@@ -12,8 +12,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND QML_IMPORT_PATH "/home/lacie/Qt/5.15.2/gcc_64/qml")
-SET(CMAKE_PREFIX_PATH "/home/lacie/Qt/5.15.2/gcc_64")
+list(APPEND QML_IMPORT_PATH "/home/jun/Qt/5.15.2/gcc_64/qml")
+SET(CMAKE_PREFIX_PATH "/home/jun/Qt/5.15.2/gcc_64")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     CACHE STRING "Qt Creator 4.1 extra qml import paths"
@@ -61,7 +61,7 @@ file(GLOB SOURCES "src/*.cpp")
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
 
-qt5_add_resources(QT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc)
+qt5_add_resources(QT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assest/qml.qrc)
 
 add_executable(${PROJECT_NAME}
                 ${HEADERS}

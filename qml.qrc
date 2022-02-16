@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/shader">
-        <file>assest/fragment_shader.glsl</file>
-        <file>assest/vertex_shader.glsl</file>
-    </qresource>
-    <qresource prefix="/qml">
-        <file>main.qml</file>
-    </qresource>
-</RCC>
