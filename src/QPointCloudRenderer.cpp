@@ -26,7 +26,7 @@ const size_t POINT_STRIDE = 4; // x, y, z, index
 
 QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     : QObject(parent)
-    , m_pointSize(1)
+    , m_pointSize(100)
     , m_colorMode(COLOR_BY_Z)
     , m_vao(new QOpenGLVertexArrayObject)
     , m_vertexBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
@@ -91,12 +91,13 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->link();
 
-    //m_shaders->release();
+    m_shaders->release();
 
-    m_shaders->bind();
+    // m_shaders->bind();
 
     m_vertexBuffer->create();
     m_vertexBuffer->bind();
+    m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
     m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
 
 
@@ -156,6 +157,10 @@ void QPointCloudRenderer::render()
     m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
     m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
     m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
+
+    CONSOLE << "Color: " << m_colorMode;
+    CONSOLE << "BoundMin: " << m_pointsBoundMin;
+    CONSOLE << "BoundMax: " << m_pointsBoundMax;
 
     m_vao->bind();
     f->glDrawArrays(GL_POINTS, 0, m_pointsData.size());
