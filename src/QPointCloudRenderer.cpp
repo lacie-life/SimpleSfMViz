@@ -26,11 +26,15 @@ const size_t POINT_STRIDE = 4; // x, y, z, index
 
 QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     : QObject(parent)
-    , m_pointSize(100)
+    , m_pointSize(1)
     , m_colorMode(COLOR_BY_Z)
     , m_vao(new QOpenGLVertexArrayObject)
     , m_vertexBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
     , m_shaders()
+    , m_coordinateMirroring(DoNotMirrorCoordinates)
+    , m_azimuth(0.0)
+    , m_elevation(15.0)
+    , m_distance(15.0)
 {
     // make trivial axes cross
     m_axesLines.push_back(std::make_pair(QVector3D(0.0, 0.0, 0.0), QColor(1.0, 0.0, 0.0)));
@@ -47,139 +51,116 @@ QPointCloudRenderer::~QPointCloudRenderer()
     invalidate();
 }
 
-void QPointCloudRenderer::initialize(const QString &plyFilePath)
+void QPointCloudRenderer::initialize(CoordinateMirroring cm)
 {
-    loadPLY(plyFilePath);
-
-    CONSOLE << "Initialize";
-
-    // the world is still for now
-    m_worldMatrix.setToIdentity();
-
-    CONSOLE << "Fucking VAO";
-
     if (m_vao->isCreated())
-    {
-        CONSOLE << "VAO Failed";
         return; // already initialized
-    }
+
+    m_coordinateMirroring = cm;
+
+    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/bunny.ply";
+
+    loadPLY(plyPath);
 
     if (!m_vao->create())
-    {
         qFatal("Unable to create VAO");
-    }
 
     m_vao->bind();
-
-    //
-    // create shaders and map attributes
-    //
-    m_shaders.reset(new QOpenGLShaderProgram());
-
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/fragment_shader.glsl");
-
-    CONSOLE << "Shader Program Initialized";
-
-    assert(vsLoaded && fsLoaded);
-    // vector attributes
-    m_shaders->bindAttributeLocation("vertex", 0);
-    m_shaders->bindAttributeLocation("pointRowIndex", 1);
-    // constants
-    m_shaders->bind();
-    m_shaders->setUniformValue("lightPos", QVector3D(0, 0, 50));
-    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
-    m_shaders->link();
-
-    m_shaders->release();
-
-    // m_shaders->bind();
 
     m_vertexBuffer->create();
     m_vertexBuffer->bind();
     m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
+    m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof (GLfloat));
 
+    m_shaders.reset(new QOpenGLShaderProgram);
+    m_shaders->create();
+    m_shaders->addCacheableShaderFromSourceFile(QOpenGLShader::Vertex, "/home/lacie/Github/GreenHouseAR/assest/vertex_shader.glsl");
+    m_shaders->addCacheableShaderFromSourceFile(QOpenGLShader::Fragment, "/home/lacie/Github/GreenHouseAR/assest/fragment_shader.glsl");
+    m_shaders->link();
+
+    m_shaders->bind();
+    m_vertexBuffer->bind();
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->glEnableVertexAttribArray(0);
     f->glEnableVertexAttribArray(1);
     f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), 0);
     f->glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), reinterpret_cast<void *>(3*sizeof(GLfloat)));
-    m_vertexBuffer->release();
 
     m_vao->release();
-
-    CONSOLE << "Initialized";
 }
 
 void QPointCloudRenderer::render()
 {
-    CONSOLE << "Render";
+    QOpenGLFunctions *functions = QOpenGLContext::currentContext()->functions();
 
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    QMatrix4x4 modelMatrix;
+    QMatrix4x4 viewMatrix;
+    QMatrix4x4 projectionMatrix;
 
-    f->glClearColor(1.0, 1.0, 1.0, 1.0);
-    // ensure GL flags
-    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    f->glEnable(GL_DEPTH_TEST);
-    f->glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
+    modelMatrix.rotate(-90, 0, 1, 0);
 
-    // position and angles
-    m_cameraMatrix.setToIdentity();
-    m_cameraMatrix.translate(m_position.x(), m_position.y(), m_position.z());
-    m_cameraMatrix.rotate(m_xRotation, 1, 0, 0);
-    m_cameraMatrix.rotate(m_yRotation, 0, 1, 0);
-    m_cameraMatrix.rotate(m_zRotation, 0, 0, 1);
+    const float azimuthInRadians = qDegreesToRadians(m_azimuth);
+    const float elevationInRadians = qDegreesToRadians(m_elevation);
 
-    CONSOLE << "Camera: " << m_cameraMatrix;
+    const QVector3D eyePosition(std::cos(elevationInRadians) * std::cos(azimuthInRadians),
+                                std::sin(elevationInRadians),
+                                -std::cos(elevationInRadians) * std::sin(azimuthInRadians));
 
-    // set clipping planes
-    f->glEnable(GL_CLIP_PLANE1);
-    f->glEnable(GL_CLIP_PLANE2);
-    const double rearClippingPlane[] = {0., 0., -1., m_rearClippingDistance};
-    glClipPlane(GL_CLIP_PLANE1 , rearClippingPlane);
-    const double frontClippingPlane[] = {0., 0., 1., m_frontClippingPlaneDistance};
-    glClipPlane(GL_CLIP_PLANE2 , frontClippingPlane);
+    QVector3D upVector = qFuzzyCompare(m_elevation, 90.0f)
+            ? QVector3D(-std::cos(azimuthInRadians), 0, std::sin(azimuthInRadians))
+            : QVector3D(0, 1, 0);
 
-    //
-    // draw points cloud
-    //
-    const auto viewMatrix = m_projectionMatrix * m_cameraMatrix * m_worldMatrix;
+    viewMatrix.lookAt(eyePosition * m_distance,
+                      QVector3D(0, 0, 0),
+                      upVector);
 
-    CONSOLE << "View: " << viewMatrix;
+    GLint viewportSize[4];
+    functions->glGetIntegerv(GL_VIEWPORT, viewportSize);
 
-    m_shaders->bind();
+     projectionMatrix.perspective(30, float(viewportSize[2]) / viewportSize[3], 0.01, 1000);
 
-    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
-    m_shaders->setUniformValue("viewMatrix", viewMatrix);
-    m_shaders->setUniformValue("pointSize", m_pointSize);
-    m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
-    m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
-    m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
+     switch (m_coordinateMirroring) {
+     case QPointCloudRenderer::DoNotMirrorCoordinates:
+         break;
+     case QPointCloudRenderer::MirrorYCoordinate:
+         projectionMatrix.scale(1, -1, 1);
+         break;
+     }
 
-    CONSOLE << "Color: " << m_colorMode;
-    CONSOLE << "BoundMin: " << m_pointsBoundMin;
-    CONSOLE << "BoundMax: " << m_pointsBoundMax;
+     const QMatrix4x4 modelViewMatrix = viewMatrix * modelMatrix;
+     const QMatrix4x4 modelViewProjectionMatrix = projectionMatrix * modelViewMatrix;
 
-    m_vao->bind();
-    f->glDrawArrays(GL_POINTS, 0, m_pointsData.size());
-//    f->glDrawElements(GL_POINTS, m_pointsCount, GL_UNSIGNED_INT, Q_NULLPTR);
-    CONSOLE << m_pointsCount << " " << m_pointsData.size();
-    m_vao->release();
+     CONSOLE << modelViewMatrix ;
+     CONSOLE << modelViewProjectionMatrix;
 
-    m_shaders->release();
+     functions->glClearColor(1.0, 1.0, 1.0, 1.0);
+     functions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+     functions->glEnable(GL_DEPTH_TEST);
 
-    glBegin(GL_LINES);
-    QMatrix4x4 mvMatrix = m_cameraMatrix * m_worldMatrix;
-    mvMatrix.scale(0.05); // make it small
-    for (auto vertex : m_axesLines) {
-        const auto translated = m_projectionMatrix * mvMatrix * vertex.first;
-        glColor3f(vertex.second.red(), vertex.second.green(), vertex.second.blue());
-        glVertex3f(translated.x(), translated.y(), translated.z());
-    }
-    glEnd();
+     m_shaders->bind();
+
+     m_shaders->setUniformValue("model_matrix", modelViewMatrix);
+     m_shaders->setUniformValue("MVP", modelViewProjectionMatrix);
+
+     m_shaders->setUniformValue("light.position", QVector4D(0.0, 0.0, 0.0, 1.0));
+     m_shaders->setUniformValue("light.intensity", QVector3D(1.0, 1.0, 1.0));
+
+     m_shaders->setUniformValue("material.ka", QVector3D(0.1, 0.1, 0.1));
+     m_shaders->setUniformValue("material.kd", QVector3D(1.0, 0.1, 0.1));
+     m_shaders->setUniformValue("material.ks", QVector3D(1.0, 1.0, 1.0));
+     m_shaders->setUniformValue("material.shininess", 32.0f);
+
+     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
+     m_shaders->setUniformValue("pointSize", m_pointSize);
+     m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
+     m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
+     m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
+
+     glDrawArrays(GL_POINTS, 0, m_pointsData.size());
+     m_shaders->release();
 }
+
 
 void QPointCloudRenderer::invalidate()
 {
@@ -251,45 +232,19 @@ void QPointCloudRenderer::loadPLY(const QString &plyFilePath)
     }
 }
 
-void QPointCloudRenderer::drawFrameAxis()
+void QPointCloudRenderer::setAzimuth(float azimuth)
 {
-
+    m_azimuth = azimuth;
 }
 
-void QPointCloudRenderer::setFrontClippingPlaneDistance(double distance) {
-    m_frontClippingPlaneDistance = distance;
-}
-
-
-void QPointCloudRenderer::setRearClippingDistance(double distance) {
-    m_rearClippingDistance = distance;
-}
-
-
-void QPointCloudRenderer::setPosition(QVector3D position) {
-    m_position = position;
-}
-
-
-void QPointCloudRenderer::setxRotation(int angle)
+void QPointCloudRenderer::setElevation(float elevation)
 {
-    m_xRotation = angle;
+    m_elevation = elevation;
 }
 
-
-void QPointCloudRenderer::setyRotation(int angle)
+void QPointCloudRenderer::setDistance(float distance)
 {
-    m_yRotation = angle;
+    m_distance = distance;
 }
-
-
-void QPointCloudRenderer::setzRotation(int angle)
-{
-    m_zRotation = angle;
-}
-
-
-
-
 
 

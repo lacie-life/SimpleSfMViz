@@ -1,17 +1,41 @@
-#version 120
+#version 330 core
 
-uniform float pointsCount;
-uniform float colorAxisMode;
-uniform vec3 pointsBoundMin;
-uniform vec3 pointsBoundMax;
+uniform struct LightInfo {
+    vec4 position;
+    vec3 intensity;
+} light;
 
-varying vec3 vert;
-varying float pointIdx;
+struct MaterialInfo
+{
+    vec3 ka;            // Ambient reflectivity
+    vec3 kd;            // Diffuse reflectivity
+    vec3 ks;            // Specular reflectivity
+    float shininess;    // Specular shininess factor
+};
+uniform MaterialInfo material;
 
-void main() {
-  float intensity = pointIdx/pointsCount;
-  if (colorAxisMode == 1) {
-    intensity = (vert.z + abs(pointsBoundMin.z))/(pointsBoundMax.z - pointsBoundMin.z);
-  }
-  gl_FragColor = vec4(intensity, intensity, intensity, 0.);
+in vec3 position;
+in vec3 normal;
+
+out vec4 fragColor;
+
+
+vec3 adsModel( const in vec3 pos, const in vec3 n )
+{
+    vec3 s = normalize( vec3( light.position ) - pos );
+    vec3 v = normalize( -pos );
+    vec3 r = reflect( -s, n );
+
+    float diffuse = max( dot( s, n ), 0.0 );
+
+    float specular = 0.0;
+    if ( dot( s, n ) > 0.0 )
+        specular = pow( max( dot( r, v ), 0.0 ), material.shininess );
+
+    return light.intensity * ( material.ka + material.kd * diffuse + material.ks * specular );
+}
+
+void main()
+{
+    fragColor = vec4( adsModel( position, normalize( normal ) ), 1.0 );
 }
