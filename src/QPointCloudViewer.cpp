@@ -26,6 +26,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     , m_qmlComponent(0)
     , m_rootItem(0)
 {
+    count = 0;
     // set the window up
     setSurfaceType(QSurface::OpenGLSurface);
 
@@ -95,10 +96,8 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/main.qml"));
 
-
-
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
-    QTimer *redrawTimer = new QTimer(this);
+    redrawTimer = new QTimer(this);
     connect(redrawTimer, &QTimer::timeout, this, &QPointCloudViewer::draw);
     redrawTimer->start(500);
 }
@@ -138,6 +137,12 @@ void QPointCloudViewer::syncScene()
 
 void QPointCloudViewer::draw()
 {
+    count++;
+
+//    if(count == 2){
+//        disconnect(redrawTimer, &QTimer::timeout, this, &QPointCloudViewer::draw);
+//    }
+
     if (!isExposed())
         return;
     m_context->makeCurrent(this);
@@ -149,6 +154,8 @@ void QPointCloudViewer::draw()
     m_renderControl->render();
 
     m_context->swapBuffers(this);
+
+    CONSOLE << count;
 }
 
 void QPointCloudViewer::onQmlComponentLoadingComplete()

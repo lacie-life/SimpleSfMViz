@@ -45,6 +45,10 @@ private:
     QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
 
+    QTimer *redrawTimer;
+
+    int count;
+
 //    AppConstant *m_constant;
 };
 

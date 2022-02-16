@@ -49,7 +49,6 @@ QPointCloudRenderer::~QPointCloudRenderer()
 
 void QPointCloudRenderer::initialize(const QString &plyFilePath)
 {
-    glClearColor(0, 0, 0, 1.0);
     loadPLY(plyFilePath);
 
     CONSOLE << "Initialize";
@@ -64,6 +63,13 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
         CONSOLE << "VAO Failed";
         return; // already initialized
     }
+
+    if (!m_vao->create())
+    {
+        qFatal("Unable to create VAO");
+    }
+
+    m_vao->bind();
 
     //
     // create shaders and map attributes
@@ -84,13 +90,10 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     m_shaders->setUniformValue("lightPos", QVector3D(0, 0, 50));
     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->link();
-    m_shaders->release();
 
+    //m_shaders->release();
 
-    if (!m_vao->create())
-        qFatal("Unable to create VAO");
-
-    m_vao->bind();
+    m_shaders->bind();
 
     m_vertexBuffer->create();
     m_vertexBuffer->bind();
@@ -104,17 +107,22 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     f->glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), reinterpret_cast<void *>(3*sizeof(GLfloat)));
     m_vertexBuffer->release();
 
+    m_vao->release();
+
     CONSOLE << "Initialized";
 }
 
 void QPointCloudRenderer::render()
 {
     CONSOLE << "Render";
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
+    f->glClearColor(1.0, 1.0, 1.0, 1.0);
     // ensure GL flags
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
+    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glEnable(GL_DEPTH_TEST);
+    f->glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
 
     // position and angles
     m_cameraMatrix.setToIdentity();
@@ -123,9 +131,11 @@ void QPointCloudRenderer::render()
     m_cameraMatrix.rotate(m_yRotation, 0, 1, 0);
     m_cameraMatrix.rotate(m_zRotation, 0, 0, 1);
 
+    CONSOLE << "Camera: " << m_cameraMatrix;
+
     // set clipping planes
-    glEnable(GL_CLIP_PLANE1);
-    glEnable(GL_CLIP_PLANE2);
+    f->glEnable(GL_CLIP_PLANE1);
+    f->glEnable(GL_CLIP_PLANE2);
     const double rearClippingPlane[] = {0., 0., -1., m_rearClippingDistance};
     glClipPlane(GL_CLIP_PLANE1 , rearClippingPlane);
     const double frontClippingPlane[] = {0., 0., 1., m_frontClippingPlaneDistance};
@@ -135,7 +145,11 @@ void QPointCloudRenderer::render()
     // draw points cloud
     //
     const auto viewMatrix = m_projectionMatrix * m_cameraMatrix * m_worldMatrix;
+
+    CONSOLE << "View: " << viewMatrix;
+
     m_shaders->bind();
+
     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->setUniformValue("viewMatrix", viewMatrix);
     m_shaders->setUniformValue("pointSize", m_pointSize);
@@ -144,11 +158,22 @@ void QPointCloudRenderer::render()
     m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
 
     m_vao->bind();
-    glDrawArrays(GL_POINTS, 0, m_pointsData.size());
-    m_shaders->release();
+    f->glDrawArrays(GL_POINTS, 0, m_pointsData.size());
+//    f->glDrawElements(GL_POINTS, m_pointsCount, GL_UNSIGNED_INT, Q_NULLPTR);
+    CONSOLE << m_pointsCount << " " << m_pointsData.size();
     m_vao->release();
 
-    // drawFrameAxis();
+    m_shaders->release();
+
+    glBegin(GL_LINES);
+    QMatrix4x4 mvMatrix = m_cameraMatrix * m_worldMatrix;
+    mvMatrix.scale(0.05); // make it small
+    for (auto vertex : m_axesLines) {
+        const auto translated = m_projectionMatrix * mvMatrix * vertex.first;
+        glColor3f(vertex.second.red(), vertex.second.green(), vertex.second.blue());
+        glVertex3f(translated.x(), translated.y(), translated.z());
+    }
+    glEnd();
 }
 
 void QPointCloudRenderer::invalidate()
@@ -223,15 +248,7 @@ void QPointCloudRenderer::loadPLY(const QString &plyFilePath)
 
 void QPointCloudRenderer::drawFrameAxis()
 {
-    glBegin(GL_LINES);
-    QMatrix4x4 mvMatrix = m_cameraMatrix * m_worldMatrix;
-    mvMatrix.scale(0.05); // make it small
-    for (auto vertex : m_axesLines) {
-        const auto translated = m_projectionMatrix * mvMatrix * vertex.first;
-        glColor3f(vertex.second.red(), vertex.second.green(), vertex.second.blue());
-        glVertex3f(translated.x(), translated.y(), translated.z());
-    }
-    glEnd();
+
 }
 
 void QPointCloudRenderer::setFrontClippingPlaneDistance(double distance) {
@@ -251,28 +268,19 @@ void QPointCloudRenderer::setPosition(QVector3D position) {
 
 void QPointCloudRenderer::setxRotation(int angle)
 {
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_xRotation) {
-        m_xRotation = angle;
-    }
+    m_xRotation = angle;
 }
 
 
 void QPointCloudRenderer::setyRotation(int angle)
 {
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_yRotation) {
-        m_yRotation = angle;
-    }
+    m_yRotation = angle;
 }
 
 
 void QPointCloudRenderer::setzRotation(int angle)
 {
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_zRotation) {
-        m_zRotation = angle;
-    }
+    m_zRotation = angle;
 }
 
 
