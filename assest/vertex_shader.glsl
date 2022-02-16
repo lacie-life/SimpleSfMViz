@@ -1,21 +1,19 @@
-#version 330 core
+#version 120
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
+uniform float pointSize;
+uniform mat4 viewMatrix;
 
-out vec3 position;
-out vec3 normal;
+attribute vec4 vertex;
+attribute float pointRowIndex;
 
-uniform mat4 modelViewMatrix;
-uniform mat3 normalMatrix;
-uniform mat4 projectionMatrix;
-uniform mat4 mvp;
+varying float pointIdx;
+varying vec3 vert;
 
-void main()
-{
-    normal = normalize( normalMatrix * vertexNormal );
-    position = vec3( modelViewMatrix * vec4( vertexPosition, 1.0 ) );
+void main() {
+  gl_Position = viewMatrix * vertex;
+  gl_PointSize  = pointSize;
 
-    gl_Position = mvp * vec4( vertexPosition, 1.0 );
+  // for use in fragment shader
+  pointIdx = pointRowIndex;
+  vert = vertex.xyz;
 }
-
