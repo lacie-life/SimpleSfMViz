@@ -40,7 +40,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/bunny.ply";
+    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/bunny.ply";
 
     // create the GL context
 
@@ -96,7 +96,9 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
 
-    m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/main.qml"));
+    connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
+
+    m_qmlComponent->loadUrl(QUrl("/home/lacie/Github/GreenHouseAR/assest/main.qml"));
 
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
     QTimer *redrawTimer = new QTimer(this);
@@ -192,11 +194,15 @@ void QPointCloudViewer::updateRootItemSize()
 
 void QPointCloudViewer::mousePressEvent(QMouseEvent *e)
 {
+    m_prevMousePosition = e->pos();
+
     qApp->sendEvent(m_quickWindow, e);
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
     CONSOLE << "MousePressEvent";
     CONSOLE << e->x() << " " << e->y();
+
+
 }
 
 void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
@@ -205,6 +211,31 @@ void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
     CONSOLE << "MouseMoveEvent";
+
+    const int dx = e->x() - m_prevMousePosition.x();
+    const int dy = e->y() - m_prevMousePosition.y();
+    const bool panningMode = (e->modifiers() & Qt::ShiftModifier);
+    m_prevMousePosition = e->pos();
+
+    if (e->buttons() & Qt::LeftButton) {
+
+        if (panningMode) {
+            if (dx > 0) {
+                m_camera->right();
+            }
+            if (dx < 0) {
+                m_camera->left();
+            }
+            if (dy > 0) {
+                m_camera->down();
+            }
+            if (dy < 0) {
+                m_camera->up();
+            }
+        } else {
+            m_camera->rotate(dy, dx, 0);
+        }
+    }
 }
 
 void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
@@ -213,4 +244,18 @@ void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
     CONSOLE << "MouseReleaseEvent";
+}
+
+void QPointCloudViewer::wheelEvent(QWheelEvent *e)
+{
+    CONSOLE << "MouseWheelEvent";
+
+    if(e->angleDelta().y() > 0){
+        CONSOLE << "Camera forwading";
+        m_camera->forward();
+    }
+    else {
+        CONSOLE << "Camera backwading";
+        m_camera->backward();
+    }
 }

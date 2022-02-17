@@ -23,6 +23,7 @@
 #include <limits>
 
 const size_t POINT_STRIDE = 4; // x, y, z, index
+const float CAMERA_STEP = 0.01;
 
 QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     : QObject(parent)
@@ -76,8 +77,8 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     //
     m_shaders.reset(new QOpenGLShaderProgram());
 
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/fragment_shader.glsl");
+    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/lacie/Github/GreenHouseAR/assest/vertex_shader.glsl");
+    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/lacie/Github/GreenHouseAR/assest/fragment_shader.glsl");
 
     CONSOLE << "Shader Program Initialized";
 
@@ -176,6 +177,36 @@ void QPointCloudRenderer::invalidate()
     m_vertexBuffer->destroy();
     m_vao->destroy();
     m_shaders.reset();
+}
+
+void QPointCloudRenderer::cameraForward()
+{
+    m_position[2] += CAMERA_STEP;
+}
+
+void QPointCloudRenderer::cameraBackward()
+{
+    m_position[2] -= CAMERA_STEP;
+}
+
+void QPointCloudRenderer::cameraLeft()
+{
+    m_position[0] += CAMERA_STEP;
+}
+
+void QPointCloudRenderer::cameraRight()
+{
+    m_position[0] -= CAMERA_STEP;
+}
+
+void QPointCloudRenderer::cameraUp()
+{
+    m_position[1] -= CAMERA_STEP;
+}
+
+void QPointCloudRenderer::cameraDown()
+{
+    m_position[1] += CAMERA_STEP;
 }
 
 void QPointCloudRenderer::loadPLY(const QString &plyFilePath)

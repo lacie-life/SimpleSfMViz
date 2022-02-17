@@ -27,6 +27,13 @@ public:
     void render();
     void invalidate();
 
+    void cameraForward();
+    void cameraBackward();
+    void cameraLeft();
+    void cameraRight();
+    void cameraUp();
+    void cameraDown();
+
     void setPosition(QVector3D position);
 
     void setxRotation(int angle);

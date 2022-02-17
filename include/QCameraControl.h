@@ -19,6 +19,8 @@ class QCameraControl : public QObject
 public:
     enum RotationSTEP {RK = 1};
 
+    const float CAMERA_STEP = 0.005;
+
     QCameraControl(QObject *parent = nullptr);
 
     void forward();

@@ -1,6 +1,6 @@
 #include "QCameraControl.h"
 
-const float CAMERA_STEP = 0.01;
+//const float CAMERA_STEP = 0.01;
 
 QCameraControl::QCameraControl(QObject *parent)
     : QObject{parent}
@@ -16,18 +16,24 @@ QCameraControl::QCameraControl(QObject *parent)
 void QCameraControl::forward()
 {
   m_position[2] += CAMERA_STEP;
+
+  emit positionChanged(m_position);
 }
 
 
 void QCameraControl::backward()
 {
   m_position[2] -= CAMERA_STEP;
+
+  emit positionChanged(m_position);
 }
 
 
 void QCameraControl::left()
 {
   m_position[0] += CAMERA_STEP;
+
+  emit positionChanged(m_position);
 }
 
 
@@ -35,12 +41,16 @@ void QCameraControl::right()
 {
   m_position[0] -= CAMERA_STEP;
 
+  emit positionChanged(m_position);
+
 }
 
 
 void QCameraControl::up()
 {
   m_position[1] -= CAMERA_STEP;
+
+  emit positionChanged(m_position);
 }
 
 
@@ -48,6 +58,7 @@ void QCameraControl::down()
 {
   m_position[1] += CAMERA_STEP;
 
+  emit positionChanged(m_position);
 }
 
 

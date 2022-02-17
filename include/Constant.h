@@ -75,9 +75,9 @@ private:
 
     /********************************************** Point Cloud Resource ********************************/
 
-    DEF_CONST(QString, POINT_CLOUD_EXAMPLE   , "/home/jun/Github/GreenHouseAR/assest/bunny.ply")
-    DEF_CONST(QString, POINT_CLOUD_VERTEX    , "/home/jun/Github/GreenHouseAR/assest/shader/pointcloud.vert")
-    DEF_CONST(QString, POINT_CLOUD_FRAGMENT  , "/home/jun/Github/GreenHouseAR/assest/shader/pointcloud.frag")
+    DEF_CONST(QString, POINT_CLOUD_EXAMPLE   , BUILD_DIR + "/assest/bunny.ply")
+    DEF_CONST(QString, POINT_CLOUD_VERTEX    , BUILD_DIR + "/assest/shader/pointcloud.vert")
+    DEF_CONST(QString, POINT_CLOUD_FRAGMENT  , BUILD_DIR + "/assest/shader/pointcloud.frag")
 
     /********************************************** GENERAL **********************************************/
     DEF_CONST(int, MAX_WIDTH        , 1280  )
