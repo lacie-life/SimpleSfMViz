@@ -56,6 +56,9 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     m_camera = new QCameraControl(this);
 
+    m_camera->setPosition(QVector3D(0, 0.2, 0.2));
+    m_camera->rotate(0, 50, 0);
+
     // set up QtQuick
 
     m_renderControl = new QQuickRenderControl(this);
@@ -90,7 +93,8 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
 
-    m_qmlComponent->loadUrl(QUrl("/home/lacie/Github/GreenHouseAR/assest/main.qml"));
+    m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/main.qml"));
+
 
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
     QTimer *redrawTimer = new QTimer(this);

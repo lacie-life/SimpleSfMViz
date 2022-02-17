@@ -1,4 +1,5 @@
 #include "QPointCloudViewer.h"
+#include "QPointCloudUnderlay.h"
 
 #include <QGuiApplication>
 
