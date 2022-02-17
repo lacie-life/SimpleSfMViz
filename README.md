@@ -1,6 +1,6 @@
 # GreenHouseAR
 
-![Ubuntu 20](https://github.com/github/lacie-life/actions/workflows/main.yml/badge.svg)
+![Ubuntu 20](https://github.com/github/lacie-life/actions/workflows/main.yml/build-passing.svg)
 
 - [x] Point Cloud render by OpenGL
 - [x] Mouse control view
