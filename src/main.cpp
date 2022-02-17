@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    QPointCloudUnderlay w;
+    QPointCloudViewer w;
     w.resize(600, 600);
     w.show();
 

@@ -58,10 +58,6 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     // the world is still for now
     m_worldMatrix.setToIdentity();
 
-    m_projectionMatrix.setToIdentity();
-
-
-
     CONSOLE << "Fucking VAO";
 
     if (m_vao->isCreated())
@@ -121,7 +117,7 @@ void QPointCloudRenderer::render()
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-    f->glClearColor(1.0, 1.0, 1.0, 1.0);
+    f->glClearColor(0.0, 0.0, 0.0, 1.0);
     // ensure GL flags
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     f->glEnable(GL_DEPTH_TEST);
@@ -133,6 +129,14 @@ void QPointCloudRenderer::render()
     m_cameraMatrix.rotate(m_xRotation, 1, 0, 0);
     m_cameraMatrix.rotate(m_yRotation, 0, 1, 0);
     m_cameraMatrix.rotate(m_zRotation, 0, 0, 1);
+
+    qDebug() << "Position: " << m_position.x() << " " << m_position.y()<< " " << m_position.z();
+    qDebug() << "Rotation: " << m_xRotation << " " << m_yRotation << " " << m_zRotation;
+
+    m_projectionMatrix.setToIdentity();
+    GLint viewportSize[4];
+    f->glGetIntegerv(GL_VIEWPORT, viewportSize);
+    m_projectionMatrix.perspective(30, float(viewportSize[2]) / viewportSize[3], 0.01, 1000);
 
     // set clipping planes
     f->glEnable(GL_CLIP_PLANE1);
@@ -149,6 +153,11 @@ void QPointCloudRenderer::render()
 
     CONSOLE << "View Matrix: " << viewMatrix;
 
+    QMatrix4x4 viewMatrix2(0.624116,         0,  0.743792,         0,
+                           0,   1.42815,         0, -0.142815,
+                           0.766198,         0, -0.642916,  0.180038,
+                           0.766044,         0, -0.642788,       0.2 );
+
     m_shaders->bind();
     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->setUniformValue("viewMatrix", viewMatrix);
@@ -162,7 +171,9 @@ void QPointCloudRenderer::render()
     m_shaders->release();
     m_vao->release();
 
-    // drawFrameAxis();
+    CONSOLE << "Point: " << m_pointsCount << " " << m_pointsData.size();
+
+    drawFrameAxis();
 }
 
 void QPointCloudRenderer::invalidate()
@@ -264,29 +275,20 @@ void QPointCloudRenderer::setPosition(QVector3D position) {
 
 
 void QPointCloudRenderer::setxRotation(int angle)
-{
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_xRotation) {
-        m_xRotation = angle;
-    }
+{ 
+    m_xRotation = angle;
 }
 
 
 void QPointCloudRenderer::setyRotation(int angle)
-{
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_yRotation) {
-        m_yRotation = angle;
-    }
+{ 
+    m_yRotation = angle;
 }
 
 
 void QPointCloudRenderer::setzRotation(int angle)
 {
-    angle = angle % (360 * QCameraControl::RotationSTEP::RK);
-    if (angle != m_zRotation) {
-        m_zRotation = angle;
-    }
+    m_zRotation = angle;
 }
 
 

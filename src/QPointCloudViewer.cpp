@@ -58,7 +58,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     m_camera = new QCameraControl(this);
 
-    m_camera->setPosition(QVector3D(0, -0.1, -0.2));
+    m_camera->setPosition(QVector3D(0, 0.2, 0.2));
     m_camera->rotate(0, 50, 0);
 
     // set up QtQuick
