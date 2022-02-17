@@ -32,5 +32,3 @@
 *.app
 
 cmake-build-debug/
-
-*.f240c2f

@@ -7,31 +7,69 @@
 class QCameraControl : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(float azimuth READ azimuth WRITE setAzimuth NOTIFY azimuthChanged)
-    Q_PROPERTY(float elevation READ elevation WRITE setElevation NOTIFY elevationChanged)
-    Q_PROPERTY(float distance READ distance WRITE setDistance NOTIFY distanceChanged)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+
+    Q_PROPERTY(int xRotation READ xRotation WRITE setxRotation NOTIFY xRotationChanged)
+    Q_PROPERTY(int yRotation READ yRotation WRITE setyRotation NOTIFY yRotationChanged)
+    Q_PROPERTY(int zRotation READ zRotation WRITE setzRotation NOTIFY zRotationChanged)
+
+    Q_PROPERTY(double frontClippingPlaneDistance READ frontClippingPlaneDistance WRITE setFrontClippingPlaneDistance NOTIFY frontClippingPlaneDistanceChanged)
+    Q_PROPERTY(double rearClippingDistance READ rearClippingDistance WRITE setRearClippingDistance NOTIFY rearClippingDistanceChanged)
 
 public:
-    explicit QCameraControl(QObject *parent = 0);
+    enum RotationSTEP {RK = 1};
 
-    float azimuth() const;
-    float distance() const;
-    float elevation() const;
+    QCameraControl(QObject *parent = nullptr);
+
+    void forward();
+    void backward();
+    void left();
+    void right();
+    void up();
+    void down();
+
+    void rotate(int dx, int dy, int dz);
+
+    QVector3D position() const;
+
+    int xRotation() const;
+    int yRotation() const;
+    int zRotation() const;
+
+    double frontClippingPlaneDistance() const;
+    double rearClippingDistance() const;
+
 
 signals:
-    void azimuthChanged(float azimuth);
-    void distanceChanged(float distance);
-    void elevationChanged(float elevation);
+    void positionChanged(QVector3D position);
+
+    void xRotationChanged(int angle);
+    void yRotationChanged(int angle);
+    void zRotationChanged(int angle);
+
+    void frontClippingPlaneDistanceChanged(double distance);
+    void rearClippingDistanceChanged(double distance);
+
+
 
 public slots:
-    void setAzimuth(float azimuth);
-    void setDistance(float distance);
-    void setElevation(float elevation);
+    void setPosition(QVector3D position);
+
+    void setxRotation(int angle);
+    void setyRotation(int angle);
+    void setzRotation(int angle);
+
+    void setFrontClippingPlaneDistance(double distance);
+    void setRearClippingDistance(double distance);
 
 private:
-    float m_azimuth;
-    float m_elevation;
-    float m_distance;
+    QVector3D m_position;
+    int m_xRotation;
+    int m_yRotation;
+    int m_zRotation;
+
+    double m_frontClippingPlaneDistance;
+    double m_rearClippingDistance;
 
 };
 

@@ -8,6 +8,10 @@
 
 #include "QCameraControl.h"
 
+class QOpenGLBuffer;
+class QOpenGLShaderProgram;
+class QOpenGLVertexArrayObject;
+
 class QPointCloudRenderer: public QObject
 {
     Q_OBJECT
@@ -15,25 +19,26 @@ public:
 
     enum colorAxisMode {COLOR_BY_ROW, COLOR_BY_Z};
 
-    enum CoordinateMirroring {
-        DoNotMirrorCoordinates,
-        MirrorYCoordinate
-    };
-
     QPointCloudRenderer(QObject *parent = 0);
     ~QPointCloudRenderer();
 
     // All assume that the GL context is current.
-    void initialize(CoordinateMirroring cm = DoNotMirrorCoordinates);
+    void initialize(const QString& plyFilePath);
     void render();
     void invalidate();
 
-    void setAzimuth(float azimuth);
-    void setElevation(float elevation);
-    void setDistance(float distance);
+    void setPosition(QVector3D position);
+
+    void setxRotation(int angle);
+    void setyRotation(int angle);
+    void setzRotation(int angle);
+
+    void setFrontClippingPlaneDistance(double distance);
+    void setRearClippingDistance(double distance);
 
 private:
     void loadPLY(const QString& plyFilePath);
+    void drawFrameAxis();
 
 private:
     float m_pointSize;
@@ -50,11 +55,16 @@ private:
     QVector3D m_pointsBoundMax;
     QVector3D m_ray;
 
-    CoordinateMirroring m_coordinateMirroring;
+    QMatrix4x4 m_projectionMatrix;
+    QMatrix4x4 m_cameraMatrix;
+    QMatrix4x4 m_worldMatrix;
 
-    float m_azimuth;
-    float m_elevation;
-    float m_distance;
+    double m_frontClippingPlaneDistance;
+    double m_rearClippingDistance;
+    QVector3D m_position;
+    int m_xRotation;
+    int m_yRotation;
+    int m_zRotation;
 };
 
 #endif // QPOINTCLOUDRENDERER_H

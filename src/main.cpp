@@ -1,15 +1,14 @@
+#include <QGuiApplication>
 #include "QPointCloudViewer.h"
 #include "QPointCloudUnderlay.h"
-
-#include <QGuiApplication>
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    QPointCloudViewer view;
-    view.show();
-    view.resize(600, 600);
+    QPointCloudViewer w;
+    w.resize(600, 600);
+    w.show();
 
     return app.exec();
 }
