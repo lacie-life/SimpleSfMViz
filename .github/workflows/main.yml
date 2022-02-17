@@ -29,7 +29,7 @@ jobs:
         uses: jurplel/install-qt-action@v2.14.0
         
       - name: Install OpenGL lib
-        run: sudo apt-get install -y libglew-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+        run: sudo apt-get install -y libglew-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev libglfw3-dev
         
       - name: Configure CMake
         env:
