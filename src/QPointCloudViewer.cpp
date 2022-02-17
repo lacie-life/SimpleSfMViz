@@ -195,6 +195,8 @@ void QPointCloudViewer::mousePressEvent(QMouseEvent *e)
     qApp->sendEvent(m_quickWindow, e);
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
+    CONSOLE << "MousePressEvent";
+    CONSOLE << e->x() << " " << e->y();
 }
 
 void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
@@ -202,6 +204,7 @@ void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
     qApp->sendEvent(m_quickWindow, e);
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
+    CONSOLE << "MouseMoveEvent";
 }
 
 void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
@@ -209,4 +212,5 @@ void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
     qApp->sendEvent(m_quickWindow, e);
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
+    CONSOLE << "MouseReleaseEvent";
 }

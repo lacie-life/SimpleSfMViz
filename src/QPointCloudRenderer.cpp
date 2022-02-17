@@ -153,11 +153,6 @@ void QPointCloudRenderer::render()
 
     CONSOLE << "View Matrix: " << viewMatrix;
 
-    QMatrix4x4 viewMatrix2(0.624116,         0,  0.743792,         0,
-                           0,   1.42815,         0, -0.142815,
-                           0.766198,         0, -0.642916,  0.180038,
-                           0.766044,         0, -0.642788,       0.2 );
-
     m_shaders->bind();
     m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->setUniformValue("viewMatrix", viewMatrix);
