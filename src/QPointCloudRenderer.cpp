@@ -2,8 +2,6 @@
 #include "QCameraControl.h"
 #include "Constant.h"
 
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
 
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>
@@ -31,6 +29,10 @@ QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     , m_vao(new QOpenGLVertexArrayObject)
     , m_vertexBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
     , m_shaders()
+    , m_coordinateMirroring(DoNotMirrorCoordinates)
+    , m_azimuth(0.0)
+    , m_elevation(15.0)
+    , m_distance(15.0)
 {
     // make trivial axes cross
     m_axesLines.push_back(std::make_pair(QVector3D(0.0, 0.0, 0.0), QColor(1.0, 0.0, 0.0)));
@@ -47,8 +49,9 @@ QPointCloudRenderer::~QPointCloudRenderer()
     invalidate();
 }
 
-void QPointCloudRenderer::initialize(const QString &plyFilePath)
+void QPointCloudRenderer::initialize(CoordinateMirroring cm)
 {
+
     glClearColor(0, 0, 0, 1.0);
 
     loadPLY(plyFilePath);
@@ -61,8 +64,6 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     CONSOLE << "Fucking VAO";
 
     if (m_vao->isCreated())
-    {
-        CONSOLE << "VAO Failed";
         return; // already initialized
     }
 
@@ -79,7 +80,8 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/vertex_shader.glsl");
     auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/fragment_shader.glsl");
 
-    CONSOLE << "Shader Program Initialized";
+
+    m_coordinateMirroring = cm;
 
     assert(vsLoaded && fsLoaded);
     // vector attributes
@@ -98,7 +100,6 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
     m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
 
-
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->glEnableVertexAttribArray(0);
     f->glEnableVertexAttribArray(1);
@@ -108,11 +109,11 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     m_vao->release();
     // m_vertexBuffer->release();
 
-    CONSOLE << "Initialized";
 }
 
 void QPointCloudRenderer::render()
 {
+
     CONSOLE << "Render";
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
@@ -175,6 +176,7 @@ void QPointCloudRenderer::render()
 
     drawFrameAxis();
 }
+
 
 void QPointCloudRenderer::invalidate()
 {
@@ -285,14 +287,8 @@ void QPointCloudRenderer::setyRotation(int angle)
     m_yRotation = angle;
 }
 
-
 void QPointCloudRenderer::setzRotation(int angle)
 {
     m_zRotation = angle;
 }
-
-
-
-
-
 

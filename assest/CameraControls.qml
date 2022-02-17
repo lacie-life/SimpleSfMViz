@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Rectangle {
     id: cameraControls
@@ -23,44 +23,39 @@ Rectangle {
             anchors.margins: 5
             columns: 3
 
-            Label { text: "xRotation" }
+            Label { text: "Azimuth" }
             Slider {
                 Layout.fillWidth: true
                 from: 0
                 to: 360
                 value: 180
-                onValueChanged: cameraControls.camera.xRotation = value
+                onValueChanged: cameraControls.camera.azimuth = value
             }
-            Label {
-                text: cameraControls.camera.xRotation.toFixed(2)
+            Label { text: cameraControls.camera.azimuth.toFixed(2) }
 
-            }
-
-            Label { text: "yRotation" }
+            Label { text: "Elevation" }
             Slider {
                 Layout.fillWidth: true
                 from: 0
                 to: 90
                 value: 10
-                onValueChanged: cameraControls.camera.yRotation = value
+                onValueChanged: cameraControls.camera.elevation = value
             }
-            Label {
-                text: cameraControls.camera.yRotation.toFixed(2)
-            }
+            Label { text: cameraControls.camera.elevation.toFixed(2) }
 
-            Label { text: "zRotation" }
+            Label { text: "Distance" }
             Slider {
                 id: distanceSlider
                 Layout.fillWidth: true
                 from: 1
                 to: 25
                 value: 15
-                onValueChanged: cameraControls.camera.zRotation = value
+                onValueChanged: cameraControls.camera.distance = value
             }
-            Label {
-                text: cameraControls.camera.zRotation.toFixed(2)
-            }
+            Label { text: cameraControls.camera.distance.toFixed(2) }
         }
     }
+
+
 }
 

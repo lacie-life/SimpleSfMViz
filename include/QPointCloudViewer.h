@@ -1,25 +1,25 @@
 #ifndef QPOINTCLOUDVIEWER_H
 #define QPOINTCLOUDVIEWER_H
 
-#include <QObject>
 #include <QWindow>
-
-#include "Constant.h"
-#include "QCameraControl.h"
+#include <QQuickView>
 
 class QPointCloudRenderer;
+class QCameraControl;
 class QOpenGLContext;
 class QQuickWindow;
 class QQuickRenderControl;
 class QQmlComponent;
 class QQuickItem;
 
+
 class QPointCloudViewer : public QWindow
 {
-public:
-    QPointCloudViewer(QWindow *parent = 0);
-    ~QPointCloudViewer();
+    Q_OBJECT
 
+public:
+    explicit  QPointCloudViewer(QWindow *parent = 0);
+    ~QPointCloudViewer();
 
 protected:
     void resizeEvent(QResizeEvent *e) Q_DECL_OVERRIDE;
@@ -45,7 +45,7 @@ private:
     QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
 
-//    AppConstant *m_constant;
 };
+
 
 #endif // QPOINTCLOUDVIEWER_H

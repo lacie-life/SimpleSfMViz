@@ -1,7 +1,6 @@
 #include "QPointCloudViewer.h"
 #include "QPointCloudRenderer.h"
 #include "QCameraControl.h"
-#include "Constant.h"
 
 #include <QSurfaceFormat>
 #include <QOpenGLContext>
@@ -21,6 +20,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     : QWindow(parent)
     , m_context(0)
     , m_renderer(0)
+    , m_camera(0)
     , m_renderControl(0)
     , m_quickWindow(0)
     , m_qmlComponent(0)
@@ -40,8 +40,6 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/bunny.ply";
-
     // create the GL context
 
     m_context = new QOpenGLContext(this);
@@ -54,7 +52,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     // set up our stuff
 
     m_renderer = new QPointCloudRenderer(this);
-    m_renderer->initialize(plyPath);
+    m_renderer->initialize();
 
     m_camera = new QCameraControl(this);
 
@@ -90,13 +88,13 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
         engine->setIncubationController(m_quickWindow->incubationController());
 
     engine->rootContext()->setContextProperty("_camera", m_camera);
-//    engine->rootContext()->setContextProperty("QmlConstant", DEFS);
     m_qmlComponent = new QQmlComponent(engine, this);
 
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
 
     m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/main.qml"));
+
 
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
     QTimer *redrawTimer = new QTimer(this);
@@ -120,18 +118,20 @@ QPointCloudViewer::~QPointCloudViewer()
     delete m_context;
 }
 
+void QPointCloudViewer::resizeEvent(QResizeEvent *e)
+{
+    // Simulate the "resize root item to follow window"
+    updateRootItemSize();
+    QWindow::resizeEvent(e);
+}
+
 void QPointCloudViewer::syncScene()
 {
     m_renderControl->polishItems();
 
-    m_renderer->setPosition(m_camera->position());
-
-    m_renderer->setxRotation(m_camera->xRotation());
-    m_renderer->setyRotation(m_camera->yRotation());
-    m_renderer->setzRotation(m_camera->zRotation());
-
-    m_renderer->setFrontClippingPlaneDistance(m_camera->frontClippingPlaneDistance());
-    m_renderer->setRearClippingDistance(m_camera->rearClippingDistance());
+    m_renderer->setAzimuth(m_camera->azimuth());
+    m_renderer->setElevation(m_camera->elevation());
+    m_renderer->setDistance(m_camera->distance());
 
     m_renderControl->sync();
     draw();
@@ -172,13 +172,6 @@ void QPointCloudViewer::onQmlComponentLoadingComplete()
     m_rootItem->setParentItem(m_quickWindow->contentItem());
 }
 
-void QPointCloudViewer::resizeEvent(QResizeEvent *e)
-{
-    // Simulate the "resize root item to follow window"
-    updateRootItemSize();
-    QWindow::resizeEvent(e);
-}
-
 void QPointCloudViewer::updateRootItemSize()
 {
     if (m_rootItem) {
@@ -210,3 +203,6 @@ void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
     if (!e->isAccepted())
         QWindow::mousePressEvent(e);
 }
+
+
+
