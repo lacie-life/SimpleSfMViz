@@ -8,10 +8,6 @@
 
 #include "QCameraControl.h"
 
-class QOpenGLBuffer;
-class QOpenGLShaderProgram;
-class QOpenGLVertexArrayObject;
-
 class QPointCloudRenderer: public QObject
 {
     Q_OBJECT

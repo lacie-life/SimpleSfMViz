@@ -2,8 +2,6 @@
 #include "QCameraControl.h"
 #include "Constant.h"
 
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
 
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>
