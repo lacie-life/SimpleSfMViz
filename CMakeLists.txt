@@ -12,8 +12,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND QML_IMPORT_PATH "/home/lacie/Qt/5.15.2/gcc_64/qml")
-SET(CMAKE_PREFIX_PATH "/home/lacie/Qt/5.15.2/gcc_64")
+list(APPEND QML_IMPORT_PATH "/home/jun/Qt/5.15.2/gcc_64/qml")
+SET(CMAKE_PREFIX_PATH "/home/jun/Qt/5.15.2/gcc_64")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     CACHE STRING "Qt Creator 4.1 extra qml import paths"
@@ -50,8 +50,17 @@ find_package(Qt5Qml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Gui REQUIRED)
 
+find_package(Qt53DInput REQUIRED)
+find_package(Qt53DQuick REQUIRED)
+find_package(Qt53DRender REQUIRED)
+find_package(Qt53DQuickRender REQUIRED)
+
 include_directories(${Qt5Widgets_INCLUDE_DIRS} ${QtQml_INCLUDE_DIRS})
 add_definitions(${Qt5Widgets_DEFINITIONS} ${QtQml_DEFINITIONS} ${${Qt5Quick_DEFINITIONS}})
+
+# PCL Library
+find_package(PCL REQUIRED COMPONENTS common io)
+link_directories(${PCL_LIBRARY_DIRS})
 
 include_directories(include)
 
@@ -71,7 +80,13 @@ add_executable(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets spdlog)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets spdlog ${PCL_LIBRARIES} stdc++)
+
+target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
+#target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04
+target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
+
+qt5_use_modules(${PROJECT_NAME} Qml Widgets Quick 3DCore 3DQuick 3DRender 3DQuickRender)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assest
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
