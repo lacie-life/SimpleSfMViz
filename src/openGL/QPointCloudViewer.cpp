@@ -1,6 +1,6 @@
-#include "QPointCloudViewer.h"
-#include "QPointCloudRenderer.h"
-#include "QCameraControl.h"
+#include "openGL/QPointCloudViewer.h"
+#include "openGL/QPointCloudRenderer.h"
+#include "openGL/QCameraControl.h"
 #include "Constant.h"
 
 #include <QSurfaceFormat>
@@ -40,7 +40,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/bunny.ply";
+    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/data/bunny.ply";
 
     // create the GL context
 
@@ -98,7 +98,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
 
-    m_qmlComponent->loadUrl(QUrl("/home/lacie/Github/GreenHouseAR/assest/main.qml"));
+    m_qmlComponent->loadUrl(QUrl("/home/jun/Github/GreenHouseAR/assest/qml/main.qml"));
 
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
     QTimer *redrawTimer = new QTimer(this);

@@ -1,13 +1,20 @@
 <RCC>
     <qresource prefix="/shader">
-        <file>fragment_shader.glsl</file>
-        <file>vertex_shader.glsl</file>
+        <file>shader/fragment_shader.glsl</file>
+        <file>shader/pointcloud.frag</file>
+        <file>shader/pointcloud.vert</file>
+        <file>shader/surfel.frag</file>
+        <file>shader/surfel.vert</file>
+        <file>shader/vertex_shader.glsl</file>
     </qresource>
     <qresource prefix="/qml">
-        <file>main.qml</file>
-        <file>CameraControls.qml</file>
+        <file>qml/CameraControls.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/pointcloud.qml</file>
     </qresource>
-    <qresource prefix="/test">
-        <file>bunny.ply</file>
+    <qresource prefix="/data">
+        <file>data/bunny.pcd</file>
+        <file>data/bunny.ply</file>
+        <file>data/bunny_normal.pcd</file>
     </qresource>
 </RCC>

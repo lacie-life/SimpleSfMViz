@@ -1,6 +1,6 @@
-#include "QPointCloudUnderlay.h"
-#include "QPointCloudRenderer.h"
-#include "QCameraControl.h"
+#include "openGL/QPointCloudUnderlay.h"
+#include "openGL/QPointCloudRenderer.h"
+#include "openGL/QCameraControl.h"
 
 #include <QSurfaceFormat>
 #include <QQmlContext>
