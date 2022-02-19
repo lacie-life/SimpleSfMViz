@@ -65,11 +65,11 @@ link_directories(${PCL_LIBRARY_DIRS})
 include_directories(include)
 
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/openGL/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+                  ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
+                  ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/openGL/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+                  ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
+                  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})

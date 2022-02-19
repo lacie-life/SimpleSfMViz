@@ -76,8 +76,8 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
     //
     m_shaders.reset(new QOpenGLShaderProgram());
 
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/fragment_shader.glsl");
+    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/shader/vertex_shader.glsl");
+    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/shader/fragment_shader.glsl");
 
     CONSOLE << "Shader Program Initialized";
 
