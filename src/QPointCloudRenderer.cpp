@@ -23,7 +23,6 @@
 #include <limits>
 
 const size_t POINT_STRIDE = 4; // x, y, z, index
-const float CAMERA_STEP = 0.01;
 
 QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     : QObject(parent)
@@ -177,36 +176,6 @@ void QPointCloudRenderer::invalidate()
     m_vertexBuffer->destroy();
     m_vao->destroy();
     m_shaders.reset();
-}
-
-void QPointCloudRenderer::cameraForward()
-{
-    m_position[2] += CAMERA_STEP;
-}
-
-void QPointCloudRenderer::cameraBackward()
-{
-    m_position[2] -= CAMERA_STEP;
-}
-
-void QPointCloudRenderer::cameraLeft()
-{
-    m_position[0] += CAMERA_STEP;
-}
-
-void QPointCloudRenderer::cameraRight()
-{
-    m_position[0] -= CAMERA_STEP;
-}
-
-void QPointCloudRenderer::cameraUp()
-{
-    m_position[1] -= CAMERA_STEP;
-}
-
-void QPointCloudRenderer::cameraDown()
-{
-    m_position[1] += CAMERA_STEP;
 }
 
 void QPointCloudRenderer::loadPLY(const QString &plyFilePath)

@@ -7,6 +7,7 @@
 #include <QMatrix4x4>
 
 #include "QCameraControl.h"
+#include "QPointCloud.h"
 
 class QOpenGLBuffer;
 class QOpenGLShaderProgram;
@@ -26,13 +27,6 @@ public:
     void initialize(const QString& plyFilePath);
     void render();
     void invalidate();
-
-    void cameraForward();
-    void cameraBackward();
-    void cameraLeft();
-    void cameraRight();
-    void cameraUp();
-    void cameraDown();
 
     void setPosition(QVector3D position);
 
@@ -61,6 +55,11 @@ private:
     QVector3D m_pointsBoundMin;
     QVector3D m_pointsBoundMax;
     QVector3D m_ray;
+
+    QVector<QPointCloud> m_pointCloud;
+    unsigned int positionNumberIndicies;
+    QScopedPointer<QOpenGLBuffer> m_positionsBuffer;
+    QScopedPointer<QOpenGLBuffer> m_colorsBuffer;
 
     QMatrix4x4 m_projectionMatrix;
     QMatrix4x4 m_cameraMatrix;
