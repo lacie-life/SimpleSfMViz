@@ -71,7 +71,7 @@ add_executable(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets spdlog)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assest
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
