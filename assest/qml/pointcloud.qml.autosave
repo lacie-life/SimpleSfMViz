@@ -132,6 +132,7 @@ ApplicationWindow {
                         }
                     property GeometryRenderer pointcloudMesh: GeometryRenderer {
                             geometry: PointCloudGeometry { pointCloud: readerBunny.pointCloud }
+                            
                             primitiveType: GeometryRenderer.Points
                         }
                     property Material materialPoint: Material {
