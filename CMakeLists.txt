@@ -64,8 +64,12 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 include_directories(include)
 
-file(GLOB HEADERS "include/*.h")
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/openGL/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/openGL/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
@@ -80,7 +84,7 @@ add_executable(${PROJECT_NAME}
 target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets spdlog ${PCL_LIBRARIES} stdc++)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets ${PCL_LIBRARIES} stdc++)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 #target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04

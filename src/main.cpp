@@ -1,6 +1,6 @@
 #include <QGuiApplication>
-#include "QPointCloudViewer.h"
-#include "QPointCloudUnderlay.h"
+#include "openGL/QPointCloudViewer.h"
+#include "openGL/QPointCloudUnderlay.h"
 
 int main(int argc, char **argv)
 {

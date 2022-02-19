@@ -7,7 +7,6 @@
 #include <QMatrix4x4>
 
 #include "QCameraControl.h"
-#include "QPointCloud.h"
 
 class QOpenGLBuffer;
 class QOpenGLShaderProgram;
@@ -56,7 +55,6 @@ private:
     QVector3D m_pointsBoundMax;
     QVector3D m_ray;
 
-    QVector<QPointCloud> m_pointCloud;
     unsigned int positionNumberIndicies;
     QScopedPointer<QOpenGLBuffer> m_positionsBuffer;
     QScopedPointer<QOpenGLBuffer> m_colorsBuffer;

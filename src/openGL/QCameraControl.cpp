@@ -1,4 +1,4 @@
-#include "QCameraControl.h"
+#include "openGL/QCameraControl.h"
 
 //const float CAMERA_STEP = 0.01;
 
