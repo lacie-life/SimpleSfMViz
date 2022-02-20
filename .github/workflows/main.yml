@@ -31,6 +31,14 @@ jobs:
       - name: Install OpenGL lib
         run: sudo apt-get install -y libglew-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev libglfw3-dev python3-pcl pcl-tools libpcl-dev
         
+      - name: Install OpenCV 4.2.0
+        uses: Dovyski/setup-opencv-action@v1
+        with: 
+          opencv-version: 4.2.0
+          WITH_V4L: ON
+          WITH_QT: ON
+          WITH_OPENGL: ON
+        
       - name: Configure CMake
         env:
           CMAKE_PREFIX_PATH: ${{env.Qt5_Dir}}
