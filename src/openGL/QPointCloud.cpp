@@ -1,9 +1,11 @@
 #include "openGL/QPointCloud.h"
 
 #include <pcl/PCLPointCloud2.h>
+#include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/common/centroid.h>
 #include <pcl/common/common.h>
+#include <pcl/conversions.h>
 
 #include <QRgb>
 #include <QFile>
@@ -111,6 +113,16 @@ void QPointCloud::loadPointCloud(const QString &filePath)
     this->setPointCloud(*tmp->m_priv->m_pointcloud);
 
     // TODO: m_points, m_colors, m_normals;
+    pcl::PointCloud<pcl::PointXYZRGB> pointCloudWithColor;
+    pcl::fromPCLPointCloud2(*tmp->pointCloud(), pointCloudWithColor);
+
+    m_points.clear();
+    m_colors.clear();
+    for (size_t i = 0; i < pointCloudWithColor.size(); i++){
+        m_points.append(QVector3D(pointCloudWithColor.at(i).x, pointCloudWithColor.at(i).y, pointCloudWithColor.at(i).z));
+        m_colors.append(QVector3D(pointCloudWithColor.at(i).r, pointCloudWithColor.at(i).g, pointCloudWithColor.at(i).b));
+    }
+    assert(m_points.size() == m_colors.size());
 }
 
 void QPointCloud::updateAttributes()

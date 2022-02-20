@@ -36,6 +36,8 @@ void QPointCloudLoader::setFilename(QString filename)
     {
         pcl::PCDReader reader;
         reader.read(filename.toStdString(), *m_pointCloud->pointCloud());
+
+
     }
     else if(filename.endsWith(".ply", Qt::CaseInsensitive))
     {
