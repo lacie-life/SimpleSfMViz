@@ -1,20 +1,20 @@
 #version 330 core
 
 
-in vec3 vertexPosition;
-in vec3 vertexColor;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexColor;
 
 uniform float pointSize;
 uniform mat4 viewMatrix;
 
 attribute float pointRowIndex;
 
-varying vec3 color;
+out vec3 fcolor;
 
 void main() {
   gl_Position = viewMatrix * vec4( vertexPosition, 1.0 );
   gl_PointSize  = pointSize;
 
   // for use in fragment shader
-  color = vertexColor;
+  fcolor = vertexColor;
 }

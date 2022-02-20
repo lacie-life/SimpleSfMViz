@@ -142,6 +142,7 @@ void QPointCloud::loadPointCloud(const QString &filePath)
     for (size_t i = 0; i < pcd.size(); i++){
         m_points.append(QVector3D(pcd.at(i).x, pcd.at(i).y, pcd.at(i).z));
         m_colors.append(QVector3D(pcd.at(i).r, pcd.at(i).g, pcd.at(i).b));
+        CONSOLE << pcd.at(i).r << " " << pcd.at(i).g << " " << pcd.at(i).b;
     }
 
     assert(m_points.size() == m_colors.size());
