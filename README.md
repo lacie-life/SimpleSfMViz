@@ -5,5 +5,5 @@
 - [x] Point Cloud render by OpenGL
 - [x] Mouse control view
 - [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer)
-- [ ] PCLPointCloud2 + OpenGL Render
-
+- [x] PCL PointCloud + OpenGL Render
+- [ ] Add stereo camera plugin
