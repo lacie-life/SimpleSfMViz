@@ -41,8 +41,10 @@ void QPointCloudLoader::setFilename(QString filename)
         pcl::PCDReader reader;
         pcl::PointCloud<pcl::PointXYZRGB> pointCloudWithColor;
         reader.read(filename.toStdString(), pointCloudWithColor);
-        pcl::fromPCLPointCloud2(*m_pointCloud->pointCloud(), pointCloudWithColor);
+
         CONSOLE << "Fucking PCL";
+
+        pcl::fromPCLPointCloud2(*m_pointCloud->pointCloud(), pointCloudWithColor);
     }
     else if(filename.endsWith(".ply", Qt::CaseInsensitive))
     {

@@ -65,6 +65,7 @@ public:
     QVector<QVector3D> vertices() const { return m_points; }
     QVector<QVector3D> colors() const { return m_colors; }
     QVector<QVector3D> normals() const { return m_normals; }
+    int pointsNumber() const { return m_pointsCount; }
 
 public slots:
     void setHeight(quint32 height);
@@ -97,6 +98,7 @@ private:
     QVector<QVector3D> m_points;
     QVector<QVector3D> m_colors;
     QVector<QVector3D> m_normals;
+    int m_pointsCount;
 
 };
 

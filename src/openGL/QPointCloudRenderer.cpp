@@ -31,6 +31,8 @@ QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     , m_vao(new QOpenGLVertexArrayObject)
     , m_vertexBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
     , m_shaders()
+    , m_positionsBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
+    , m_colorsBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
 {
     // make trivial axes cross
     m_axesLines.push_back(std::make_pair(QVector3D(0.0, 0.0, 0.0), QColor(1.0, 0.0, 0.0)));
@@ -57,7 +59,6 @@ void QPointCloudRenderer::initialize(const QString &filePath)
 
     m_pointCloud->loadPointCloud(filePath);
 
-
     CONSOLE << "Initialize";
 
     // the world is still for now
@@ -81,50 +82,56 @@ void QPointCloudRenderer::initialize(const QString &filePath)
     //
     m_shaders.reset(new QOpenGLShaderProgram());
 
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/shader/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/shader/fragment_shader.glsl");
+    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/lacie/Github/GreenHouseAR/assest/shader/vertex_shader.glsl");
+    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/lacie/Github/GreenHouseAR/assest/shader/fragment_shader.glsl");
 
     CONSOLE << "Shader Program Initialized";
 
     assert(vsLoaded && fsLoaded);
 
     // vector attributes
-    m_shaders->bindAttributeLocation("vertex", 0);
-    m_shaders->bindAttributeLocation("pointRowIndex", 1);
+//    m_shaders->bindAttributeLocation("vertex", 0);
+//    m_shaders->bindAttributeLocation("pointRowIndex", 1);
+//    m_shaders->bindAttributeLocation("color", 2);
 
     // constants
     m_shaders->bind();
-    m_shaders->setUniformValue("lightPos", QVector3D(0, 0, 50));
-    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
+//    m_shaders->setUniformValue("lightPos", QVector3D(0, 0, 50));
+//    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->link();
     m_shaders->release();
 
     // PLY file reader
-    m_vertexBuffer->create();
-    m_vertexBuffer->bind();
-    m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
+//    m_vertexBuffer->create();
+//    m_vertexBuffer->bind();
+//    m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
+//    m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
 
     // PCLPointCloud2
     const QVector<QVector3D> vertices = m_pointCloud->vertices();
+    CONSOLE << "Number vertice: " << vertices.size();
     if (!m_positionsBuffer->create())
         qFatal("Unable to create position buffer");
     m_positionsBuffer->bind();
     m_positionsBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
+    CONSOLE << "?";
     m_positionsBuffer->allocate(vertices.constData(), vertices.size() * sizeof(QVector3D));
 
     const QVector<QVector3D> colors = m_pointCloud->colors();
+    CONSOLE << "Number colors: " << colors.size();
     if (!m_positionsBuffer->create())
         qFatal("Unable to create position buffer");
     m_colorsBuffer->bind();
     m_colorsBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
     m_colorsBuffer->allocate(colors.constData(), colors.size() * sizeof(QVector3D));
 
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-    f->glEnableVertexAttribArray(0);
-    f->glEnableVertexAttribArray(1);
-    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), 0);
-    f->glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), reinterpret_cast<void *>(3*sizeof(GLfloat)));
+//    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+//    f->glEnableVertexAttribArray(0);
+//    f->glEnableVertexAttribArray(1);
+//    f->glEnableVertexAttribArray(2);
+//    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), 0);
+//    f->glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), 0);
+//    f->glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat) + sizeof(GLfloat), reinterpret_cast<void *>(3*sizeof(GLfloat)));
 
     m_shaders->bind();
 
@@ -148,7 +155,7 @@ void QPointCloudRenderer::render()
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-    f->glClearColor(0.0, 0.0, 0.0, 1.0);
+    f->glClearColor(1.0, 1.0, 1.0, 1.0);
     // ensure GL flags
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     f->glEnable(GL_DEPTH_TEST);
@@ -188,16 +195,16 @@ void QPointCloudRenderer::render()
 //    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->setUniformValue("viewMatrix", viewMatrix);
     m_shaders->setUniformValue("pointSize", m_pointSize);
-    m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
-    m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
-    m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
+//    m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
+//    m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
+//    m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
 
     m_vao->bind();
-    f->glDrawArrays(GL_POINTS, 0, m_pointCloud->data().size());
+    f->glDrawArrays(GL_POINTS, 0, m_pointCloud->pointsNumber());
     m_shaders->release();
     m_vao->release();
 
-    CONSOLE << "Point: " << m_pointCloud->data().size();
+    CONSOLE << "Point: " << m_pointCloud->pointsNumber();
 
     drawFrameAxis();
 }

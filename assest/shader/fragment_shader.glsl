@@ -1,20 +1,8 @@
-#version 120
+#version 330 core
 
-//uniform float pointsCount;
-uniform float colorAxisMode;
-uniform vec3 pointsBoundMin;
-uniform vec3 pointsBoundMax;
-
-varying vec3 vert;
-varying float pointIdx;
 varying vec3 color;
 
 void main() {
-//  float intensity = pointIdx/pointsCount;
-//  if (colorAxisMode == 1) {
-//    intensity = (vert.z + abs(pointsBoundMin.z))/(pointsBoundMax.z - pointsBoundMin.z);
-//  }
-//  gl_FragColor = vec4(intensity, intensity, intensity, 0.);
 
-  gl_FragColor = color;
+  gl_FragColor = vec4(color, 1.0);
 }
