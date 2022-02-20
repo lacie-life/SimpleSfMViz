@@ -51,7 +51,7 @@ void QPointCloudRenderer::initialize(const QString &plyFilePath)
 {
     glClearColor(0, 0, 0, 1.0);
 
-    loadPLY(plyFilePath);
+    // loadPLY(plyFilePath);
 
     CONSOLE << "Initialize";
 

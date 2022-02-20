@@ -40,7 +40,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/data/bunny.ply";
+    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/data/bunny.ply";
 
     // create the GL context
 

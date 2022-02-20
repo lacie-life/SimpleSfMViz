@@ -1,4 +1,4 @@
-#include "pcl/QPointCloud.h"
+#include "openGL/QPointCloud.h"
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_types.h>
@@ -102,6 +102,15 @@ QPointCloud::~QPointCloud()
         delete m_priv->m_pointcloud;
     }
     delete m_priv;
+}
+
+void QPointCloud::loadPointCloud(const QString &filePath)
+{
+    m_loader = new QPointCloudLoader(filePath);
+    QPointCloud *tmp  = m_loader->pointCloud();
+    this->setPointCloud(*tmp->m_priv->m_pointcloud);
+
+    // TODO: m_points, m_colors, m_normals;
 }
 
 void QPointCloud::updateAttributes()
