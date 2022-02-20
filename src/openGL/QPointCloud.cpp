@@ -141,13 +141,13 @@ void QPointCloud::loadPointCloud(const QString &filePath)
     m_colors.clear();
     for (size_t i = 0; i < pcd.size(); i++){
         m_points.append(QVector3D(pcd.at(i).x, pcd.at(i).y, pcd.at(i).z));
-        m_colors.append(QVector3D(pcd.at(i).r, pcd.at(i).g, pcd.at(i).b));
-        CONSOLE << pcd.at(i).r << " " << pcd.at(i).g << " " << pcd.at(i).b;
+        m_colors.append(QVector3D(pcd.at(i).r/255.0f, pcd.at(i).g/255.0f, pcd.at(i).b/255.0f));
+        // CONSOLE << QVector3D(pcd.at(i).r/255.0f, pcd.at(i).g/255.0f, pcd.at(i).b/255.0f);
     }
 
     assert(m_points.size() == m_colors.size());
     m_pointsCount = pcd.size();
-    CONSOLE << "Reading done";
+    // CONSOLE << "Reading done";
 }
 
 void QPointCloud::updateAttributes()

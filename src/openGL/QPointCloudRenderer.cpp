@@ -95,17 +95,16 @@ void QPointCloudRenderer::initialize(const QString &filePath)
 //    m_shaders->bindAttributeLocation("color", 2);
 
     // constants
-    m_shaders->bind();
+//      m_shaders->bind();
 //    m_shaders->setUniformValue("lightPos", QVector3D(0, 0, 50));
 //    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
-    m_shaders->link();
-    m_shaders->release();
 
     // PLY file reader
 //    m_vertexBuffer->create();
 //    m_vertexBuffer->bind();
 //    m_vertexBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
 //    m_vertexBuffer->allocate(m_pointsData.constData(), m_pointsData.size() * sizeof(GLfloat));
+
 
     // PCLPointCloud2
     const QVector<QVector3D> vertices = m_pointCloud->vertices();
@@ -119,8 +118,8 @@ void QPointCloudRenderer::initialize(const QString &filePath)
 
     const QVector<QVector3D> colors = m_pointCloud->colors();
     CONSOLE << "Number colors: " << colors.size();
-    if (!m_positionsBuffer->create())
-        qFatal("Unable to create position buffer");
+    if (!m_colorsBuffer->create())
+        qFatal("Unable to create color buffer");
     m_colorsBuffer->bind();
     m_colorsBuffer->setUsagePattern(QOpenGLBuffer::StaticDraw);
     m_colorsBuffer->allocate(colors.constData(), colors.size() * sizeof(QVector3D));
@@ -142,6 +141,9 @@ void QPointCloudRenderer::initialize(const QString &filePath)
     m_colorsBuffer->bind();
     m_shaders->enableAttributeArray("vertexColor");
     m_shaders->setAttributeBuffer("vertexColor", GL_FLOAT, 0, 3);
+
+    m_shaders->link();
+    m_shaders->release();
 
     m_vao->release();
     // m_vertexBuffer->release();
@@ -201,12 +203,13 @@ void QPointCloudRenderer::render()
 
     m_vao->bind();
     f->glDrawArrays(GL_POINTS, 0, m_pointCloud->pointsNumber());
+    // f->glDrawElements(GL_POINTS, m_pointCloud->pointsNumber(), GL_UNSIGNED_INT, Q_NULLPTR);
     m_shaders->release();
     m_vao->release();
 
     CONSOLE << "Point: " << m_pointCloud->pointsNumber();
 
-    drawFrameAxis();
+    // drawFrameAxis();
 }
 
 void QPointCloudRenderer::invalidate()
