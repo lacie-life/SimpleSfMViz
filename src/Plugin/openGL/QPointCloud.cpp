@@ -1,5 +1,5 @@
 #include "openGL/QPointCloud.h"
-#include "Constant.h"
+#include "AppConstant.h"
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_cloud.h>

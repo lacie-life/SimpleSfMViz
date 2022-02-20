@@ -1,6 +1,6 @@
 #include "openGL/QPointCloudRenderer.h"
 #include "openGL/QCameraControl.h"
-#include "Constant.h"
+#include "AppConstant.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWindow>
 
-#include "Constant.h"
+#include "AppConstant.h"
 #include "QCameraControl.h"
 
 class QPointCloudRenderer;

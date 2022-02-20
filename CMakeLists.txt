@@ -65,14 +65,29 @@ add_definitions(${Qt5Widgets_DEFINITIONS} ${QtQml_DEFINITIONS} ${${Qt5Quick_DEFI
 find_package(PCL REQUIRED COMPONENTS common io)
 link_directories(${PCL_LIBRARY_DIRS})
 
-include_directories(include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Model
+                    ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin
+                    ${CMAKE_CURRENT_SOURCE_DIR}/include/View
+                    ${CMAKE_CURRENT_SOURCE_DIR}/include/Handler
+                    ${CMAKE_CURRENT_SOURCE_DIR}/include/Common
+                    ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/openGL/*.h
-#                  ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
-                  ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/openGL/*.cpp
-#                  ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
-                  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/View/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Handler/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/openGL/*.h
+                      #${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/pcl/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Common/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Handler/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/openGL/*.cpp
+                      #${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/pcl/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
@@ -99,6 +114,6 @@ qt5_use_modules(${PROJECT_NAME} Qml Widgets Quick 3DCore 3DQuick 3DRender 3DQuic
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assest
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
- execute_process(
-   COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" ${CMAKE_CURRENT_SOURCE_DIR}/assest/data ${CMAKE_CURRENT_BINARY_DIR}/assest/data
- )
+execute_process(
+     COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" ${CMAKE_CURRENT_SOURCE_DIR}/assest/data ${CMAKE_CURRENT_BINARY_DIR}/assest/data
+)

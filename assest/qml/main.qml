@@ -1,15 +1,23 @@
 import QtQuick 2.15
+import QtQuick.Window 2.15
+import QtQuick.Controls 2.5
 
-Item {
+import AppEnums 1.0
+
+Window {
     id: root
+    visible: true
+    width: QmlConst.DEFAULT_WIDTH
+    height: QmlConst.DEFAULT_HEIGHT
+    maximumHeight: QmlConst.DEFAULT_HEIGHT
+    minimumHeight: QmlConst.DEFAULT_HEIGHT
+    maximumWidth: QmlConst.DEFAULT_WIDTH
+    minimumWidth: QmlConst.DEFAULT_WIDTH
 
-    width: 400
-    height: 400
-
-    CameraControls {
-        camera: _camera
-
-        anchors.bottom: root.bottom
-        anchors.horizontalCenter: root.horizontalCenter
+    title: qsTr("GreenHouseAR")
+    Loader {
+        id: loader
+        anchors.fill: parent
+        source: QmlConst.QML_MAIN_SCREEN_URL
     }
 }

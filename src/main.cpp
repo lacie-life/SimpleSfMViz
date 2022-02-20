@@ -9,16 +9,33 @@
 
 #include "openGL/QPointCloudViewer.h"
 #include "openGL/QPointCloudUnderlay.h"
+#include "AppEngine.h"
 
 
 
 int main(int argc, char **argv)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
     QGuiApplication app(argc, argv);
 
-    QPointCloudViewer w;
-    w.resize(600, 600);
-    w.show();
+    QSurfaceFormat fmt;
+    fmt.setVersion( 1, 4 );
+    fmt.setProfile( QSurfaceFormat::CoreProfile );
+    QSurfaceFormat::setDefaultFormat( fmt );
+
+    app.setOrganizationName("kms_team");
+    app.setOrganizationDomain("kms_team");
+
+    AppEngine appEngine;
+    appEngine.initEngine();
+    appEngine.startEngine();
+
+    //    QPointCloudViewer w;
+    //    w.resize(600, 600);
+    //    w.show();
 
     return app.exec();
 }

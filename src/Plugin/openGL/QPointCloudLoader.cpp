@@ -1,6 +1,6 @@
 #include "openGL/QPointCloudLoader.h"
 #include "openGL/QPointCloud.h"
-#include "Constant.h"
+#include "AppConstant.h"
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/ply_io.h>

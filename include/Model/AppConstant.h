@@ -32,7 +32,7 @@ class AppConstant : public QObject
     Q_OBJECT
 
     /************************* DEFINE QML URL *****************************/
-    DEF_CONST(QUrl     , QML_MAIN_URL               , QUrl(QStringLiteral("qrc:/qml/main.qml")))
+    DEF_CONST(QUrl     , QML_MAIN_URL               , QUrl(QStringLiteral("qrc:/qml/qml/main.qml")))
 
     /************************* DEFINE SOMETHINGS *****************************/
     DEF_CONST(int      , DEFAULT_WIDTH               , 1280)
