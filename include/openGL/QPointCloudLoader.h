@@ -1,10 +1,10 @@
 #ifndef QPOINTCLOUDLOADER_H
 #define QPOINTCLOUDLOADER_H
 
-#include "QPointCloud.h"
-
 #include <QObject>
 #include <QString>
+
+class QPointCloud;
 
 class QPointCloudLoader : public QObject
 {

@@ -25,7 +25,7 @@ public:
     ~QPointCloudRenderer();
 
     // All assume that the GL context is current.
-    void initialize(const QString& plyFilePath);
+    void initialize(const QString& filePath);
     void render();
     void invalidate();
 

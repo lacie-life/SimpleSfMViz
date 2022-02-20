@@ -1,4 +1,5 @@
 #include "openGL/QPointCloud.h"
+#include "Constant.h"
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_cloud.h>
@@ -108,6 +109,7 @@ QPointCloud::~QPointCloud()
 
 void QPointCloud::loadPointCloud(const QString &filePath)
 {
+
     m_loader = new QPointCloudLoader(filePath);
     QPointCloud *tmp  = m_loader->pointCloud();
     this->setPointCloud(*tmp->m_priv->m_pointcloud);
@@ -122,6 +124,7 @@ void QPointCloud::loadPointCloud(const QString &filePath)
         m_points.append(QVector3D(pointCloudWithColor.at(i).x, pointCloudWithColor.at(i).y, pointCloudWithColor.at(i).z));
         m_colors.append(QVector3D(pointCloudWithColor.at(i).r, pointCloudWithColor.at(i).g, pointCloudWithColor.at(i).b));
     }
+
     assert(m_points.size() == m_colors.size());
 }
 

@@ -1,4 +1,6 @@
 #include "openGL/QPointCloudLoader.h"
+#include "openGL/QPointCloud.h"
+#include "Constant.h"
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/ply_io.h>
@@ -29,15 +31,18 @@ QPointCloud *QPointCloudLoader::pointCloud() const
 
 void QPointCloudLoader::setFilename(QString filename)
 {
-    if (m_filename == filename)
-        return;
 
+    if (m_filename == filename){
+        return;
+    }
+    CONSOLE << filename;
     if(filename.endsWith(".pcd", Qt::CaseInsensitive))
     {
         pcl::PCDReader reader;
-        reader.read(filename.toStdString(), *m_pointCloud->pointCloud());
-
-
+        pcl::PointCloud<pcl::PointXYZRGB> pointCloudWithColor;
+        reader.read(filename.toStdString(), pointCloudWithColor);
+        pcl::fromPCLPointCloud2(*m_pointCloud->pointCloud(), pointCloudWithColor);
+        CONSOLE << "Fucking PCL";
     }
     else if(filename.endsWith(".ply", Qt::CaseInsensitive))
     {
