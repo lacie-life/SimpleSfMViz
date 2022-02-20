@@ -21,10 +21,6 @@ ApplicationWindow {
         id: readerBunny
         filename: "/home/lacie/Downloads/hand_gestures/hand_0/image_0000.pcd"
     }
-    PointCloudLoader {
-        id: readerBunnyNormal
-        filename: "/home/lacie/Github/GreenHouseAR/assest/data/bunny_normal.pcd"
-    }
 
     GridLayout {
         anchors.fill: parent
@@ -51,9 +47,11 @@ ApplicationWindow {
                     viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
                 }
 
-                FirstPersonCameraController {
-                //OrbitCameraController {
+                // FirstPersonCameraController {
+                OrbitCameraController {
                     camera: mainCamera
+                    linearSpeed: 50.0
+                    lookSpeed: 50.0
                 }
 
                 components: [
@@ -79,17 +77,7 @@ ApplicationWindow {
                                             RenderStateSet {
                                                 renderStates: [
                                                     // If this is uncommented, following pointsizes are ignored in Qt5.7
-                                                    //PointSize { sizeMode: PointSize.Fixed; value: 5.0 }, // exception when closing application in qt 5.7. Moreover PointSize
-                                                    //PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
-                                                    DepthTest { depthFunction: DepthTest.Less }
-                                                    //DepthMask { mask: true }
-                                                ]
-                                            }
-                                        }
-                                        LayerFilter {
-                                            layers: surfelLayer
-                                            RenderStateSet {
-                                                renderStates: [
+                                                    PointSize { sizeMode: PointSize.Fixed; value: 3.0 }, // exception when closing application in qt 5.7. Moreover PointSize
                                                     PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
                                                     DepthTest { depthFunction: DepthTest.Less }
                                                     //DepthMask { mask: true }
@@ -108,33 +96,12 @@ ApplicationWindow {
                     }
                 ]
 
-                PhongMaterial {
-                    id: phongMaterial
-                }
-
-                TorusMesh {
-                    id: torusMesh
-                    radius: 5
-                    minorRadius: 1
-                    rings: 100
-                    slices: 20
-                }
-
-                Q3D.Transform {
-                    id: torusTransform
-                    scale3D: Qt.vector3d(2.5, 2.5, 2.5)
-                    //rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
-                }
 
                 Layer {
                     id: solidLayer
                 }
                 Layer {
                     id: pointLayer
-                }
-                Q3D.Entity {
-                    id: torusEntity
-                    components: [ solidLayer, torusMesh, phongMaterial, torusTransform ]
                 }
 
                 Q3D.Entity {
@@ -166,60 +133,8 @@ ApplicationWindow {
                     //property Material materialPoint: PerVertexColorMaterial {}
                     components: [ pointcloudMesh, materialPoint, meshTransform, pointLayer ]
                 }
-
-                Q3D.Entity {
-                    id: pointcloudSurfel
-                    property Layer layerPoints: Layer {
-                            id: surfelLayer
-                        }
-                    property var meshTransform: Q3D.Transform {
-                            id: pointcloudSurfelTransform
-                            property real userAngle: rotator.rotationAnimation
-                            scale: 20
-                            translation: Qt.vector3d(0, 2, 0)
-                            rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
-                        }
-                    property GeometryRenderer surfelMesh: GeometryRenderer {
-                            geometry: PointCloudGeometry { pointCloud: readerBunnyNormal.pointCloud }
-                            primitiveType: GeometryRenderer.Points
-                        }
-                    property Material materialSurfel: Material {
-                        effect: Effect {
-                            techniques: Technique {
-                                renderPasses: RenderPass {
-                                    shaderProgram: ShaderProgram {
-                                        vertexShaderCode: loadSource("qrc:/shader/shader/surfel.vert")
-                                        fragmentShaderCode: loadSource("qrc:/shader/shader/surfel.frag")
-                                    }
-                                }
-                            }
-                        }
-                        parameters: [
-                            Parameter { name: "pointSize"; value: 0.06 },
-                            Parameter { name: "fieldOfView"; value: mainCamera.fieldOfView },
-                            Parameter { name: "fieldOfViewVertical"; value: mainCamera.fieldOfView/mainCamera.aspectRatio },
-                            Parameter { name: "nearPlane"; value: mainCamera.nearPlane },
-                            Parameter { name: "farPlane"; value: mainCamera.farPlane },
-                            Parameter { name: "width"; value: scene3d.width },
-                            Parameter { name: "height"; value: scene3d.height }
-                        ]
-                    }
-                    components: [ surfelMesh, materialSurfel, meshTransform, surfelLayer ]
-                }
             }
         }
-    }
-    NumberAnimation {
-        id: rotator
-        property real rotationAnimation
-        target: rotator
-        property: "rotationAnimation"
-        duration: 10000
-        from: -180
-        to: 180
-
-        loops: Animation.Infinite
-        running: true
     }
 
     SystemPalette {
