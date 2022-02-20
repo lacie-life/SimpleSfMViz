@@ -51,11 +51,11 @@ ApplicationWindow {
                     viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
                 }
 
-//                FirstPersonCameraController {
+                // FirstPersonCameraController {
                 OrbitCameraController {
                     camera: mainCamera
-                    linearSpeed: 100.0
-                    lookSpeed: 100.0
+                    linearSpeed: 50.0
+                    lookSpeed: 50.0
                 }
 
                 components: [
@@ -114,6 +114,7 @@ ApplicationWindow {
                     id: phongMaterial
                 }
 
+
                 Layer {
                     id: solidLayer
                 }
@@ -152,8 +153,9 @@ ApplicationWindow {
                         }
                         parameters: Parameter { name: "pointSize"; value: 3 }
                     }
-//                    property Material materialPoint: PerVertexColorMaterial {}
-                    components: [ pointcloudMesh, phongMaterial, meshTransform, pointLayer]
+
+                    //property Material materialPoint: PerVertexColorMaterial {}
+                    components: [ pointcloudMesh, materialPoint, meshTransform, pointLayer ]
                 }
             }
         }

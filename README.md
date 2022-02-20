@@ -4,5 +4,6 @@
 
 - [x] Point Cloud render by OpenGL
 - [x] Mouse control view
-- [ ] Point Cloud + Color Render
+- [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer)
+- [ ] PCLPointCloud2 + OpenGL Render
 
