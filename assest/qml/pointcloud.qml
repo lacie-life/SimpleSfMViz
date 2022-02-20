@@ -19,11 +19,11 @@ ApplicationWindow {
 
     PointCloudLoader {
         id: readerBunny
-        filename: "/home/jun/Github/GreenHouseAR/assest/data/bunny.pcd"
+        filename: "/home/lacie/Downloads/hand_gestures/hand_0/image_0000.pcd"
     }
     PointCloudLoader {
         id: readerBunnyNormal
-        filename: "/home/jun/Github/GreenHouseAR/assest/data/bunny_normal.pcd"
+        filename: "/home/lacie/Github/GreenHouseAR/assest/data/bunny_normal.pcd"
     }
 
     GridLayout {
