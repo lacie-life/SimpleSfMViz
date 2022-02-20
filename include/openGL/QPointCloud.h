@@ -4,8 +4,11 @@
 #include <QObject>
 #include <QVector3D>
 #include <QQmlListProperty>
+#include <QVector2D>
+#include <QVector4D>
 
-#include "pcl/QPointField.h"
+#include "QPointField.h"
+#include "QPointCloudLoader.h"
 
 namespace pcl {
     class PCLPointCloud2;
@@ -36,6 +39,7 @@ public:
     QPointCloud(pcl::PCLPointCloud2 *pointCloud);
     ~QPointCloud();
 
+    void loadPointCloud(const QString& filePath);
     void updateAttributes();
 
     quint32 height() const;
@@ -57,6 +61,11 @@ public:
 
     pcl::PCLPointCloud2* pointCloud();
     void setPointCloud(const pcl::PCLPointCloud2 &copy);
+
+    QVector<QVector3D> vertices() const { return m_points; }
+    QVector<QVector3D> colors() const { return m_colors; }
+    QVector<QVector3D> normals() const { return m_normals; }
+    int pointsNumber() const { return m_pointsCount; }
 
 public slots:
     void setHeight(quint32 height);
@@ -82,7 +91,14 @@ signals:
     void offsetChanged(QVector3D offset);
 
 private:
+
+    QPointCloudLoader *m_loader;
     QPointCloudPrivate  *m_priv;
+
+    QVector<QVector3D> m_points;
+    QVector<QVector3D> m_colors;
+    QVector<QVector3D> m_normals;
+    int m_pointsCount;
 
 };
 

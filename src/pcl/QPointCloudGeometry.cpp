@@ -60,6 +60,7 @@ public:
         for(int i=m_colorOffset ; i<size ; i++) {
             pcl::RGB rgb;
             memcpy (&rgb, &(data.data()[m_colorOffset + i * pointStep]), sizeof (float));
+            // qDebug() << rgb.r << "  " << rgb.g << "  " << rgb.b;
             colorDataFloats[(i*colorChannels)  ] = rgb.r/255.f;
             colorDataFloats[(i*colorChannels)+1] = rgb.g/255.f;
             colorDataFloats[(i*colorChannels)+2] = rgb.b/255.f;
@@ -211,6 +212,7 @@ void QPointCloudGeometry::updateAttributes()
     pf = pfs.find("rgb");
     if(pf != pfs.cend())
     {
+        qDebug() << "Color is enabled";
         int num = 3;
         Qt3DRender::QAttribute* attrib = new Qt3DRender::QAttribute(nullptr);
         attrib->setName(Qt3DRender::QAttribute::defaultColorAttributeName());

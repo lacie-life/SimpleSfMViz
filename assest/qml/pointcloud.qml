@@ -19,7 +19,11 @@ ApplicationWindow {
 
     PointCloudLoader {
         id: readerBunny
-        filename: "/home/lacie/Downloads/hand_gestures/hand_0/image_0000.pcd"
+        filename: "/home/lacie/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0002.pcd"
+    }
+    PointCloudLoader {
+        id: readerBunnyNormal
+        filename: "/home/lacie/Github/GreenHouseAR/assest/data/bunny_normal.pcd"
     }
 
     GridLayout {
@@ -79,6 +83,16 @@ ApplicationWindow {
                                                     // If this is uncommented, following pointsizes are ignored in Qt5.7
                                                     PointSize { sizeMode: PointSize.Fixed; value: 3.0 }, // exception when closing application in qt 5.7. Moreover PointSize
                                                     PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
+                                                    DepthTest { depthFunction: DepthTest.Less },
+                                                    ColorMask { blueMasked: true; redMasked: true; greenMasked: true; alphaMasked: false}
+                                                ]
+                                            }
+                                        }
+                                        LayerFilter {
+                                            layers: surfelLayer
+                                            RenderStateSet {
+                                                renderStates: [
+                                                    PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
                                                     DepthTest { depthFunction: DepthTest.Less }
                                                     //DepthMask { mask: true }
                                                 ]
@@ -96,12 +110,20 @@ ApplicationWindow {
                     }
                 ]
 
+                PhongMaterial {
+                    id: phongMaterial
+                }
+
 
                 Layer {
                     id: solidLayer
                 }
                 Layer {
                     id: pointLayer
+                }
+
+                Layer {
+                    id: surfelLayer
                 }
 
                 Q3D.Entity {
@@ -117,6 +139,7 @@ ApplicationWindow {
                             geometry: PointCloudGeometry { pointCloud: readerBunny.pointCloud }
                             primitiveType: GeometryRenderer.Points
                         }
+
                     property Material materialPoint: Material {
                         effect: Effect {
                             techniques: Technique {
@@ -128,8 +151,9 @@ ApplicationWindow {
                                 }
                             }
                         }
-                        parameters: Parameter { name: "pointSize"; value: 0.7 }
+                        parameters: Parameter { name: "pointSize"; value: 3 }
                     }
+
                     //property Material materialPoint: PerVertexColorMaterial {}
                     components: [ pointcloudMesh, materialPoint, meshTransform, pointLayer ]
                 }

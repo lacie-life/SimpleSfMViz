@@ -1,7 +1,7 @@
 #ifndef QPOINTCLOUDGEOMETRY_H
 #define QPOINTCLOUDGEOMETRY_H
 
-#include "pcl/QPointCloud.h"
+#include "openGL/QPointCloud.h"
 #include <Qt3DRender/qgeometry.h>
 
 class QPointCloudGeometryPrivate;

@@ -7,6 +7,8 @@
 #include <QMatrix4x4>
 
 #include "QCameraControl.h"
+#include "QPointCloud.h"
+#include "QPointCloudLoader.h"
 
 class QOpenGLBuffer;
 class QOpenGLShaderProgram;
@@ -23,7 +25,7 @@ public:
     ~QPointCloudRenderer();
 
     // All assume that the GL context is current.
-    void initialize(const QString& plyFilePath);
+    void initialize(const QString& filePath);
     void render();
     void invalidate();
 
@@ -55,6 +57,7 @@ private:
     QVector3D m_pointsBoundMax;
     QVector3D m_ray;
 
+    QPointCloud* m_pointCloud;
     unsigned int positionNumberIndicies;
     QScopedPointer<QOpenGLBuffer> m_positionsBuffer;
     QScopedPointer<QOpenGLBuffer> m_colorsBuffer;

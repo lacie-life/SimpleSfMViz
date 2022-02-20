@@ -1,9 +1,12 @@
-#include "pcl/QPointCloud.h"
+#include "openGL/QPointCloud.h"
+#include "Constant.h"
 
 #include <pcl/PCLPointCloud2.h>
+#include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/common/centroid.h>
 #include <pcl/common/common.h>
+#include <pcl/conversions.h>
 
 #include <QRgb>
 #include <QFile>
@@ -11,6 +14,9 @@
 #include <QDebug>
 
 #include <limits>
+
+#include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 
 class QPointCloudPrivate
 {
@@ -102,6 +108,46 @@ QPointCloud::~QPointCloud()
         delete m_priv->m_pointcloud;
     }
     delete m_priv;
+}
+
+void QPointCloud::loadPointCloud(const QString &filePath)
+{
+
+    CONSOLE << filePath;
+    pcl::PointCloud<pcl::PointXYZRGB> pcd;
+
+    if(filePath.endsWith(".pcd", Qt::CaseInsensitive))
+    {
+        pcl::PCDReader reader;
+
+        reader.read(filePath.toStdString(), pcd);
+
+        CONSOLE << "Fucking PCL";
+
+        // pcl::toPCLPointCloud2(pcd, *m_priv->m_pointcloud);
+    }
+    else if(filePath.endsWith(".ply", Qt::CaseInsensitive))
+    {
+        pcl::PLYReader reader;
+        reader.read(filePath.toStdString(), *m_priv->m_pointcloud);
+    }
+    qDebug() << "Read Pointcloud" << filePath << "with" << pcd.size() << "points.";
+
+    // TODO: m_points, m_colors, m_normals;
+    pcl::PointCloud<pcl::PointXYZRGB> pointCloudWithColor;
+    // pcl::fromPCLPointCloud2(*m_priv->m_pointcloud, pointCloudWithColor);
+
+    m_points.clear();
+    m_colors.clear();
+    for (size_t i = 0; i < pcd.size(); i++){
+        m_points.append(QVector3D(pcd.at(i).x, pcd.at(i).y, pcd.at(i).z));
+        m_colors.append(QVector3D(pcd.at(i).r/255.0f, pcd.at(i).g/255.0f, pcd.at(i).b/255.0f));
+        // CONSOLE << QVector3D(pcd.at(i).r/255.0f, pcd.at(i).g/255.0f, pcd.at(i).b/255.0f);
+    }
+
+    assert(m_points.size() == m_colors.size());
+    m_pointsCount = pcd.size();
+    // CONSOLE << "Reading done";
 }
 
 void QPointCloud::updateAttributes()

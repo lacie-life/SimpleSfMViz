@@ -1,4 +1,6 @@
-#include "pcl/QPointCloudLoader.h"
+#include "openGL/QPointCloudLoader.h"
+#include "openGL/QPointCloud.h"
+#include "Constant.h"
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/ply_io.h>
@@ -10,6 +12,11 @@ QPointCloudLoader::QPointCloudLoader(QObject *parent)
     , m_pointCloud(new QPointCloud())
 {
 
+}
+
+QPointCloudLoader::QPointCloudLoader(const QString &filePath)
+{
+    setFilename(filePath);
 }
 
 QString QPointCloudLoader::filename() const
@@ -24,13 +31,20 @@ QPointCloud *QPointCloudLoader::pointCloud() const
 
 void QPointCloudLoader::setFilename(QString filename)
 {
-    if (m_filename == filename)
-        return;
 
+    if (m_filename == filename){
+        return;
+    }
+    CONSOLE << filename;
     if(filename.endsWith(".pcd", Qt::CaseInsensitive))
     {
         pcl::PCDReader reader;
-        reader.read(filename.toStdString(), *m_pointCloud->pointCloud());
+        pcl::PointCloud<pcl::PointXYZRGB> pointCloudWithColor;
+        reader.read(filename.toStdString(), pointCloudWithColor);
+
+        CONSOLE << "Fucking PCL";
+
+        pcl::fromPCLPointCloud2(*m_pointCloud->pointCloud(), pointCloudWithColor);
     }
     else if(filename.endsWith(".ply", Qt::CaseInsensitive))
     {
@@ -39,6 +53,6 @@ void QPointCloudLoader::setFilename(QString filename)
     }
     qDebug() << "Read Pointcloud" << filename << "with" << ((m_pointCloud->pointCloud()->width) * (m_pointCloud->pointCloud()->height)) << "points.";
     m_filename = filename;
-    Q_EMIT filenameChanged(filename);
-    Q_EMIT pointCloudChanged(m_pointCloud);
+    emit filenameChanged(filename);
+    emit pointCloudChanged(m_pointCloud);
 }

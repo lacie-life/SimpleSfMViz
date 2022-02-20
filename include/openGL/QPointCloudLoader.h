@@ -1,9 +1,10 @@
 #ifndef QPOINTCLOUDLOADER_H
 #define QPOINTCLOUDLOADER_H
 
-#include "pcl/QPointCloud.h"
-
 #include <QObject>
+#include <QString>
+
+class QPointCloud;
 
 class QPointCloudLoader : public QObject
 {
@@ -12,6 +13,7 @@ class QPointCloudLoader : public QObject
     Q_PROPERTY(QPointCloud *pointCloud READ pointCloud NOTIFY pointCloudChanged)
 public:
     QPointCloudLoader(QObject *parent = nullptr);
+    QPointCloudLoader(const QString& filePath);
 
     QString filename() const;
 

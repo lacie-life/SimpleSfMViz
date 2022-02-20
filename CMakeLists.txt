@@ -25,8 +25,8 @@ list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 set(GLEW_USE_STATIC_LIBS OFF)
 add_definitions( -DGLEW_STATIC )
 
-set(WITH_PCL ON  CACHE BOOL "Enable pcl")
-set(WITH_OPENGL OFF CACHE BOOL "Enable OpenGL")
+set(WITH_PCL OFF  CACHE BOOL "Enable pcl")
+set(WITH_OPENGL ON CACHE BOOL "Enable OpenGL")
 
 set(GLEW_VERBOSE ON)
 include(FindGLEW)
@@ -68,10 +68,10 @@ link_directories(${PCL_LIBRARY_DIRS})
 include_directories(include)
 
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/openGL/*.h
-                  ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
+#                  ${CMAKE_CURRENT_SOURCE_DIR}/include/pcl/*.h
                   ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/openGL/*.cpp
-                  ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
+#                  ${CMAKE_CURRENT_SOURCE_DIR}/src/pcl/*.cpp
                   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})

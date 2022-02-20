@@ -1,4 +1,4 @@
-#include "pcl/QPointField.h"
+#include "openGL/QPointField.h"
 
 #include <pcl/PCLPointField.h>
 
