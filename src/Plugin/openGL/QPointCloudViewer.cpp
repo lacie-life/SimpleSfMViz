@@ -17,7 +17,7 @@
 
 #include <QTimer>
 
-QPointCloudViewer::QPointCloudViewer(QWindow *parent)
+QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     : QWindow(parent)
     , m_context(0)
     , m_renderer(0)
@@ -40,7 +40,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0000.pcd";
+    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0000.pcd";
 
     // create the GL context
 
@@ -84,7 +84,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
 
     // load a QML scene "manually"
-    QQmlEngine *engine = new QQmlEngine(this);
+//    QQmlEngine *engine = new QQmlEngine(this);
 
     if (!engine->incubationController())
         engine->setIncubationController(m_quickWindow->incubationController());
@@ -98,7 +98,7 @@ QPointCloudViewer::QPointCloudViewer(QWindow *parent)
 
     connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
 
-    m_qmlComponent->loadUrl(QUrl("/home/lacie/Github/GreenHouseAR/assest/qml/main.qml"));
+    m_qmlComponent->loadUrl(QUrl("qrc:/qml/qml/Screen/openGL.qml"));
 
     // also, just for the sake of it, trigger a redraw every 500 ms no matter what
     QTimer *redrawTimer = new QTimer(this);

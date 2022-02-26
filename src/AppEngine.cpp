@@ -4,6 +4,7 @@
 #include "AppEnums.h"
 #include "AppModel.h"
 #include "QmlHandler.h"
+#include "openGL/QPointCloudViewer.h"
 
 #include <QVariant>
 
@@ -39,6 +40,13 @@ void AppEngine::initEngine(){
 
 void AppEngine::startEngine(){
     this->load(SCR_DEF->QML_APP());
+}
+
+void AppEngine::pointCloudRenderScreenRun(AppEngine *engine)
+{
+    QPointCloudViewer *m_pointCloudRender = new QPointCloudViewer(engine);
+    m_pointCloudRender->resize(600, 600);
+    m_pointCloudRender->show();
 }
 
 void AppEngine::slotReceiveEvent(int event)

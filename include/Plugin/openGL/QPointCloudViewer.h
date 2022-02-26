@@ -6,6 +6,7 @@
 
 #include "AppConstant.h"
 #include "QCameraControl.h"
+#include "AppEngine.h"
 
 class QPointCloudRenderer;
 class QOpenGLContext;
@@ -17,7 +18,7 @@ class QQuickItem;
 class QPointCloudViewer : public QWindow
 {
 public:
-    QPointCloudViewer(QWindow *parent = 0);
+    QPointCloudViewer(AppEngine *engine = nullptr, QWindow *parent = 0);
     ~QPointCloudViewer();
 
 

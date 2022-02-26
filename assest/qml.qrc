@@ -8,11 +8,12 @@
         <file>shader/vertex_shader.glsl</file>
     </qresource>
     <qresource prefix="/qml">
-        <file>qml/CameraControls.qml</file>
-        <file>qml/openGL.qml</file>
-        <file>qml/pointcloud.qml</file>
-        <file>qml/pointcloud2.qml</file>
         <file>qml/main.qml</file>
+        <file>qml/MainScreen.qml</file>
+        <file>qml/Screen/CameraControls.qml</file>
+        <file>qml/Screen/openGL.qml</file>
+        <file>qml/Screen/pointcloud.qml</file>
+        <file>qml/Screen/pointcloud2.qml</file>
     </qresource>
     <qresource prefix="/data">
         <file>data/bunny.pcd</file>

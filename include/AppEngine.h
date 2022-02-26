@@ -20,7 +20,7 @@ public:
     void initEngine();
     void startEngine();
 
-    void meshRenderScreenRun(AppEngine *engine);
+    void pointCloudRenderScreenRun(AppEngine *engine);
 public slots:
     void slotReceiveEvent(int event);
 signals:
