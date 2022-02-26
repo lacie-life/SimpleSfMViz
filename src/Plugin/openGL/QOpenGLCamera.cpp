@@ -190,7 +190,8 @@ void QOpenGLCamera::move2D(int x, int y) {
     CONSOLE << "MOVING";
     changeHeading(.08f * mouse_delta.x);
     changePitch(.08f * mouse_delta.y);
-    // mouse_position = glm::vec3(x, y, 0);
+
+    update();
 }
 
 void QOpenGLCamera::setPos(int button, int state, int x, int y) {
