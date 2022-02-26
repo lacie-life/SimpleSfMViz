@@ -46,6 +46,9 @@ endif(OpenGL_FOUND)
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIRS})
 
+find_package(GLM)
+include_directories(${GLM_INCLUDE_DIRS})
+
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
