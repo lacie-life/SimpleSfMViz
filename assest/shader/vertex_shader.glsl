@@ -7,8 +7,6 @@ layout (location = 1) in vec3 vertexColor;
 uniform float pointSize;
 uniform mat4 viewMatrix;
 
-attribute float pointRowIndex;
-
 out vec3 fcolor;
 
 void main() {

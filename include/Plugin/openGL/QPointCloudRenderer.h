@@ -30,6 +30,7 @@ public:
     void invalidate();
 
     void setPosition(QVector3D position);
+    void setMVP(QMatrix4x4 mat);
 
     void setxRotation(int angle);
     void setyRotation(int angle);
@@ -40,7 +41,6 @@ public:
 
 private:
     void loadPLY(const QString& plyFilePath);
-    void drawFrameAxis();
 
 private:
     float m_pointSize;
@@ -65,6 +65,8 @@ private:
     QMatrix4x4 m_projectionMatrix;
     QMatrix4x4 m_cameraMatrix;
     QMatrix4x4 m_worldMatrix;
+
+    QMatrix4x4 m_MVP;
 
     double m_frontClippingPlaneDistance;
     double m_rearClippingDistance;

@@ -1,7 +1,5 @@
 #include "openGL/QCameraControl.h"
 
-//const float CAMERA_STEP = 0.01;
-
 QCameraControl::QCameraControl(QObject *parent)
     : QObject{parent}
     , m_xRotation(0)
@@ -15,107 +13,107 @@ QCameraControl::QCameraControl(QObject *parent)
 
 void QCameraControl::forward()
 {
-  m_position[2] += CAMERA_STEP;
+    m_position[2] += CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 }
 
 
 void QCameraControl::backward()
 {
-  m_position[2] -= CAMERA_STEP;
+    m_position[2] -= CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 }
 
 
 void QCameraControl::left()
 {
-  m_position[0] += CAMERA_STEP;
+    m_position[0] += CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 }
 
 
 void QCameraControl::right()
 {
-  m_position[0] -= CAMERA_STEP;
+    m_position[0] -= CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 
 }
 
 
 void QCameraControl::up()
 {
-  m_position[1] -= CAMERA_STEP;
+    m_position[1] -= CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 }
 
 
 void QCameraControl::down()
 {
-  m_position[1] += CAMERA_STEP;
+    m_position[1] += CAMERA_STEP;
 
-  emit positionChanged(m_position);
+    emit positionChanged(m_position);
 }
 
 
 void QCameraControl::setFrontClippingPlaneDistance(double distance) {
-  m_frontClippingPlaneDistance = distance;
+    m_frontClippingPlaneDistance = distance;
 
-  emit frontClippingPlaneDistanceChanged(distance);
+    emit frontClippingPlaneDistanceChanged(distance);
 }
 
 
 void QCameraControl::setRearClippingDistance(double distance) {
-  m_rearClippingDistance = distance;
+    m_rearClippingDistance = distance;
 
-  emit rearClippingDistanceChanged(distance);
+    emit rearClippingDistanceChanged(distance);
 }
 
 
 void QCameraControl::setPosition(QVector3D position) {
-  m_position = position;
+    m_position = position;
 
-  emit positionChanged(position);
+    emit positionChanged(position);
 }
 
 
 void QCameraControl::setxRotation(int angle)
 {
-  angle = angle % (360 * RK);
-  if (angle != m_xRotation) {
-    m_xRotation = angle;
-    emit xRotationChanged(angle);
-  }
+    angle = angle % (360 * RK);
+    if (angle != m_xRotation) {
+        m_xRotation = angle;
+        emit xRotationChanged(angle);
+    }
 }
 
 
 void QCameraControl::setyRotation(int angle)
 {
-  angle = angle % (360 * RK);
-  if (angle != m_yRotation) {
-    m_yRotation = angle;
-    emit yRotationChanged(angle);
-  }
+    angle = angle % (360 * RK);
+    if (angle != m_yRotation) {
+        m_yRotation = angle;
+        emit yRotationChanged(angle);
+    }
 }
 
 
 void QCameraControl::setzRotation(int angle)
 {
-  angle = angle % (360 * RK);
-  if (angle != m_zRotation) {
-    m_zRotation = angle;
-    emit zRotationChanged(angle);
-  }
+    angle = angle % (360 * RK);
+    if (angle != m_zRotation) {
+        m_zRotation = angle;
+        emit zRotationChanged(angle);
+    }
 }
 
 void QCameraControl::rotate(int dx, int dy, int dz) {
-  setxRotation(m_xRotation + dx);
-  setyRotation(m_yRotation + dy);
-  setzRotation(m_zRotation + dz);
+    setxRotation(m_xRotation + dx);
+    setyRotation(m_yRotation + dy);
+    setzRotation(m_zRotation + dz);
 }
 
 QVector3D QCameraControl::position() const

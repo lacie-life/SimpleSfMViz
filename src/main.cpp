@@ -33,9 +33,9 @@ int main(int argc, char **argv)
     appEngine.initEngine();
     appEngine.startEngine();
 
-    //    QPointCloudViewer w;
-    //    w.resize(600, 600);
-    //    w.show();
+//    QPointCloudViewer w;
+//    w.resize(600, 600);
+//    w.show();
 
     return app.exec();
 }

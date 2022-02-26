@@ -32,10 +32,17 @@ enum CameraDirection {
 class QOpenGLCamera : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(QMatrix4x4 mvp READ mvp WRITE setMVP NOTIFY mvpChanged)
+
 public:
     explicit QOpenGLCamera(QObject *parent = nullptr);
 
     ~QOpenGLCamera();
+
+    QVector3D position() const;
+    QMatrix4x4 mvp() const;
 
     void reset();
     //This function updates the camera
@@ -58,10 +65,9 @@ public:
     //Setting Functions
     //Changes the camera mode, only three valid modes, Ortho, Free, and Spherical
     void setMode(CameraType cam_mode);
-    //Set the position of the camera
-    void setPosition(glm::vec3 pos);
+
     //Set's the look at point for the camera
-    void setLookAt(glm::vec3 pos);
+    void setLookAt(QVector3D pos);
     //Changes the Field of View (FOV) for the camera
     void setFOV(double fov);
     //Change the viewport location and size
@@ -118,7 +124,13 @@ public:
     static QMatrix4x4 glmMat4toQMatrix4 (glm::mat4 mat);
     static glm::mat4 QMatrix4toglmMat4 (QMatrix4x4 mat);
 
+public slots:
+    void setPosition(QVector3D position);
+    void setMVP (QMatrix4x4 mvp);
+
 signals:
+    void positionChanged(QVector3D position);
+    void mvpChanged(QMatrix4x4 mvp);
 
 };
 

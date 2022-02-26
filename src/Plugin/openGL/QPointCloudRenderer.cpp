@@ -82,8 +82,8 @@ void QPointCloudRenderer::initialize(const QString &filePath)
     //
     m_shaders.reset(new QOpenGLShaderProgram());
 
-    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/lacie/Github/GreenHouseAR/assest/shader/vertex_shader.glsl");
-    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/lacie/Github/GreenHouseAR/assest/shader/fragment_shader.glsl");
+    auto vsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Vertex, "/home/jun/Github/GreenHouseAR/assest/shader/vertex_shader.glsl");
+    auto fsLoaded = m_shaders->addShaderFromSourceFile(QOpenGLShader::Fragment, "/home/jun/Github/GreenHouseAR/assest/shader/fragment_shader.glsl");
 
     CONSOLE << "Shader Program Initialized";
 
@@ -189,27 +189,20 @@ void QPointCloudRenderer::render()
     //
     // draw points cloud
     //
-    const auto viewMatrix = m_projectionMatrix * m_cameraMatrix * m_worldMatrix;
+    const auto viewMatrix = m_MVP;
 
     CONSOLE << "View Matrix: " << viewMatrix;
 
     m_shaders->bind();
-//    m_shaders->setUniformValue("pointsCount", static_cast<GLfloat>(m_pointsCount));
     m_shaders->setUniformValue("viewMatrix", viewMatrix);
     m_shaders->setUniformValue("pointSize", m_pointSize);
-//    m_shaders->setUniformValue("colorAxisMode", static_cast<GLfloat>(m_colorMode));
-//    m_shaders->setUniformValue("pointsBoundMin", m_pointsBoundMin);
-//    m_shaders->setUniformValue("pointsBoundMax", m_pointsBoundMax);
 
     m_vao->bind();
     f->glDrawArrays(GL_POINTS, 0, m_pointCloud->pointsNumber());
-    // f->glDrawElements(GL_POINTS, m_pointCloud->pointsNumber(), GL_UNSIGNED_INT, Q_NULLPTR);
     m_shaders->release();
     m_vao->release();
 
     CONSOLE << "Point: " << m_pointCloud->pointsNumber();
-
-    // drawFrameAxis();
 }
 
 void QPointCloudRenderer::invalidate()
@@ -282,18 +275,6 @@ void QPointCloudRenderer::loadPLY(const QString &plyFilePath)
     }
 }
 
-void QPointCloudRenderer::drawFrameAxis()
-{
-    glBegin(GL_LINES);
-    QMatrix4x4 mvMatrix = m_cameraMatrix * m_worldMatrix;
-    mvMatrix.scale(0.05); // make it small
-    for (auto vertex : m_axesLines) {
-        const auto translated = m_projectionMatrix * mvMatrix * vertex.first;
-        glColor3f(vertex.second.red(), vertex.second.green(), vertex.second.blue());
-        glVertex3f(translated.x(), translated.y(), translated.z());
-    }
-    glEnd();
-}
 
 void QPointCloudRenderer::setFrontClippingPlaneDistance(double distance) {
     m_frontClippingPlaneDistance = distance;
@@ -307,6 +288,12 @@ void QPointCloudRenderer::setRearClippingDistance(double distance) {
 
 void QPointCloudRenderer::setPosition(QVector3D position) {
     m_position = position;
+}
+
+void QPointCloudRenderer::setMVP(QMatrix4x4 mat)
+{
+    CONSOLE << "MVP changed: " << mat;
+    m_MVP = mat;
 }
 
 

@@ -6,6 +6,7 @@
 
 #include "AppConstant.h"
 #include "QCameraControl.h"
+#include "QOpenGLCamera.h"
 #include "AppEngine.h"
 
 class QPointCloudRenderer;
@@ -43,6 +44,8 @@ private:
 
     QPointCloudRenderer *m_renderer;
     QCameraControl *m_camera;
+
+    QOpenGLCamera *m_openGLcamera;
 
     QQuickRenderControl *m_renderControl;
     QQuickWindow *m_quickWindow;

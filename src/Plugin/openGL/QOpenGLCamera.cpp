@@ -1,4 +1,5 @@
 #include "openGL/QOpenGLCamera.h"
+#include "AppConstant.h"
 
 QOpenGLCamera::QOpenGLCamera(QObject *parent)
     : QObject{parent}
@@ -17,6 +18,16 @@ QOpenGLCamera::QOpenGLCamera(QObject *parent)
 QOpenGLCamera::~QOpenGLCamera()
 {
 
+}
+
+QVector3D QOpenGLCamera::position() const
+{
+    return glmVec3toQVector3(camera_position);
+}
+
+QMatrix4x4 QOpenGLCamera::mvp() const
+{
+    return glmMat4toQMatrix4(MVP);
 }
 
 void QOpenGLCamera::reset()
@@ -61,6 +72,8 @@ void QOpenGLCamera::update()
     view = glm::lookAt(camera_position, camera_look_at, camera_up);
     model = glm::mat4(1.0f);
     MVP = projection * view * model;
+
+    setMVP(glmMat4toQMatrix4(MVP));
 }
 
 //Setting Functions
@@ -69,12 +82,21 @@ void QOpenGLCamera::setMode(CameraType cam_mode) {
     camera_up = glm::vec3(0, 1, 0);
 }
 
-void QOpenGLCamera::setPosition(glm::vec3 pos) {
-    camera_position = pos;
+void QOpenGLCamera::setPosition(QVector3D pos) {
+    camera_position = QVector3toglmVec3(pos);
+
+    emit positionChanged(pos);
 }
 
-void QOpenGLCamera::setLookAt(glm::vec3 pos) {
-    camera_look_at = pos;
+void QOpenGLCamera::setMVP(QMatrix4x4 mvp)
+{
+    MVP = QMatrix4toglmMat4(mvp);
+
+    emit mvpChanged(mvp);
+}
+
+void QOpenGLCamera::setLookAt(QVector3D pos) {
+    camera_look_at = QVector3toglmVec3(pos);
 }
 void QOpenGLCamera::setFOV(double fov) {
     field_of_view = fov;
@@ -97,25 +119,32 @@ void QOpenGLCamera::move(CameraDirection dir) {
     if (camera_mode == FREE) {
         switch (dir) {
             case UP:
+                CONSOLE << "UPPPPPPPPPP";
                 camera_position_delta += camera_up * camera_scale;
                 break;
             case DOWN:
+                CONSOLE << "DOWNNNNNNNN";
                 camera_position_delta -= camera_up * camera_scale;
                 break;
             case LEFT:
+                CONSOLE << "LEFTTTTTTTTTTTTT";
                 camera_position_delta -= glm::cross(camera_direction, camera_up) * camera_scale;
                 break;
             case RIGHT:
+                CONSOLE << "RIGHTTTTTT";
                 camera_position_delta += glm::cross(camera_direction, camera_up) * camera_scale;
                 break;
             case FORWARD:
+                CONSOLE << "FORWARDDDDDD";
                 camera_position_delta += camera_direction * camera_scale;
                 break;
             case BACKWARD:
+                CONSOLE << "BACKWARDDDD";
                 camera_position_delta -= camera_direction * camera_scale;
                 break;
         }
     }
+    update();
 }
 void QOpenGLCamera::changePitch(float degrees) {
     //Check bounds with the max pitch rate so that we aren't moving too fast
@@ -156,13 +185,12 @@ void QOpenGLCamera::changeHeading(float degrees) {
 }
 void QOpenGLCamera::move2D(int x, int y) {
     //compute the mouse delta from the previous mouse position
-    glm::vec3 mouse_delta = mouse_position - glm::vec3(x, y, 0);
-    //if the camera is moving, meaning that the mouse was clicked and dragged, change the pitch and heading
-    if (move_camera) {
-        changeHeading(.08f * mouse_delta.x);
-        changePitch(.08f * mouse_delta.y);
-    }
-    mouse_position = glm::vec3(x, y, 0);
+    glm::vec3 mouse_delta(x, y, 0);
+
+    CONSOLE << "MOVING";
+    changeHeading(.08f * mouse_delta.x);
+    changePitch(.08f * mouse_delta.y);
+    // mouse_position = glm::vec3(x, y, 0);
 }
 
 void QOpenGLCamera::setPos(int button, int state, int x, int y) {
@@ -193,6 +221,32 @@ void QOpenGLCamera::getMatricies(glm::mat4 &P, glm::mat4 &V, glm::mat4 &M) {
     P = projection;
     V = view;
     M = model;
+}
+
+QVector3D QOpenGLCamera::glmVec3toQVector3(glm::vec3 vec)
+{
+    return QVector3D(vec[0], vec[1], vec[2]);
+}
+
+glm::vec3 QOpenGLCamera::QVector3toglmVec3(QVector3D vec)
+{
+    return glm::vec3(vec[0], vec[1], vec[2]);
+}
+
+QMatrix4x4 QOpenGLCamera::glmMat4toQMatrix4(glm::mat4 mat)
+{
+    return QMatrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+                      mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+                      mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+                      mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+}
+
+glm::mat4 QOpenGLCamera::QMatrix4toglmMat4(QMatrix4x4 mat)
+{
+    return glm::mat4(mat(0, 0), mat(0, 1), mat(0, 2), mat(0, 3),
+                     mat(1, 0), mat(1, 1), mat(1, 2), mat(1, 3),
+                     mat(2, 0), mat(2, 1), mat(2, 2), mat(2, 3),
+                     mat(3, 0), mat(3, 1), mat(3, 2), mat(3, 3));
 }
 
 

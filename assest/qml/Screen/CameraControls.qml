@@ -31,12 +31,12 @@ Rectangle {
 //                value: 180
 //                onValueChanged: cameraControls.camera.xRotation = value
 //            }
-            Label {
-                text: cameraControls.camera.xRotation.toFixed(2)
+//            Label {
+//                text: cameraControls.camera.xRotation.toFixed(2)
 
-            }
+//            }
 
-//            Label { text: "yRotation" }
+            Label { text: "yRotation" }
 //            Slider {
 //                Layout.fillWidth: true
 //                from: 0
@@ -44,9 +44,9 @@ Rectangle {
 //                value: 10
 //                onValueChanged: cameraControls.camera.yRotation = value
 //            }
-            Label {
-                text: cameraControls.camera.yRotation.toFixed(2)
-            }
+//            Label {
+//                text: cameraControls.camera.yRotation.toFixed(2)
+//            }
 
             Label { text: "zRotation" }
 //            Slider {
@@ -57,9 +57,9 @@ Rectangle {
 //                value: 15
 //                onValueChanged: cameraControls.camera.zRotation = value
 //            }
-            Label {
-                text: cameraControls.camera.zRotation.toFixed(2)
-            }
+//            Label {
+//                text: cameraControls.camera.zRotation.toFixed(2)
+//            }
         }
     }
 }
