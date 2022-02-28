@@ -4,7 +4,7 @@
 
 - [x] Point Cloud render by OpenGL
 - [x] Mouse control view
-- [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer)
+- [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer) => quite stupid method
 - [x] PCL PointCloud + OpenGL Render
 - [x] Improve camera control interface
 - [ ] Open file and load 3D plant model 
