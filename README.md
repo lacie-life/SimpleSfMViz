@@ -9,3 +9,4 @@
 - [x] Improve camera control interface
 - [ ] Open file and load 3D plant model 
 - [ ] Add text in view widget
+- [ ] 3D reconstruction plugin (Lidar + RGB)
