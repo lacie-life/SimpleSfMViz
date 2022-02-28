@@ -4,7 +4,7 @@
 #include "AppEnums.h"
 #include "AppModel.h"
 #include "QmlHandler.h"
-#include "openGL/QPointCloudViewer.h"
+#include "QPointCloudViewer.h"
 
 #include <QVariant>
 

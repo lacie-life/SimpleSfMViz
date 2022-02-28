@@ -24,6 +24,30 @@ float QOpenGLCamera::elevation() const
     return m_elevation;
 }
 
+void QOpenGLCamera::move(CameraDirection dir)
+{
+    switch (dir) {
+    case UP:
+        setElevation(m_elevation + ELEVATION_STEP);
+        break;
+    case DOWN:
+        setElevation(m_elevation - ELEVATION_STEP);
+        break;
+    case LEFT:
+        setAzimuth(m_azimuth - AZIMUTH_STEP);
+        break;
+    case RIGHT:
+        setAzimuth(m_azimuth + AZIMUTH_STEP);
+        break;
+    case FORWARD:
+        setDistance(m_distance - DISTANCE_STEP);
+        break;
+    case BACKWARD:
+        setDistance(m_distance + DISTANCE_STEP);
+        break;
+    }
+}
+
 void QOpenGLCamera::setAzimuth(float azimuth)
 {
     if (m_azimuth == azimuth)

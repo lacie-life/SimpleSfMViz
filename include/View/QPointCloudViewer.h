@@ -5,7 +5,7 @@
 #include <QWindow>
 
 #include "AppConstant.h"
-#include "QOpenGLCamera.h"
+#include "openGL/QOpenGLCamera.h"
 #include "AppEngine.h"
 
 class QPointCloudRenderer;

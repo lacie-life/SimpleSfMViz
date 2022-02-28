@@ -1,4 +1,4 @@
-#include "openGL/QPointCloudViewer.h"
+#include "QPointCloudViewer.h"
 #include "openGL/QPointCloudRenderer.h"
 #include "AppConstant.h"
 
@@ -38,7 +38,7 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/jun/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0000.pcd";
+    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0000.pcd";
 
     // create the GL context
 
@@ -201,30 +201,30 @@ void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
         QWindow::mousePressEvent(e);
     CONSOLE << "MouseMoveEvent";
 
-//    const int dx = e->x() - m_prevMousePosition.x();
-//    const int dy = e->y() - m_prevMousePosition.y();
-//    const bool panningMode = (e->modifiers() & Qt::ShiftModifier);
-//    m_prevMousePosition = e->pos();
+    const int dx = e->x() - m_prevMousePosition.x();
+    const int dy = e->y() - m_prevMousePosition.y();
+    const bool panningMode = true;
+    m_prevMousePosition = e->pos();
 
-//    if (e->buttons() & Qt::LeftButton) {
+    CONSOLE << "Mouse pos: " << e->pos();
 
-//        if (panningMode) {
-//            if (dx > 0) {
-//                m_openGLcamera->move(RIGHT);
-//            }
-//            if (dx < 0) {
-//                m_openGLcamera->move(LEFT);
-//            }
-//            if (dy > 0) {
-//                m_openGLcamera->move(DOWN);
-//            }
-//            if (dy < 0) {
-//                m_openGLcamera->move(UP);
-//            }
-//        } else {
-//            m_openGLcamera->move2D(dx, dy);
-//        }
-//    }
+    if (e->buttons() & Qt::LeftButton) {
+        CONSOLE << "Something here";
+        if (panningMode) {
+            if (dx > 0) {
+                m_openGLcamera->move(QOpenGLCamera::RIGHT);
+            }
+            if (dx < 0) {
+                m_openGLcamera->move(QOpenGLCamera::LEFT);
+            }
+            if (dy > 0) {
+                m_openGLcamera->move(QOpenGLCamera::DOWN);
+            }
+            if (dy < 0) {
+                m_openGLcamera->move(QOpenGLCamera::UP);
+            }
+        }
+    }
 }
 
 void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
@@ -239,12 +239,12 @@ void QPointCloudViewer::wheelEvent(QWheelEvent *e)
 {
     CONSOLE << "MouseWheelEvent";
 
-//    if(e->angleDelta().y() > 0){
-//        CONSOLE << "Camera forwading";
-//        m_openGLcamera->move(FORWARD);
-//    }
-//    else {
-//        CONSOLE << "Camera backwading";
-//        m_openGLcamera->move(BACKWARD);
-//    }
+    if(e->angleDelta().y() > 0){
+        CONSOLE << "Camera forwading";
+        m_openGLcamera->move(QOpenGLCamera::FORWARD);
+    }
+    else {
+        CONSOLE << "Camera backwading";
+        m_openGLcamera->move(QOpenGLCamera::BACKWARD);
+    }
 }

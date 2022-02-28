@@ -7,10 +7,7 @@
 #include <QDebug>
 #include <QSurfaceFormat>
 
-#include "openGL/QPointCloudViewer.h"
 #include "AppEngine.h"
-
-
 
 int main(int argc, char **argv)
 {
