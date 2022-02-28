@@ -8,7 +8,6 @@
 #include <QSurfaceFormat>
 
 #include "openGL/QPointCloudViewer.h"
-#include "openGL/QPointCloudUnderlay.h"
 #include "AppEngine.h"
 
 

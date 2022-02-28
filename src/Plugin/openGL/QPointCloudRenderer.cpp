@@ -33,6 +33,10 @@ QPointCloudRenderer::QPointCloudRenderer(QObject *parent)
     , m_shaders()
     , m_positionsBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
     , m_colorsBuffer(new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer))
+    , m_coordinateMirroring(DoNotMirrorCoordinates)
+    , m_azimuth(0.0)
+    , m_elevation(15.0)
+    , m_distance(15.0)
 {
     // make trivial axes cross
     m_axesLines.push_back(std::make_pair(QVector3D(0.0, 0.0, 0.0), QColor(1.0, 0.0, 0.0)));
@@ -60,9 +64,6 @@ void QPointCloudRenderer::initialize(const QString &filePath)
     m_pointCloud->loadPointCloud(filePath);
 
     CONSOLE << "Initialize";
-
-    // the world is still for now
-    m_worldMatrix.setToIdentity();
 
     CONSOLE << "Fucking VAO";
 
@@ -163,38 +164,52 @@ void QPointCloudRenderer::render()
     f->glEnable(GL_DEPTH_TEST);
     f->glEnable(GL_VERTEX_PROGRAM_POINT_SIZE); //required for gl_PointSize
 
-    // position and angles
-    m_cameraMatrix.setToIdentity();
-    m_cameraMatrix.translate(m_position.x(), m_position.y(), m_position.z());
-    m_cameraMatrix.rotate(m_xRotation, 1, 0, 0);
-    m_cameraMatrix.rotate(m_yRotation, 0, 1, 0);
-    m_cameraMatrix.rotate(m_zRotation, 0, 0, 1);
+    QMatrix4x4 modelMatrix;
+    QMatrix4x4 viewMatrix;
+    QMatrix4x4 projectionMatrix;
 
-    qDebug() << "Position: " << m_position.x() << " " << m_position.y()<< " " << m_position.z();
-    qDebug() << "Rotation: " << m_xRotation << " " << m_yRotation << " " << m_zRotation;
+    modelMatrix.rotate(-90, 0, 1, 0);
 
-    m_projectionMatrix.setToIdentity();
+    const float azimuthInRadians = qDegreesToRadians(m_azimuth);
+    const float elevationInRadians = qDegreesToRadians(m_elevation);
+
+    const QVector3D eyePosition(std::cos(elevationInRadians) * std::cos(azimuthInRadians),
+                                std::sin(elevationInRadians),
+                                -std::cos(elevationInRadians) * std::sin(azimuthInRadians));
+
+    QVector3D upVector = qFuzzyCompare(m_elevation, 90.0f)
+            ? QVector3D(-std::cos(azimuthInRadians), 0, std::sin(azimuthInRadians))
+            : QVector3D(0, 1, 0);
+
+    viewMatrix.lookAt(eyePosition * m_distance,
+                      QVector3D(0, 0, 0),
+                      upVector);
+
     GLint viewportSize[4];
     f->glGetIntegerv(GL_VIEWPORT, viewportSize);
-    m_projectionMatrix.perspective(70.0f, float(viewportSize[2]) / viewportSize[3], 0.01f, 100.0f);
 
-    // set clipping planes
-    f->glEnable(GL_CLIP_PLANE1);
-    f->glEnable(GL_CLIP_PLANE2);
-    const double rearClippingPlane[] = {0., 0., -1., m_rearClippingDistance};
-    glClipPlane(GL_CLIP_PLANE1 , rearClippingPlane);
-    const double frontClippingPlane[] = {0., 0., 1., m_frontClippingPlaneDistance};
-    glClipPlane(GL_CLIP_PLANE2 , frontClippingPlane);
+    projectionMatrix.perspective(30, float(viewportSize[2]) / viewportSize[3], 0.01, 1000);
+
+    switch (m_coordinateMirroring) {
+    case QPointCloudRenderer::DoNotMirrorCoordinates:
+        break;
+    case QPointCloudRenderer::MirrorYCoordinate:
+        projectionMatrix.scale(1, -1, 1);
+        break;
+    }
+
+    const QMatrix4x4 modelViewMatrix = viewMatrix * modelMatrix;
+    const QMatrix4x4 modelViewProjectionMatrix = projectionMatrix * modelViewMatrix;
 
     //
     // draw points cloud
     //
-    const auto viewMatrix = m_MVP;
+    const auto mvp = modelViewProjectionMatrix;
 
-    CONSOLE << "View Matrix: " << viewMatrix;
+    CONSOLE << "MVP Matrix: " << mvp;
 
     m_shaders->bind();
-    m_shaders->setUniformValue("viewMatrix", viewMatrix);
+    m_shaders->setUniformValue("viewMatrix", mvp);
     m_shaders->setUniformValue("pointSize", m_pointSize);
 
     m_vao->bind();
@@ -275,43 +290,19 @@ void QPointCloudRenderer::loadPLY(const QString &plyFilePath)
     }
 }
 
-
-void QPointCloudRenderer::setFrontClippingPlaneDistance(double distance) {
-    m_frontClippingPlaneDistance = distance;
-}
-
-
-void QPointCloudRenderer::setRearClippingDistance(double distance) {
-    m_rearClippingDistance = distance;
-}
-
-
-void QPointCloudRenderer::setPosition(QVector3D position) {
-    m_position = position;
-}
-
-void QPointCloudRenderer::setMVP(QMatrix4x4 mat)
+void QPointCloudRenderer::setAzimuth(float azimuth)
 {
-    CONSOLE << "MVP changed: " << mat;
-    m_MVP = mat;
+    m_azimuth = azimuth;
 }
 
-
-void QPointCloudRenderer::setxRotation(int angle)
-{ 
-    m_xRotation = angle;
-}
-
-
-void QPointCloudRenderer::setyRotation(int angle)
-{ 
-    m_yRotation = angle;
-}
-
-
-void QPointCloudRenderer::setzRotation(int angle)
+void QPointCloudRenderer::setElevation(float elevation)
 {
-    m_zRotation = angle;
+    m_elevation = elevation;
+}
+
+void QPointCloudRenderer::setDistance(float distance)
+{
+    m_distance = distance;
 }
 
 
