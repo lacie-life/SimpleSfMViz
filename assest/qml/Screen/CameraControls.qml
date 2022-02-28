@@ -23,44 +23,36 @@ Rectangle {
             anchors.margins: 5
             columns: 3
 
-            Label { text: "xRotation" }
-//            Slider {
-//                Layout.fillWidth: true
-//                from: 0
-//                to: 360
-//                value: 180
-//                onValueChanged: cameraControls.camera.xRotation = value
-//            }
-            Label {
-                text: cameraControls.camera.xRotation.toFixed(2)
-
+            Label { text: "Azimuth" }
+            Slider {
+                Layout.fillWidth: true
+                from: 0
+                to: 360
+                value: 180
+                onValueChanged: cameraControls.camera.azimuth = value
             }
+            Label { text: cameraControls.camera.azimuth.toFixed(2) }
 
-//            Label { text: "yRotation" }
-//            Slider {
-//                Layout.fillWidth: true
-//                from: 0
-//                to: 90
-//                value: 10
-//                onValueChanged: cameraControls.camera.yRotation = value
-//            }
-            Label {
-                text: cameraControls.camera.yRotation.toFixed(2)
+            Label { text: "Elevation" }
+            Slider {
+                Layout.fillWidth: true
+                from: 0
+                to: 90
+                value: 10
+                onValueChanged: cameraControls.camera.elevation = value
             }
+            Label { text: cameraControls.camera.elevation.toFixed(2) }
 
-            Label { text: "zRotation" }
-//            Slider {
-//                id: distanceSlider
-//                Layout.fillWidth: true
-//                from: 1
-//                to: 25
-//                value: 15
-//                onValueChanged: cameraControls.camera.zRotation = value
-//            }
-            Label {
-                text: cameraControls.camera.zRotation.toFixed(2)
+            Label { text: "Distance" }
+            Slider {
+                id: distanceSlider
+                Layout.fillWidth: true
+                from: 1
+                to: 25
+                value: 15
+                onValueChanged: cameraControls.camera.distance = value
             }
+            Label { text: cameraControls.camera.distance.toFixed(2) }
         }
     }
 }
-

@@ -51,7 +51,7 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
 
     m_context->makeCurrent(this);
 
-    // set up our stuff
+    // setup our stuff
 
     m_renderer = new QPointCloudRenderer(this);
     m_renderer->initialize(plyPath);
@@ -61,7 +61,10 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     m_camera->setPosition(QVector3D(0, -0.1, -0.2));
     m_camera->rotate(0, 50, 0);
 
-    // set up QtQuick
+    // setup QOpenGLCamera
+    m_openGLcamera = new QOpenGLCamera(this);
+
+    // setup QtQuick
 
     m_renderControl = new QQuickRenderControl(this);
     m_quickWindow = new QQuickWindow(m_renderControl);
@@ -89,14 +92,14 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     if (!engine->incubationController())
         engine->setIncubationController(m_quickWindow->incubationController());
 
-    engine->rootContext()->setContextProperty("_camera", m_camera);
+    engine->rootContext()->setContextProperty("_camera", m_openGLcamera);
 //    engine->rootContext()->setContextProperty("QmlConstant", DEFS);
     m_qmlComponent = new QQmlComponent(engine, this);
 
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
 
-    connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
+    // connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
 
     m_qmlComponent->loadUrl(QUrl("qrc:/qml/qml/Screen/openGL.qml"));
 
@@ -126,14 +129,9 @@ void QPointCloudViewer::syncScene()
 {
     m_renderControl->polishItems();
 
-    m_renderer->setPosition(m_camera->position());
-
-    m_renderer->setxRotation(m_camera->xRotation());
-    m_renderer->setyRotation(m_camera->yRotation());
-    m_renderer->setzRotation(m_camera->zRotation());
-
-    m_renderer->setFrontClippingPlaneDistance(m_camera->frontClippingPlaneDistance());
-    m_renderer->setRearClippingDistance(m_camera->rearClippingDistance());
+    m_renderer->setAzimuth(m_openGLcamera->azimuth());
+    m_renderer->setElevation(m_openGLcamera->elevation());
+    m_renderer->setDistance(m_openGLcamera->distance());
 
     m_renderControl->sync();
     draw();
@@ -212,30 +210,30 @@ void QPointCloudViewer::mouseMoveEvent(QMouseEvent *e)
         QWindow::mousePressEvent(e);
     CONSOLE << "MouseMoveEvent";
 
-    const int dx = e->x() - m_prevMousePosition.x();
-    const int dy = e->y() - m_prevMousePosition.y();
-    const bool panningMode = (e->modifiers() & Qt::ShiftModifier);
-    m_prevMousePosition = e->pos();
+//    const int dx = e->x() - m_prevMousePosition.x();
+//    const int dy = e->y() - m_prevMousePosition.y();
+//    const bool panningMode = (e->modifiers() & Qt::ShiftModifier);
+//    m_prevMousePosition = e->pos();
 
-    if (e->buttons() & Qt::LeftButton) {
+//    if (e->buttons() & Qt::LeftButton) {
 
-        if (panningMode) {
-            if (dx > 0) {
-                m_camera->right();
-            }
-            if (dx < 0) {
-                m_camera->left();
-            }
-            if (dy > 0) {
-                m_camera->down();
-            }
-            if (dy < 0) {
-                m_camera->up();
-            }
-        } else {
-            m_camera->rotate(dy, dx, 0);
-        }
-    }
+//        if (panningMode) {
+//            if (dx > 0) {
+//                m_openGLcamera->move(RIGHT);
+//            }
+//            if (dx < 0) {
+//                m_openGLcamera->move(LEFT);
+//            }
+//            if (dy > 0) {
+//                m_openGLcamera->move(DOWN);
+//            }
+//            if (dy < 0) {
+//                m_openGLcamera->move(UP);
+//            }
+//        } else {
+//            m_openGLcamera->move2D(dx, dy);
+//        }
+//    }
 }
 
 void QPointCloudViewer::mouseReleaseEvent(QMouseEvent *e)
@@ -250,12 +248,12 @@ void QPointCloudViewer::wheelEvent(QWheelEvent *e)
 {
     CONSOLE << "MouseWheelEvent";
 
-    if(e->angleDelta().y() > 0){
-        CONSOLE << "Camera forwading";
-        m_camera->forward();
-    }
-    else {
-        CONSOLE << "Camera backwading";
-        m_camera->backward();
-    }
+//    if(e->angleDelta().y() > 0){
+//        CONSOLE << "Camera forwading";
+//        m_openGLcamera->move(FORWARD);
+//    }
+//    else {
+//        CONSOLE << "Camera backwading";
+//        m_openGLcamera->move(BACKWARD);
+//    }
 }

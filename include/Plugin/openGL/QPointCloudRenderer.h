@@ -21,6 +21,11 @@ public:
 
     enum colorAxisMode {COLOR_BY_ROW, COLOR_BY_Z};
 
+    enum CoordinateMirroring {
+            DoNotMirrorCoordinates,
+            MirrorYCoordinate
+        };
+
     QPointCloudRenderer(QObject *parent = 0);
     ~QPointCloudRenderer();
 
@@ -29,18 +34,12 @@ public:
     void render();
     void invalidate();
 
-    void setPosition(QVector3D position);
-
-    void setxRotation(int angle);
-    void setyRotation(int angle);
-    void setzRotation(int angle);
-
-    void setFrontClippingPlaneDistance(double distance);
-    void setRearClippingDistance(double distance);
+    void setAzimuth(float azimuth);
+    void setElevation(float elevation);
+    void setDistance(float distance);
 
 private:
     void loadPLY(const QString& plyFilePath);
-    void drawFrameAxis();
 
 private:
     float m_pointSize;
@@ -62,16 +61,11 @@ private:
     QScopedPointer<QOpenGLBuffer> m_positionsBuffer;
     QScopedPointer<QOpenGLBuffer> m_colorsBuffer;
 
-    QMatrix4x4 m_projectionMatrix;
-    QMatrix4x4 m_cameraMatrix;
-    QMatrix4x4 m_worldMatrix;
+    CoordinateMirroring m_coordinateMirroring;
 
-    double m_frontClippingPlaneDistance;
-    double m_rearClippingDistance;
-    QVector3D m_position;
-    int m_xRotation;
-    int m_yRotation;
-    int m_zRotation;
+    float m_azimuth;
+    float m_elevation;
+    float m_distance;
 };
 
 #endif // QPOINTCLOUDRENDERER_H

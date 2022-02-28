@@ -41,6 +41,7 @@ public:
 
     void loadPointCloud(const QString& filePath);
     void updateAttributes();
+    void center( QVector<QVector3D>& points );
 
     quint32 height() const;
     quint32 width() const;

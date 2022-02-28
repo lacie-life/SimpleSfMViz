@@ -1,4 +1,5 @@
 #include "openGL/QPointCloud.h"
+#include "openGL/QAxisAlignedBoundingBox.h"
 #include "AppConstant.h"
 
 #include <pcl/PCLPointCloud2.h>
@@ -146,9 +147,15 @@ void QPointCloud::loadPointCloud(const QString &filePath)
     }
 
     assert(m_points.size() == m_colors.size());
+
+    center(m_points);
+    // center(m_colors);
+
     m_pointsCount = pcd.size();
     // CONSOLE << "Reading done";
 }
+
+
 
 void QPointCloud::updateAttributes()
 {
@@ -160,6 +167,22 @@ void QPointCloud::updateAttributes()
             pcl::PCLPointField &pf( m_priv->m_pointcloud->fields[i] );
             m_priv->m_fields.append(new QPointField(&pf));
         }
+    }
+}
+
+void QPointCloud::center(QVector<QVector3D> &points)
+{
+    if ( points.isEmpty() )
+        return;
+
+    QAxisAlignedBoundingBox bb(points);
+    QVector3D center = bb.center();
+
+    // Translate center of the AABB to the origin
+    for ( int i = 0; i < points.size(); ++i )
+    {
+        QVector3D& point = points[i];
+        point = point - center;
     }
 }
 
