@@ -70,6 +70,8 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     m_openGLcamera->setFOV(45);
     m_openGLcamera->setViewport(0, 0, 600, 600);
 
+    CONSOLE << m_openGLcamera->mvp();
+
     // setup QtQuick
 
     m_renderControl = new QQuickRenderControl(this);
@@ -144,6 +146,8 @@ void QPointCloudViewer::syncScene()
 
     m_renderer->setFrontClippingPlaneDistance(m_camera->frontClippingPlaneDistance());
     m_renderer->setRearClippingDistance(m_camera->rearClippingDistance());
+
+    m_renderer->setMVP(m_openGLcamera->mvp());
 
     m_renderControl->sync();
     draw();
