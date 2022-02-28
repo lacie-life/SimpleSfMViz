@@ -6,6 +6,6 @@
 - [x] Mouse control view
 - [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer)
 - [x] PCL PointCloud + OpenGL Render
-- [ ] Improve camera control interface
+- [x] Improve camera control interface
 - [ ] Open file and load 3D plant model 
 - [ ] Add text in view widget
