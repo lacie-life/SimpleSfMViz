@@ -5,7 +5,6 @@
 #include <QWindow>
 
 #include "AppConstant.h"
-#include "QCameraControl.h"
 #include "QOpenGLCamera.h"
 #include "AppEngine.h"
 
@@ -43,8 +42,6 @@ private:
     QOpenGLContext *m_context;
 
     QPointCloudRenderer *m_renderer;
-    QCameraControl *m_camera;
-
     QOpenGLCamera *m_openGLcamera;
 
     QQuickRenderControl *m_renderControl;

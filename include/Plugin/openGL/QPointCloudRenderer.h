@@ -6,7 +6,6 @@
 #include <QSharedPointer>
 #include <QMatrix4x4>
 
-#include "QCameraControl.h"
 #include "QPointCloud.h"
 #include "QPointCloudLoader.h"
 

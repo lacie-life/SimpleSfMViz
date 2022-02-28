@@ -1,6 +1,5 @@
 #include "openGL/QPointCloudViewer.h"
 #include "openGL/QPointCloudRenderer.h"
-#include "openGL/QCameraControl.h"
 #include "AppConstant.h"
 
 #include <QSurfaceFormat>
@@ -14,7 +13,6 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QQmlContext>
-
 #include <QTimer>
 
 QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
@@ -56,11 +54,6 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     m_renderer = new QPointCloudRenderer(this);
     m_renderer->initialize(plyPath);
 
-    m_camera = new QCameraControl(this);
-
-    m_camera->setPosition(QVector3D(0, -0.1, -0.2));
-    m_camera->rotate(0, 50, 0);
-
     // setup QOpenGLCamera
     m_openGLcamera = new QOpenGLCamera(this);
 
@@ -98,8 +91,6 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
 
     connect(m_qmlComponent, &QQmlComponent::statusChanged,
             this, &QPointCloudViewer::onQmlComponentLoadingComplete);
-
-    // connect(m_camera, &QCameraControl::positionChanged, m_renderer, &QPointCloudRenderer::setPosition);
 
     m_qmlComponent->loadUrl(QUrl("qrc:/qml/qml/Screen/openGL.qml"));
 
