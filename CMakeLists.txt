@@ -91,7 +91,9 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/View/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Handler/*.h
-                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/openGL/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/OpenGL/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/SfM/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/Camera/*.h
                       #${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/pcl/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Common/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
@@ -99,7 +101,9 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Handler/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/*.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/openGL/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/OpenGL/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/SfM/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/Camera/*.cpp
                       #${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/pcl/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
