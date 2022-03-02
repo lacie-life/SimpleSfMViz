@@ -1,4 +1,4 @@
-#include "QImageLoader.h"
+#include "SfM/QImageLoader.h"
 
 QImageLoader::QImageLoader(QObject *parent)
     : QObject{parent}

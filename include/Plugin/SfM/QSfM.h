@@ -24,6 +24,7 @@
 #include <QString>
 
 #include "QImageLoader.h"
+#include "AppConstant.h"
 
 using namespace std;
 using namespace gtsam;
@@ -60,6 +61,11 @@ public slots:
 signals:
     void imgFolderChanged(QString path);
     void pointCloudPathChanged(QString path);
+
+private:
+    void featureExtract();
+    void triangulate();
+    void bundleAdjustment();
 
 public:
     QString m_imgFolder;
