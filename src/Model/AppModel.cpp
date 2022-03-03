@@ -13,7 +13,11 @@ AppModel::AppModel(QObject *parent)
     , m_currentScreenID{static_cast<int>(AppEnums::HOME)}
 {
     CONSOLE << "Init instance";
-    m_sfm->init("/home/jun/Github/GreenHouseAR/assest/data/crazyhorse");
+
+    m_sfm = new QSfM();
+
+    m_sfm->init("/home/lacie/Github/GreenHouseAR/assest/data/crazyhorse");
+    m_sfm->run();
 }
 
 AppModel *AppModel::instance(){

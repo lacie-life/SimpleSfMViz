@@ -3,43 +3,15 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
-
-struct ImagePose
-{
-    cv::Mat img; // down sampled image used for display
-    cv::Mat desc; // feature descriptor
-    std::vector<cv::KeyPoint> kp; // keypoint
-
-    cv::Mat T; // 4x4 pose transformation matrix
-    cv::Mat P; // 3x4 projection matrix
-
-    // alias to clarify map usage below
-    using kp_idx_t = size_t;
-    using landmark_idx_t = size_t;
-    using img_idx_t = size_t;
-
-    std::map<kp_idx_t, std::map<img_idx_t, kp_idx_t>> kp_matches; // keypoint matches in other images
-    std::map<kp_idx_t, landmark_idx_t> kp_landmark; // seypoint to 3d points
-
-    // helper
-    kp_idx_t& kp_match_idx(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx][img_idx]; };
-    bool kp_match_exist(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx].count(img_idx) > 0; };
-
-    landmark_idx_t& kp_3d(size_t kp_idx) { return kp_landmark[kp_idx]; }
-    bool kp_3d_exist(size_t kp_idx) { return kp_landmark.count(kp_idx) > 0; }
-};
-
-// 3D point
-struct Landmark
-{
-    cv::Point3f pt;
-    int seen = 0; // how many cameras have seen this point
-};
+#include <QString>
+#include <QStringList>
 
 QSfM::QSfM(QObject *parent)
     : QObject(parent)
 {
-
+    CONSOLE << "QSfM init ... ";
+    m_imgFolder = "";
+    m_pointCloudPath = "";
 }
 
 QSfM::~QSfM()
@@ -51,15 +23,25 @@ void QSfM::init(QString imgFolder)
 {
     CONSOLE << imgFolder;
 
+    setImgFolder(imgFolder);
+
     QDir directory(imgFolder);
 
     QStringList images = directory.entryList(QStringList() << "*.jpg" << "*.JPG",QDir::Files);
 
-    foreach (QString filename, images)
-    {
-        CONSOLE << "Image name : " << filename;
-        m_image_names.push_back(imgFolder + "/" + filename);
+    CONSOLE << images.size();
 
+    for (int i = 0; i < images.size(); i++){
+        QString fileName = images.at(i);
+
+        QString path = directory.path() + "/" + fileName;
+
+        CONSOLE << path;
+
+        QFile* file = new QFile(QDir::toNativeSeparators(path));
+        if(file->exists()){
+            m_image_names.append(path);
+        }
     }
 
     CONSOLE << "READ DONE";
@@ -72,6 +54,7 @@ void QSfM::run()
     featureExtract();
     triangulate();
     bundleAdjustment();
+    reconstruction();
     // TODO: Point Cloud gennerate
 }
 
@@ -120,13 +103,13 @@ void QSfM::featureExtract()
         feature->detect(img, a.kp);
         feature->compute(img, a.kp, a.desc);
 
-        m_img_pose.emplace_back(a);
+        m_img_pose.append(a);
     }
 
     // Match features between all images
-    for (size_t i=0; i < m_img_pose.size()-1; i++) {
+    for (int i=0; i < m_img_pose.size()-1; i++) {
         auto &img_pose_i = m_img_pose[i];
-        for (size_t j=i+1; j < m_img_pose.size(); j++) {
+        for (int j=i+1; j < m_img_pose.size(); j++) {
             auto &img_pose_j = m_img_pose[j];
             vector<vector<DMatch>> matches;
             vector<Point2f> src, dst;
@@ -197,7 +180,7 @@ void QSfM::triangulate()
     m_img_pose[0].T = Mat::eye(4, 4, CV_64F);
     m_img_pose[0].P = K*Mat::eye(3, 4, CV_64F);
 
-    for (size_t i=0; i < m_img_pose.size() - 1; i++) {
+    for (int i=0; i < m_img_pose.size() - 1; i++) {
         auto &prev = m_img_pose[i];
         auto &cur = m_img_pose[i+1];
 
@@ -379,7 +362,7 @@ void QSfM::bundleAdjustment()
     Values initial;
 
     // Poses
-    for (size_t i=0; i < m_img_pose.size(); i++) {
+    for (int i=0; i < m_img_pose.size(); i++) {
         auto &img_pose = m_img_pose[i];
 
         Rot3 R(
@@ -438,7 +421,7 @@ void QSfM::bundleAdjustment()
     // Initialize estimate for landmarks
     bool init_prior = false;
 
-    for (size_t i=0; i < m_landmark.size(); i++) {
+    for (int i=0; i < m_landmark.size(); i++) {
         if (m_landmark[i].seen >= MIN_LANDMARK_SEEN) {
             cv::Point3f &p = m_landmark[i].pt;
 
@@ -463,10 +446,12 @@ void QSfM::bundleAdjustment()
 
 void QSfM::reconstruction()
 {
+    CONSOLE << "Run reconstruction";
 
+    savePCD();
 }
 
 void QSfM::savePCD()
 {
-
+    CONSOLE << "Save point cloud in pcd format";
 }

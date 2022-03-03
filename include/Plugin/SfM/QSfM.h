@@ -22,8 +22,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QVector>
+#include <QStringList>
 
-#include "QImageLoader.h"
 #include "AppConstant.h"
 
 using namespace std;
@@ -35,8 +36,37 @@ const double FOCAL_LENGTH = 4308 / IMAGE_DOWNSAMPLE; // focal length in pixels, 
 // prior_focal=max(width,heigh)*focal/ccdw
 const int MIN_LANDMARK_SEEN = 3; // minimum number of camera views a 3d point (landmark) has to be seen to be used
 
-struct ImagePose;
-struct Landmark;
+struct ImagePose
+{
+    cv::Mat img; // down sampled image used for display
+    cv::Mat desc; // feature descriptor
+    std::vector<cv::KeyPoint> kp; // keypoint
+
+    cv::Mat T; // 4x4 pose transformation matrix
+    cv::Mat P; // 3x4 projection matrix
+
+    // alias to clarify map usage below
+    using kp_idx_t = size_t;
+    using landmark_idx_t = size_t;
+    using img_idx_t = size_t;
+
+    std::map<kp_idx_t, std::map<img_idx_t, kp_idx_t>> kp_matches; // keypoint matches in other images
+    std::map<kp_idx_t, landmark_idx_t> kp_landmark; // seypoint to 3d points
+
+    // helper
+    kp_idx_t& kp_match_idx(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx][img_idx]; };
+    bool kp_match_exist(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx].count(img_idx) > 0; };
+
+    landmark_idx_t& kp_3d(size_t kp_idx) { return kp_landmark[kp_idx]; }
+    bool kp_3d_exist(size_t kp_idx) { return kp_landmark.count(kp_idx) > 0; }
+};
+
+// 3D point
+struct Landmark
+{
+    cv::Point3f pt;
+    int seen = 0; // how many cameras have seen this point
+};
 
 class QSfM : public QObject
 {
@@ -45,7 +75,7 @@ class QSfM : public QObject
     Q_PROPERTY(QString pointCloudPath READ pointCloudPath WRITE setPointCloudPath NOTIFY pointCloudPathChanged)
 
 public:
-    QSfM(QObject *parent = nullptr);
+    explicit QSfM(QObject *parent = nullptr);
     ~QSfM();
 
     void init(QString imgFolder);
@@ -73,12 +103,10 @@ public:
     QString m_imgFolder;
     QString m_pointCloudPath;
 
-    QImageLoader m_loader;
+    QStringList m_image_names;
 
-    QVector<QString> m_image_names;
-
-    std::vector<ImagePose> m_img_pose;
-    std::vector<Landmark> m_landmark;
+    QVector<ImagePose> m_img_pose;
+    QVector<Landmark> m_landmark;
 };
 
 #endif // QSFM_H

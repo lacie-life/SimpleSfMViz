@@ -8,7 +8,6 @@
 #include <QSurfaceFormat>
 
 #include "AppEngine.h"
-#include "SfM/QSfM.h"
 
 int main(int argc, char **argv)
 {
