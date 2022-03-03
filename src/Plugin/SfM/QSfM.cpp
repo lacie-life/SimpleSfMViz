@@ -37,11 +37,7 @@ void QSfM::init(QString imgFolder)
         QString path = directory.path() + "/" + fileName;
 
         CONSOLE << path;
-
-        QFile* file = new QFile(QDir::toNativeSeparators(path));
-        if(file->exists()){
-            m_image_names.append(path);
-        }
+        m_image_names.append(path);
     }
 
     CONSOLE << "READ DONE";

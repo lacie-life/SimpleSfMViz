@@ -31,10 +31,16 @@ using namespace std;
 using namespace gtsam;
 using namespace  cv;
 
-const int IMAGE_DOWNSAMPLE = 1; // downsample the image to speed up processing
-const double FOCAL_LENGTH = 4308 / IMAGE_DOWNSAMPLE; // focal length in pixels, after downsampling, guess from jpeg EXIF data
+// downsample the image to speed up processing
+const int IMAGE_DOWNSAMPLE = 1;
+
+// focal length in pixels, after downsampling, guess from jpeg EXIF data
+const double FOCAL_LENGTH = 4308 / IMAGE_DOWNSAMPLE;
+
 // prior_focal=max(width,heigh)*focal/ccdw
-const int MIN_LANDMARK_SEEN = 3; // minimum number of camera views a 3d point (landmark) has to be seen to be used
+
+// minimum number of camera views a 3d point (landmark) has to be seen to be used
+const int MIN_LANDMARK_SEEN = 3;
 
 struct ImagePose
 {
@@ -54,11 +60,24 @@ struct ImagePose
     std::map<kp_idx_t, landmark_idx_t> kp_landmark; // seypoint to 3d points
 
     // helper
-    kp_idx_t& kp_match_idx(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx][img_idx]; };
-    bool kp_match_exist(size_t kp_idx, size_t img_idx) { return kp_matches[kp_idx].count(img_idx) > 0; };
+    kp_idx_t& kp_match_idx(size_t kp_idx, size_t img_idx)
+    {
+        return kp_matches[kp_idx][img_idx];
+    }
 
-    landmark_idx_t& kp_3d(size_t kp_idx) { return kp_landmark[kp_idx]; }
-    bool kp_3d_exist(size_t kp_idx) { return kp_landmark.count(kp_idx) > 0; }
+    bool kp_match_exist(size_t kp_idx, size_t img_idx)
+    {
+        return kp_matches[kp_idx].count(img_idx) > 0;
+    }
+
+    landmark_idx_t& kp_3d(size_t kp_idx)
+    {
+        return kp_landmark[kp_idx];
+    }
+    bool kp_3d_exist(size_t kp_idx)
+    {
+        return kp_landmark.count(kp_idx) > 0;
+    }
 };
 
 // 3D point
@@ -99,7 +118,7 @@ private:
     void reconstruction();
     void savePCD();
 
-public:
+private:
     QString m_imgFolder;
     QString m_pointCloudPath;
 

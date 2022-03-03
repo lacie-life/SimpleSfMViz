@@ -29,6 +29,8 @@ public:
     AppEnums::APP_STATE state() const;
     int currentScreenID() const;
 
+    void runSfM(QString path);
+
 public slots:
     void setState(AppEnums::APP_STATE state);
     void setCurrentScreenID(int currentScreenID);

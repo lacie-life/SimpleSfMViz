@@ -39,6 +39,8 @@ void AppEngine::initEngine(){
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
 
     m_rootContext->setContextProperty("QmlModel", MODEL);
+
+    MODEL->runSfM("/home/lacie/Github/GreenHouseAR/assest/data/crazyhorse");
 }
 
 void AppEngine::startEngine(){

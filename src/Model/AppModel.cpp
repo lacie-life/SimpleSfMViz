@@ -13,11 +13,6 @@ AppModel::AppModel(QObject *parent)
     , m_currentScreenID{static_cast<int>(AppEnums::HOME)}
 {
     CONSOLE << "Init instance";
-
-    m_sfm = new QSfM();
-
-    m_sfm->init("/home/lacie/Github/GreenHouseAR/assest/data/crazyhorse");
-    m_sfm->run();
 }
 
 AppModel *AppModel::instance(){
@@ -37,6 +32,14 @@ AppEnums::APP_STATE AppModel::state() const
 int AppModel::currentScreenID() const
 {
     return m_currentScreenID;
+}
+
+void AppModel::runSfM(QString path)
+{
+    m_sfm = new QSfM();
+
+    m_sfm->init(path);
+    m_sfm->run();
 }
 
 void AppModel::setState(AppEnums::APP_STATE state)
