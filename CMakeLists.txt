@@ -12,8 +12,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND QML_IMPORT_PATH "/home/lacie/Qt/5.15.2/gcc_64/qml")
-set(CMAKE_PREFIX_PATH "/home/lacie/Qt/5.15.2/gcc_64")
+list(APPEND QML_IMPORT_PATH "/home/jun/Qt/5.15.2/gcc_64/qml")
+set(CMAKE_PREFIX_PATH "/home/jun/Qt/5.15.2/gcc_64")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     CACHE STRING "Qt Creator 4.1 extra qml import paths"
@@ -48,6 +48,8 @@ include_directories(${GLUT_INCLUDE_DIRS})
 
 find_package(GLM)
 include_directories(${GLM_INCLUDE_DIRS})
+link_directories(${GLM_LIBRARY_DIRS})
+add_definitions(${GLM_DEFINITIONS})
 
 ## GTSAM SfM
 find_package(Boost COMPONENTS thread filesystem date_time system REQUIRED)

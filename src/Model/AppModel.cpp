@@ -13,7 +13,7 @@ AppModel::AppModel(QObject *parent)
     , m_currentScreenID{static_cast<int>(AppEnums::HOME)}
 {
     CONSOLE << "Init instance";
-
+    m_sfm->init("/home/jun/Github/GreenHouseAR/assest/data/crazyhorse");
 }
 
 AppModel *AppModel::instance(){

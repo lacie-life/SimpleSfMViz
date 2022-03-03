@@ -33,15 +33,18 @@ void AppEngine::initEngine(){
 
     // set context properties
     m_rootContext->setContextProperty("QmlConst", DEFS);
+
     m_rootContext->setContextProperty("QmlHandler", QML_HANDLER);
+
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
+
     m_rootContext->setContextProperty("QmlModel", MODEL);
 }
 
 void AppEngine::startEngine(){
-    // this->load(SCR_DEF->QML_APP());
+    this->load(SCR_DEF->QML_APP());
 
-    this->pointCloudRenderScreenRun(this);
+    // this->pointCloudRenderScreenRun(this);
 }
 
 void AppEngine::pointCloudRenderScreenRun(AppEngine *engine)

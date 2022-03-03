@@ -1,4 +1,4 @@
-#include "openGL/QAxisAlignedBoundingBox.h"
+#include "OpenGL/QAxisAlignedBoundingBox.h"
 
 #include <QDebug>
 

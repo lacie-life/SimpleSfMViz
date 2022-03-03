@@ -66,6 +66,8 @@ private:
     void featureExtract();
     void triangulate();
     void bundleAdjustment();
+    void reconstruction();
+    void savePCD();
 
 public:
     QString m_imgFolder;
@@ -73,7 +75,7 @@ public:
 
     QImageLoader m_loader;
 
-    std::vector<std::string> m_image_names;
+    QVector<QString> m_image_names;
 
     std::vector<ImagePose> m_img_pose;
     std::vector<Landmark> m_landmark;

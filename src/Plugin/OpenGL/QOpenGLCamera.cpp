@@ -1,4 +1,4 @@
-#include "openGL/QOpenGLCamera.h"
+#include "OpenGL/QOpenGLCamera.h"
 #include "AppConstant.h"
 
 QOpenGLCamera::QOpenGLCamera(QObject *parent)

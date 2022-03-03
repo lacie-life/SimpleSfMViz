@@ -1,5 +1,5 @@
-#include "openGL/QPointCloud.h"
-#include "openGL/QAxisAlignedBoundingBox.h"
+#include "OpenGL/QPointCloud.h"
+#include "OpenGL/QAxisAlignedBoundingBox.h"
 #include "AppConstant.h"
 
 #include <pcl/PCLPointCloud2.h>

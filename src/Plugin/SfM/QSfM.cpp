@@ -1,9 +1,8 @@
 #include "SfM/QSfM.h"
 
-#include <boost/filesystem.hpp>
+#include <QDir>
+#include <QFile>
 #include <QDebug>
-
-using namespace boost::filesystem;
 
 struct ImagePose
 {
@@ -50,20 +49,22 @@ QSfM::~QSfM()
 
 void QSfM::init(QString imgFolder)
 {
-    std::vector<std::string> image_paths;
-    path p(imgFolder.toStdWString());
-    for (auto i = directory_iterator(p); i != directory_iterator(); i++)
+    CONSOLE << imgFolder;
+
+    QDir directory(imgFolder);
+
+    QStringList images = directory.entryList(QStringList() << "*.jpg" << "*.JPG",QDir::Files);
+
+    foreach (QString filename, images)
     {
-        if (!is_directory(i->path())) //we eliminate directories
-        {
-            CONSOLE << "Image name : " << QString::fromStdString(i->path().filename().string());
-            image_paths.push_back(imgFolder.toStdString() + "/" + i->path().filename().string());
-        }
-        else
-            continue;
+        CONSOLE << "Image name : " << filename;
+        m_image_names.push_back(imgFolder + "/" + filename);
+
     }
 
-    m_image_names = image_paths;
+    CONSOLE << "READ DONE";
+
+    CONSOLE << "Number of images: " << m_image_names.size();
 }
 
 void QSfM::run()
@@ -109,7 +110,7 @@ void QSfM::featureExtract()
     for (auto f : m_image_names) {
         ImagePose a;
 
-        Mat img = imread(f);
+        Mat img = imread(f.toStdString());
         assert(!img.empty());
 
         resize(img, img, img.size()/IMAGE_DOWNSAMPLE);
@@ -458,4 +459,14 @@ void QSfM::bundleAdjustment()
     cout << endl;
     cout << "initial graph error = " << graph.error(initial) << endl;
     cout << "final graph error = " << graph.error(result) << endl;
+}
+
+void QSfM::reconstruction()
+{
+
+}
+
+void QSfM::savePCD()
+{
+
 }

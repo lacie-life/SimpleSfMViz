@@ -13,6 +13,7 @@
 #include <QQmlApplicationEngine>
 
 #include "AppEnums.h"
+#include "SfM/QSfM.h"
 
 #define MODEL AppModel::instance()
 
@@ -44,6 +45,8 @@ private:
 private:
     static AppModel* m_instance;
     static QMutex m_lock;
+
+    QSfM *m_sfm;
 
     static AppEnums::APP_STATE m_state;
     int m_currentScreenID;

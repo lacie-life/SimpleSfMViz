@@ -1,8 +1,8 @@
-#include "openGL/QPointField.h"
+#include "OpenGL/QPointField.h"
 
 #include <pcl/PCLPointField.h>
 
-pcl::uint8_t toPCLDataType(const QPointField::PointFieldTypes& datatype)
+uint8_t toPCLDataType(const QPointField::PointFieldTypes& datatype)
 {
     switch(datatype)
     {
@@ -27,7 +27,7 @@ pcl::uint8_t toPCLDataType(const QPointField::PointFieldTypes& datatype)
     return pcl::PCLPointField::INT8;
 }
 
-QPointField::PointFieldTypes fromPCLDataType(const pcl::uint8_t& datatype)
+QPointField::PointFieldTypes fromPCLDataType(const uint8_t& datatype)
 {
     switch(datatype)
     {
@@ -99,6 +99,11 @@ QPointField::PointFieldTypes QPointField::datatype() const
 quint32 QPointField::count() const
 {
     return m_count;
+}
+
+const pcl::PCLPointField *QPointField::getPointField()
+{
+    return m_pointfield;
 }
 
 void QPointField::setName(QString name)

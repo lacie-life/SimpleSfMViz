@@ -1,5 +1,5 @@
 #include "QPointCloudViewer.h"
-#include "openGL/QPointCloudRenderer.h"
+#include "OpenGL/QPointCloudRenderer.h"
 #include "AppConstant.h"
 
 #include <QSurfaceFormat>
