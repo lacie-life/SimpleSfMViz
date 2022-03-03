@@ -8,10 +8,12 @@
 
 QSfM::QSfM(QObject *parent)
     : QObject(parent)
+    , m_imgFolder("")
+    , m_pointCloudPath("")
 {
     CONSOLE << "QSfM init ... ";
-    m_imgFolder = "";
-    m_pointCloudPath = "";
+    m_image_names.reserve(1);
+    CONSOLE << "Fucking crash";
 }
 
 QSfM::~QSfM()
@@ -37,7 +39,13 @@ void QSfM::init(QString imgFolder)
         QString path = directory.path() + "/" + fileName;
 
         CONSOLE << path;
-        m_image_names.append(path);
+        try
+        {
+           m_image_names.append(path);
+        }  catch (...)
+        {
+            CONSOLE << "Fucking ...";
+        }
     }
 
     CONSOLE << "READ DONE";

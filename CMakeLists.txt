@@ -124,7 +124,19 @@ target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets ${PCL_LIBRARIES} stdc++ ${Boost_LIBRARIES} ${OpenCV_LIBS} -lgtsam -ltbb)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
+    glfw
+    GLEW::GLEW
+    Qt5::Core
+    Qt5::Quick
+    Qt5::Qml
+    Qt5::Widgets
+    ${PCL_LIBRARIES}
+    stdc++
+    ${Boost_LIBRARIES}
+    ${OpenCV_LIBS}
+    -lgtsam
+    -ltbb)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 #target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04

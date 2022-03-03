@@ -36,10 +36,10 @@ int AppModel::currentScreenID() const
 
 void AppModel::runSfM(QString path)
 {
-    m_sfm = new QSfM();
+//    m_sfm = new QSfM();
 
-    m_sfm->init(path);
-    m_sfm->run();
+//    m_sfm->init(path);
+//    m_sfm->run();
 }
 
 void AppModel::setState(AppEnums::APP_STATE state)
