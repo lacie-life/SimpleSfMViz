@@ -385,76 +385,78 @@ void QSfM::triangulate()
 
 void QSfM::bundleAdjustment()
 {
-//    gtsam::Values result;
-//    {
-//        double cx = m_img_pose[0].img.size().width/2;
-//        double cy = m_img_pose[0].img.size().height/2;
+    gtsam::Values result;
+    {
+        double cx = m_img_pose[0].img.size().width/2;
+        double cy = m_img_pose[0].img.size().height/2;
 
-//        gtsam::Cal3_S2 K(FOCAL_LENGTH, FOCAL_LENGTH, 0 /* skew */, cx, cy);
-//        gtsam::noiseModel::Isotropic::shared_ptr measurement_noise = gtsam::noiseModel::Isotropic::Sigma(2, 2.0); // pixel error in (x,y)
+        gtsam::Cal3_S2 K(FOCAL_LENGTH, FOCAL_LENGTH, 0 /* skew */, cx, cy);
+        gtsam::noiseModel::Isotropic::shared_ptr measurement_noise = gtsam::noiseModel::Isotropic::Sigma(2, 2.0); // pixel error in (x,y)
 
-//        gtsam::NonlinearFactorGraph graph;
-//        gtsam::Values initial;
+        gtsam::NonlinearFactorGraph graph;
+        gtsam::Values initial;
 
-//        // Poses
-//        for (int i=0; i < m_img_pose.size(); i++) {
-//            auto &img_pose = m_img_pose[i];
+        // Poses
+        for (int i=0; i < m_img_pose.size(); i++) {
+            auto &img_pose = m_img_pose[i];
 
-//            gtsam::Rot3 R(
-//                        img_pose.T.at<double>(0,0),
-//                        img_pose.T.at<double>(0,1),
-//                        img_pose.T.at<double>(0,2),
+            gtsam::Rot3 R(
+                        img_pose.T.at<double>(0,0),
+                        img_pose.T.at<double>(0,1),
+                        img_pose.T.at<double>(0,2),
 
-//                        img_pose.T.at<double>(1,0),
-//                        img_pose.T.at<double>(1,1),
-//                        img_pose.T.at<double>(1,2),
+                        img_pose.T.at<double>(1,0),
+                        img_pose.T.at<double>(1,1),
+                        img_pose.T.at<double>(1,2),
 
-//                        img_pose.T.at<double>(2,0),
-//                        img_pose.T.at<double>(2,1),
-//                        img_pose.T.at<double>(2,2)
-//                        );
+                        img_pose.T.at<double>(2,0),
+                        img_pose.T.at<double>(2,1),
+                        img_pose.T.at<double>(2,2)
+                        );
 
-//            gtsam::Point3 t;
+            gtsam::Point3 t;
 
-//            t(0) = img_pose.T.at<double>(0,3);
-//            t(1) = img_pose.T.at<double>(1,3);
-//            t(2) = img_pose.T.at<double>(2,3);
+            t(0) = img_pose.T.at<double>(0,3);
+            t(1) = img_pose.T.at<double>(1,3);
+            t(2) = img_pose.T.at<double>(2,3);
 
-//            gtsam::Pose3 pose(R, t);
+            gtsam::Pose3 pose(R, t);
 
-//            // Add prior for the first image
-//            if (i == 0) {
-//                gtsam::noiseModel::Diagonal::shared_ptr pose_noise = gtsam::noiseModel::Diagonal::Sigmas((gtsam::Vector(6) << gtsam::Vector3::Constant(0.1), gtsam::Vector3::Constant(0.1)).finished());
-//                graph.emplace_shared<gtsam::PriorFactor<gtsam::Pose3> >(gtsam::Symbol('x', 0), pose, pose_noise); // add directly to graph
-//            }
+            // Add prior for the first image
+            if (i == 0) {
+                gtsam::noiseModel::Diagonal::shared_ptr pose_noise = gtsam::noiseModel::Diagonal::Sigmas((gtsam::Vector(6) << gtsam::Vector3::Constant(0.1), gtsam::Vector3::Constant(0.1)).finished());
+                graph.emplace_shared<gtsam::PriorFactor<gtsam::Pose3> >(gtsam::Symbol('x', 0), pose, pose_noise); // add directly to graph
+            }
 
-//            initial.insert(gtsam::Symbol('x', i), pose);
+            initial.insert(gtsam::Symbol('x', i), pose);
 
-//            // landmark seen
-//            for (int k=0; k < img_pose.kp.size(); k++) {
-//                if (img_pose.kp_3d_exist(k)) {
-//                    size_t landmark_id = img_pose.kp_3d(k);
+            // landmark seen
+            for (int k=0; k < img_pose.kp.size(); k++) {
+                if (img_pose.kp_3d_exist(k)) {
+                    size_t landmark_id = img_pose.kp_3d(k);
 
-//                    if (m_landmark[landmark_id].seen >= MIN_LANDMARK_SEEN) {
-//                        gtsam::Point2 pt;
+                    if (m_landmark[landmark_id].seen >= MIN_LANDMARK_SEEN) {
+                        gtsam::Point2 pt;
 
-//                        pt(0) = img_pose.kp[k].pt.x;
-//                        pt(1) = img_pose.kp[k].pt.y;
+                        pt(0) = img_pose.kp[k].pt.x;
+                        pt(1) = img_pose.kp[k].pt.y;
 
-//                        graph.emplace_shared<gtsam::GeneralSFMFactor2<gtsam::Cal3_S2>>(pt, measurement_noise, gtsam::Symbol('x', i), gtsam::Symbol('l', landmark_id), gtsam::Symbol('K', 0));
-//                    }
-//                }
-//            }
-//        }
+                        graph.emplace_shared<gtsam::GeneralSFMFactor2<gtsam::Cal3_S2>>(pt, measurement_noise, gtsam::Symbol('x', i), gtsam::Symbol('l', landmark_id), gtsam::Symbol('K', 0));
+                    }
+                }
+            }
+        }
 
-//        // Add a prior on the calibration.
-//        initial.insert(gtsam::Symbol('K', 0), K);
+        // Add a prior on the calibration.
+        initial.insert(gtsam::Symbol('K', 0), K);
 
-//        gtsam::noiseModel::Diagonal::shared_ptr cal_noise = gtsam::noiseModel::Diagonal::Sigmas((gtsam::Vector(5) << 100, 100, 0.01 /*skew*/, 100, 100).finished());
-//        graph.emplace_shared<gtsam::PriorFactor<gtsam::Cal3_S2>>(gtsam::Symbol('K', 0), K, cal_noise);
+        gtsam::noiseModel::Diagonal::shared_ptr cal_noise = gtsam::noiseModel::Diagonal::Sigmas((gtsam::Vector(5) << 100, 100, 0.01 /*skew*/, 100, 100).finished());
+        graph.emplace_shared<gtsam::PriorFactor<gtsam::Cal3_S2>>(gtsam::Symbol('K', 0), K, cal_noise);
 
-//        // Initialize estimate for landmarks
-//        bool init_prior = false;
+        // Initialize estimate for landmarks
+        bool init_prior = false;
+
+        CONSOLE << m_landmark.size();
 
 //        for (int i=0; i < m_landmark.size(); i++) {
 //            if (m_landmark[i].seen >= MIN_LANDMARK_SEEN) {
@@ -477,7 +479,7 @@ void QSfM::bundleAdjustment()
 //        cout << endl;
 //        cout << "initial graph error = " << graph.error(initial) << endl;
 //        cout << "final graph error = " << graph.error(result) << endl;
-//    }
+    }
 }
 
 void QSfM::reconstruction()
