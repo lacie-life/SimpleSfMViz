@@ -462,21 +462,23 @@ void QSfM::bundleAdjustment()
 
         CONSOLE << SFM.m_landmark.size();
 
-//        for (int i=0; i < m_landmark.size(); i++) {
-//            if (m_landmark[i].seen >= MIN_LANDMARK_SEEN) {
-//                cv::Point3f &p = m_landmark[i].pt;
+        for (int i=0; i < SFM.m_landmark.size(); i++) {
+            if (SFM.m_landmark[i].seen >= MIN_LANDMARK_SEEN) {
+                CONSOLE << i;
+                cv::Point3f &p = SFM.m_landmark[i].pt;
+                CONSOLE << p.x << " " << p.y << " " << p.z;
+                gtsam::Point3 gtsam_p(p.x, p.y, p.z);
 
-//                initial.insert<gtsam::Point3>(gtsam::Symbol('l', i), gtsam::Point3(p.x, p.y, p.z));
+                initial.insert<gtsam::Point3>(gtsam::Symbol('l', i), gtsam_p);
 
 //                if (!init_prior) {
 //                    init_prior = true;
 
 //                    gtsam::noiseModel::Isotropic::shared_ptr point_noise = gtsam::noiseModel::Isotropic::Sigma(3, 0.1);
-//                    gtsam::Point3 p(m_landmark[i].pt.x, m_landmark[i].pt.y, m_landmark[i].pt.z);
-//                    graph.emplace_shared<gtsam::PriorFactor<gtsam::Point3>>(gtsam::Symbol('l', i), p, point_noise);
+//                    graph.emplace_shared<gtsam::PriorFactor<gtsam::Point3>>(gtsam::Symbol('l', i), gtsam_p, point_noise);
 //                }
-//            }
-//        }
+            }
+        }
 
 //        result = gtsam::LevenbergMarquardtOptimizer(graph, initial).optimize();
 
