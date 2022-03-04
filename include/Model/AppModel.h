@@ -48,8 +48,6 @@ private:
     static AppModel* m_instance;
     static QMutex m_lock;
 
-//    QSfM *m_sfm;
-
     static AppEnums::APP_STATE m_state;
     int m_currentScreenID;
 };

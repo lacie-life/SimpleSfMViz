@@ -10,25 +10,15 @@
 #include <fstream>
 #include <cassert>
 
-#include <gtsam/geometry/Point2.h>
-#include <gtsam/inference/Symbol.h>
-#include <gtsam/slam/PriorFactor.h>
-#include <gtsam/slam/ProjectionFactor.h>
-#include <gtsam/slam/GeneralSFMFactor.h>
-#include <gtsam/nonlinear/NonlinearFactorGraph.h>
-#include <gtsam/nonlinear/LevenbergMarquardtOptimizer.h>
-#include <gtsam/nonlinear/DoglegOptimizer.h>
-#include <gtsam/nonlinear/Values.h>
-
 #include <QObject>
 #include <QString>
 #include <QVector>
 #include <QStringList>
+#include <QMap>
 
 #include "AppConstant.h"
 
 using namespace std;
-using namespace gtsam;
 using namespace  cv;
 
 // downsample the image to speed up processing
@@ -42,56 +32,57 @@ const double FOCAL_LENGTH = 4308 / IMAGE_DOWNSAMPLE;
 // minimum number of camera views a 3d point (landmark) has to be seen to be used
 const int MIN_LANDMARK_SEEN = 3;
 
-struct ImagePose
-{
-    cv::Mat img; // down sampled image used for display
-    cv::Mat desc; // feature descriptor
-    std::vector<cv::KeyPoint> kp; // keypoint
-
-    cv::Mat T; // 4x4 pose transformation matrix
-    cv::Mat P; // 3x4 projection matrix
-
-    // alias to clarify map usage below
-    using kp_idx_t = size_t;
-    using landmark_idx_t = size_t;
-    using img_idx_t = size_t;
-
-    std::map<kp_idx_t, std::map<img_idx_t, kp_idx_t>> kp_matches; // keypoint matches in other images
-    std::map<kp_idx_t, landmark_idx_t> kp_landmark; // seypoint to 3d points
-
-    // helper
-    kp_idx_t& kp_match_idx(size_t kp_idx, size_t img_idx)
-    {
-        return kp_matches[kp_idx][img_idx];
-    }
-
-    bool kp_match_exist(size_t kp_idx, size_t img_idx)
-    {
-        return kp_matches[kp_idx].count(img_idx) > 0;
-    }
-
-    landmark_idx_t& kp_3d(size_t kp_idx)
-    {
-        return kp_landmark[kp_idx];
-    }
-    bool kp_3d_exist(size_t kp_idx)
-    {
-        return kp_landmark.count(kp_idx) > 0;
-    }
-};
-
-// 3D point
-struct Landmark
-{
-    cv::Point3f pt;
-    int seen = 0; // how many cameras have seen this point
-};
-
 class QSfM : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString imgFolder READ imgFolder WRITE setImgFolder NOTIFY imgFolderChanged)
     Q_PROPERTY(QString pointCloudPath READ pointCloudPath WRITE setPointCloudPath NOTIFY pointCloudPathChanged)
+
+public:
+    struct ImagePose
+    {
+        cv::Mat img; // down sampled image used for display
+        cv::Mat desc; // feature descriptor
+        QVector<cv::KeyPoint> kp; // keypoint
+
+        cv::Mat T; // 4x4 pose transformation matrix
+        cv::Mat P; // 3x4 projection matrix
+
+        // alias to clarify map usage below
+        using kp_idx_t = unsigned int;
+        using landmark_idx_t = unsigned int;
+        using img_idx_t = unsigned int;
+
+        QMap<kp_idx_t, QMap<img_idx_t, kp_idx_t>> kp_matches; // keypoint matches in other images
+        QMap<kp_idx_t, landmark_idx_t> kp_landmark; // keypoint to 3d points
+
+        // helper
+        kp_idx_t& kp_match_idx(int kp_idx, int img_idx)
+        {
+            return kp_matches[kp_idx][img_idx];
+        }
+
+        bool kp_match_exist(int kp_idx, int img_idx)
+        {
+            return kp_matches[kp_idx].count(img_idx) > 0;
+        }
+
+        landmark_idx_t& kp_3d(int kp_idx)
+        {
+            return kp_landmark[kp_idx];
+        }
+        bool kp_3d_exist(int kp_idx)
+        {
+            return kp_landmark.count(kp_idx) > 0;
+        }
+    };
+
+    // 3D point
+    struct Landmark
+    {
+        cv::Point3f pt;
+        int seen = 0; // how many cameras have seen this point
+    };
 
 public:
     explicit QSfM(QObject *parent = nullptr);

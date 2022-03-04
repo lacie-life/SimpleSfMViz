@@ -39,8 +39,6 @@ void AppEngine::initEngine(){
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
 
     m_rootContext->setContextProperty("QmlModel", MODEL);
-
-    MODEL->runSfM("/home/lacie/Github/GreenHouseAR/assest/data/crazyhorse");
 }
 
 void AppEngine::startEngine(){
@@ -64,6 +62,10 @@ void AppEngine::slotReceiveEvent(int event)
         CONSOLE << "Invalid event";
         // do sth here, maybe call a function to process images
         // then use MODEL->setCurrentPath to re-set path
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_RUN_SfM):
+        CONSOLE << "Run SfM Event";
+        MODEL->runSfM("/home/jun/Github/GreenHouseAR/assest/data/crazyhorse");
         break;
     default:
         break;
