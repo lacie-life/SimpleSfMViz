@@ -109,7 +109,7 @@ void QSfM::featureExtract()
 
         // Extract features
         for (auto f : m_image_names) {
-            ImagePose a;
+            SFM_Helper::ImagePose a;
 
             Mat img = imread(f.toStdString());
             std::vector<cv::KeyPoint> kp;
@@ -124,14 +124,14 @@ void QSfM::featureExtract()
 
             a.kp = QVector<cv::KeyPoint>(kp.begin(), kp.end());
 
-            m_img_pose.append(a);
+            SFM.m_img_pose.append(a);
         }
 
         // Match features between all images
-        for (int i=0; i < m_img_pose.size()-1; i++) {
-            auto &img_pose_i = m_img_pose[i];
-            for (int j=i+1; j < m_img_pose.size(); j++) {
-                auto &img_pose_j = m_img_pose[j];
+        for (int i=0; i < SFM.m_img_pose.size()-1; i++) {
+            auto &img_pose_i = SFM.m_img_pose[i];
+            for (int j=i+1; j < SFM.m_img_pose.size(); j++) {
+                auto &img_pose_j = SFM.m_img_pose[j];
                 vector<vector<DMatch>> matches;
                 vector<Point2f> src, dst;
                 vector<uchar> mask;
@@ -170,7 +170,6 @@ void QSfM::featureExtract()
 
                 cout << "Feature matching " << i << " " << j << " ==> " << good_matches << "/" << matches.size() << endl;
 
-                //            resize(canvas, canvas, canvas.size()/2);
                 waitKey(30);
             }
         }
@@ -184,8 +183,8 @@ void QSfM::triangulate()
         // Setup camera matrix
         // It is assumed here that the center of the image is the main point coordinate.
         // If you have an internal reference file, you can replace it, and the image is a de-distorted image.
-        double cx = m_img_pose[0].img.size().width/2;
-        double cy = m_img_pose[0].img.size().height/2;
+        double cx = SFM.m_img_pose[0].img.size().width/2;
+        double cy = SFM.m_img_pose[0].img.size().height/2;
 
         cv::Point2d pp(cx, cy);
 
@@ -198,17 +197,17 @@ void QSfM::triangulate()
 
         cout << endl << "initial camera matrix K " << endl << K << endl << endl;
 
-        m_img_pose[0].T = cv::Mat::eye(4, 4, CV_64F);
-        m_img_pose[0].P = K*cv::Mat::eye(3, 4, CV_64F);
+        SFM.m_img_pose[0].T = cv::Mat::eye(4, 4, CV_64F);
+        SFM.m_img_pose[0].P = K*cv::Mat::eye(3, 4, CV_64F);
 
-        CONSOLE << m_img_pose.size();
+        CONSOLE << SFM.m_img_pose.size();
 
-        for (int i=0; i < m_img_pose.size() - 1; i++) {
+        for (int i=0; i < SFM.m_img_pose.size() - 1; i++) {
 
             CONSOLE << i;
 
-            auto &prev = m_img_pose[i];
-            auto &cur = m_img_pose[i+1];
+            auto &prev = SFM.m_img_pose[i];
+            auto &cur = SFM.m_img_pose[i+1];
 
             std::vector<cv::Point2f> src, dst;
             std::vector<size_t> kp_used;
@@ -225,6 +224,8 @@ void QSfM::triangulate()
                     kp_used.push_back(k);
                 }
             }
+
+            CONSOLE << kp_used.size();
 
             cv::Mat mask;
 
@@ -274,10 +275,11 @@ void QSfM::triangulate()
 
                 std::vector<cv::Point3f> new_pts;
                 std::vector<cv::Point3f> existing_pts;
+
                 CONSOLE << mask.size().height << " " << mask.size().width ;
+
                 for (size_t j=0; j < kp_used.size(); j++) {
                     size_t k = kp_used[j];
-                    CONSOLE << mask.at<uchar>(j) << " " << prev.kp_match_exist(k, i+1) << " " << prev.kp_3d_exist(k);
                     if (mask.at<uchar>(j) && prev.kp_match_exist(k, i+1) && prev.kp_3d_exist(k)) {
                         cv::Point3f pt3d;
 
@@ -286,7 +288,7 @@ void QSfM::triangulate()
                         pt3d.z = points4D.at<float>(2, j) / points4D.at<float>(3, j);
 
                         size_t idx = prev.kp_3d(k);
-                        cv::Point3f avg_landmark = m_landmark[idx].pt / (m_landmark[idx].seen - 1);
+                        cv::Point3f avg_landmark = SFM.m_landmark[idx].pt / (SFM.m_landmark[idx].seen - 1);
 
                         new_pts.push_back(pt3d);
                         existing_pts.push_back(avg_landmark);
@@ -307,6 +309,8 @@ void QSfM::triangulate()
                         count++;
                     }
                 }
+
+                CONSOLE << "Count: " << count;
 
                 assert(count > 0);
 
@@ -356,26 +360,26 @@ void QSfM::triangulate()
                         // Found a match with an existing landmark
                         cur.kp_3d(match_idx) = prev.kp_3d(k);
 
-                        m_landmark[prev.kp_3d(k)].pt += pt3d;
-                        m_landmark[cur.kp_3d(match_idx)].seen++;
+                        SFM.m_landmark[prev.kp_3d(k)].pt += pt3d;
+                        SFM.m_landmark[cur.kp_3d(match_idx)].seen++;
                     } else {
                         // Add new 3d point
-                        Landmark landmark;
+                        SFM_Helper::Landmark landmark;
 
                         landmark.pt = pt3d;
                         landmark.seen = 2;
 
-                        m_landmark.push_back(landmark);
+                        SFM.m_landmark.push_back(landmark);
 
-                        prev.kp_3d(k) = m_landmark.size() - 1;
-                        cur.kp_3d(match_idx) = m_landmark.size() - 1;
+                        prev.kp_3d(k) = SFM.m_landmark.size() - 1;
+                        cur.kp_3d(match_idx) = SFM.m_landmark.size() - 1;
                     }
                 }
             }
         }
 
         // Average out the landmark 3d position
-        for (auto &l : m_landmark) {
+        for (auto &l : SFM.m_landmark) {
             if (l.seen >= 3) {
                 l.pt /= (l.seen - 1);
             }
@@ -387,8 +391,8 @@ void QSfM::bundleAdjustment()
 {
     gtsam::Values result;
     {
-        double cx = m_img_pose[0].img.size().width/2;
-        double cy = m_img_pose[0].img.size().height/2;
+        double cx = SFM.m_img_pose[0].img.size().width/2;
+        double cy = SFM.m_img_pose[0].img.size().height/2;
 
         gtsam::Cal3_S2 K(FOCAL_LENGTH, FOCAL_LENGTH, 0 /* skew */, cx, cy);
         gtsam::noiseModel::Isotropic::shared_ptr measurement_noise = gtsam::noiseModel::Isotropic::Sigma(2, 2.0); // pixel error in (x,y)
@@ -397,8 +401,8 @@ void QSfM::bundleAdjustment()
         gtsam::Values initial;
 
         // Poses
-        for (int i=0; i < m_img_pose.size(); i++) {
-            auto &img_pose = m_img_pose[i];
+        for (int i=0; i < SFM.m_img_pose.size(); i++) {
+            auto &img_pose = SFM.m_img_pose[i];
 
             gtsam::Rot3 R(
                         img_pose.T.at<double>(0,0),
@@ -435,7 +439,7 @@ void QSfM::bundleAdjustment()
                 if (img_pose.kp_3d_exist(k)) {
                     size_t landmark_id = img_pose.kp_3d(k);
 
-                    if (m_landmark[landmark_id].seen >= MIN_LANDMARK_SEEN) {
+                    if (SFM.m_landmark[landmark_id].seen >= MIN_LANDMARK_SEEN) {
                         gtsam::Point2 pt;
 
                         pt(0) = img_pose.kp[k].pt.x;
@@ -456,7 +460,7 @@ void QSfM::bundleAdjustment()
         // Initialize estimate for landmarks
         bool init_prior = false;
 
-        CONSOLE << m_landmark.size();
+        CONSOLE << SFM.m_landmark.size();
 
 //        for (int i=0; i < m_landmark.size(); i++) {
 //            if (m_landmark[i].seen >= MIN_LANDMARK_SEEN) {

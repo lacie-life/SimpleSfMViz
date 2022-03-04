@@ -25,20 +25,15 @@ using namespace  cv;
 const int IMAGE_DOWNSAMPLE = 1;
 
 // focal length in pixels, after downsampling, guess from jpeg EXIF data
-const double FOCAL_LENGTH = 4308 / IMAGE_DOWNSAMPLE;
+const double FOCAL_LENGTH = 825 / IMAGE_DOWNSAMPLE;
 
 // prior_focal=max(width,heigh)*focal/ccdw
 
 // minimum number of camera views a 3d point (landmark) has to be seen to be used
 const int MIN_LANDMARK_SEEN = 3;
 
-class QSfM : public QObject
+struct SFM_Helper
 {
-    Q_OBJECT
-    Q_PROPERTY(QString imgFolder READ imgFolder WRITE setImgFolder NOTIFY imgFolderChanged)
-    Q_PROPERTY(QString pointCloudPath READ pointCloudPath WRITE setPointCloudPath NOTIFY pointCloudPathChanged)
-
-public:
     struct ImagePose
     {
         cv::Mat img; // down sampled image used for display
@@ -83,6 +78,15 @@ public:
         cv::Point3f pt;
         int seen = 0; // how many cameras have seen this point
     };
+    QVector<ImagePose> m_img_pose;
+    QVector<Landmark> m_landmark;
+};
+
+class QSfM : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString imgFolder READ imgFolder WRITE setImgFolder NOTIFY imgFolderChanged)
+    Q_PROPERTY(QString pointCloudPath READ pointCloudPath WRITE setPointCloudPath NOTIFY pointCloudPathChanged)
 
 public:
     explicit QSfM(QObject *parent = nullptr);
@@ -113,10 +117,9 @@ private:
     QString m_imgFolder;
     QString m_pointCloudPath;
 
-    QStringList m_image_names;
+    SFM_Helper SFM;
 
-    QVector<ImagePose> m_img_pose;
-    QVector<Landmark> m_landmark;
+    QStringList m_image_names;
 };
 
 #endif // QSFM_H
