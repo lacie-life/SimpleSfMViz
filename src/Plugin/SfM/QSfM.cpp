@@ -502,5 +502,27 @@ void QSfM::reconstruction()
 
 void QSfM::savePCD()
 {
+
+    QVector<cv::Point3f> points;
+
+    for (int i = 0; i < SFM.m_landmark.size(); i++)
+    {
+        points.append(SFM.m_landmark[i].pt);
+    }
+    m_cloud.width = points.size();
+    m_cloud.height = 1;
+    m_cloud.is_dense = false;
+    m_cloud.points.resize (m_cloud.width * m_cloud.height);
+
+    CONSOLE << m_cloud.size() << " " << points.size();
+
+    for (int i = 0; i < points.size(); i++){
+        m_cloud.points[i].x = points[i].x;
+        m_cloud.points[i].y = points[i].y;
+        m_cloud.points[i].z = points[i].z;
+    }
+
+    pcl::io::savePCDFileASCII ("test_pcd.pcd", m_cloud);
+
     CONSOLE << "Save point cloud in pcd format";
 }

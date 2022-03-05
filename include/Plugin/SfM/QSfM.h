@@ -4,6 +4,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+
 #include <vector>
 #include <iostream>
 #include <map>
@@ -118,6 +121,8 @@ private:
     QString m_pointCloudPath;
 
     SFM_Helper SFM;
+
+    pcl::PointCloud<pcl::PointXYZ> m_cloud;
 
     QStringList m_image_names;
 };
