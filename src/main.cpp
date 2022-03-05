@@ -15,6 +15,8 @@ int main(int argc, char **argv)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
+    CONSOLE << "LOL";
+
     QGuiApplication app(argc, argv);
 
     QSurfaceFormat fmt;
@@ -28,10 +30,6 @@ int main(int argc, char **argv)
     AppEngine appEngine;
     appEngine.initEngine();
     appEngine.startEngine();
-
-//    QPointCloudViewer w;
-//    w.resize(600, 600);
-//    w.show();
 
     return app.exec();
 }

@@ -13,7 +13,6 @@ AppModel::AppModel(QObject *parent)
     , m_currentScreenID{static_cast<int>(AppEnums::HOME)}
 {
     CONSOLE << "Init instance";
-
 }
 
 AppModel *AppModel::instance(){
@@ -33,6 +32,14 @@ AppEnums::APP_STATE AppModel::state() const
 int AppModel::currentScreenID() const
 {
     return m_currentScreenID;
+}
+
+void AppModel::runSfM(QString path)
+{
+    QSfM *sfm = new QSfM(this);
+
+    sfm->init(path);
+    sfm->run();
 }
 
 void AppModel::setState(AppEnums::APP_STATE state)

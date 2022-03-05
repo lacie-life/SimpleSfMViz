@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.21)
 project(GreenHouseAR)
 
 set(CMAKE_CXX_STANDARD 11)
-SET(COMPILE_FLAGS "-m64 -std=c++14 -Wall -Wextra -pedantic")
+SET(COMPILE_FLAGS "-m64 -std=c++11 -Wall -Wextra -pedantic")
 SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}" )
+
+add_compile_options("-march=native")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,8 +14,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND QML_IMPORT_PATH "/home/lacie/Qt/5.15.2/gcc_64/qml")
-set(CMAKE_PREFIX_PATH "/home/lacie/Qt/5.15.2/gcc_64")
+list(APPEND QML_IMPORT_PATH "/home/jun/Qt/5.15.2/gcc_64/qml")
+set(CMAKE_PREFIX_PATH "/home/jun/Qt/5.15.2/gcc_64")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     CACHE STRING "Qt Creator 4.1 extra qml import paths"
@@ -48,6 +50,20 @@ include_directories(${GLUT_INCLUDE_DIRS})
 
 find_package(GLM)
 include_directories(${GLM_INCLUDE_DIRS})
+link_directories(${GLM_LIBRARY_DIRS})
+add_definitions(${GLM_DEFINITIONS})
+
+## GTSAM SfM
+find_package(Boost COMPONENTS thread filesystem date_time system REQUIRED)
+find_package(GTSAM REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${GTSAM_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Quick REQUIRED)
@@ -79,7 +95,9 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/View/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Handler/*.h
-                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/openGL/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/OpenGL/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/SfM/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/Camera/*.h
                       #${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/pcl/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Common/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
@@ -87,7 +105,9 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Handler/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/*.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/openGL/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/OpenGL/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/SfM/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/Camera/*.cpp
                       #${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/pcl/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -106,7 +126,19 @@ target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY} glfw GLEW::GLEW Qt5::Core Qt5::Quick Qt5::Qml Qt5::Widgets ${PCL_LIBRARIES} stdc++)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
+    glfw
+    GLEW::GLEW
+    Qt5::Core
+    Qt5::Quick
+    Qt5::Qml
+    Qt5::Widgets
+    ${PCL_LIBRARIES}
+    stdc++
+    ${Boost_LIBRARIES}
+    ${OpenCV_LIBS}
+    -lgtsam
+    -ltbb)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 #target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04

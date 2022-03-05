@@ -33,15 +33,18 @@ void AppEngine::initEngine(){
 
     // set context properties
     m_rootContext->setContextProperty("QmlConst", DEFS);
+
     m_rootContext->setContextProperty("QmlHandler", QML_HANDLER);
+
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
+
     m_rootContext->setContextProperty("QmlModel", MODEL);
 }
 
 void AppEngine::startEngine(){
-    // this->load(SCR_DEF->QML_APP());
+    this->load(SCR_DEF->QML_APP());
 
-    this->pointCloudRenderScreenRun(this);
+    // this->pointCloudRenderScreenRun(this);
 }
 
 void AppEngine::pointCloudRenderScreenRun(AppEngine *engine)
@@ -59,6 +62,10 @@ void AppEngine::slotReceiveEvent(int event)
         CONSOLE << "Invalid event";
         // do sth here, maybe call a function to process images
         // then use MODEL->setCurrentPath to re-set path
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_RUN_SfM):
+        CONSOLE << "Run SfM Event";
+        MODEL->runSfM("/home/jun/Github/GreenHouseAR/assest/data/crazyhorse");
         break;
     default:
         break;

@@ -17,6 +17,7 @@ public:
         EVT_CLICK_RUN,
         EVT_CLICK_STOP,
         EVT_CLICK_OPENGL_RENDER,
+        EVT_CLICK_RUN_SfM,
         EVT_CLICK_RESET,
         EVT_MAX, // do not add enum under this
     };
