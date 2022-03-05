@@ -10,5 +10,5 @@
 - [ ] Open file and load 3D plant model 
 - [ ] Add text in view widget
 - [ ] Camera capture and viewer interface
-- [x] 3D reconstruction plugin (GTSAM SfM)
+- [x] SfM plugin (GTSAM SfM)
 
