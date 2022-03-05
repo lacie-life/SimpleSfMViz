@@ -8,6 +8,11 @@
 #include <QVector>
 
 #include <gtsam/geometry/Point2.h>
+#include <gtsam/geometry/Pose3.h>
+#include <gtsam/geometry/Point3.h>
+#include <gtsam/geometry/PinholeCamera.h>
+#include <gtsam/geometry/Cal3_S2.h>
+
 #include <gtsam/inference/Symbol.h>
 #include <gtsam/slam/PriorFactor.h>
 #include <gtsam/slam/ProjectionFactor.h>
@@ -471,20 +476,20 @@ void QSfM::bundleAdjustment()
 
                 initial.insert<gtsam::Point3>(gtsam::Symbol('l', i), gtsam_p);
 
-//                if (!init_prior) {
-//                    init_prior = true;
+                if (!init_prior) {
+                    init_prior = true;
 
-//                    gtsam::noiseModel::Isotropic::shared_ptr point_noise = gtsam::noiseModel::Isotropic::Sigma(3, 0.1);
-//                    graph.emplace_shared<gtsam::PriorFactor<gtsam::Point3>>(gtsam::Symbol('l', i), gtsam_p, point_noise);
-//                }
+                    gtsam::noiseModel::Isotropic::shared_ptr point_noise = gtsam::noiseModel::Isotropic::Sigma(3, 0.1);
+                    graph.emplace_shared<gtsam::PriorFactor<gtsam::Point3>>(gtsam::Symbol('l', i), gtsam_p, point_noise);
+                }
             }
         }
 
-//        result = gtsam::LevenbergMarquardtOptimizer(graph, initial).optimize();
+        result = gtsam::LevenbergMarquardtOptimizer(graph, initial).optimize();
 
-//        cout << endl;
-//        cout << "initial graph error = " << graph.error(initial) << endl;
-//        cout << "final graph error = " << graph.error(result) << endl;
+        cout << endl;
+        cout << "initial graph error = " << graph.error(initial) << endl;
+        cout << "final graph error = " << graph.error(result) << endl;
     }
 }
 
