@@ -23,8 +23,8 @@ void Cphoto::init(const std::string name, const std::string mname,
   Ccamera::init(cname, maxLevel);
 }
 
-float Cphoto::ssd(const std::vector<Vec3f>& tex0,
-		  const std::vector<Vec3f>& tex1) {
+float Cphoto::ssd(const std::vector<pmvsVec3f>& tex0,
+		  const std::vector<pmvsVec3f>& tex1) {
   float ans = 0.0f;
   for (int i = 0; i < (int)tex0.size(); ++i)
     ans += norm2(tex0[i] - tex1[i]);
@@ -35,8 +35,8 @@ float Cphoto::ssd(const std::vector<Vec3f>& tex0,
   return ans;
 }
 
-float Cphoto::idot(const std::vector<Vec3f>& tex0,
-		   const std::vector<Vec3f>& tex1) {
+float Cphoto::idot(const std::vector<pmvsVec3f>& tex0,
+		   const std::vector<pmvsVec3f>& tex1) {
   if (tex0.empty() || tex1.empty()) {
     cerr << "Error in idot. Empty textures" << endl;
     exit (1);
@@ -49,8 +49,8 @@ float Cphoto::idot(const std::vector<Vec3f>& tex0,
   return 1.0f - ans / (3 * (int)tex0.size());
 }
 
-void Cphoto::idotC(const std::vector<Vec3f>& tex0,
-		   const std::vector<Vec3f>& tex1, double* idc) {
+void Cphoto::idotC(const std::vector<pmvsVec3f>& tex0,
+		   const std::vector<pmvsVec3f>& tex1, double* idc) {
   if (tex0.empty() || tex1.empty()) {
     cerr << "Error in idotC. Empty textures" << endl;
     exit (1);
@@ -64,10 +64,10 @@ void Cphoto::idotC(const std::vector<Vec3f>& tex0,
     idc[j] = 1.0 - idc[j] / (int)tex0.size();
 }
 
-void Cphoto::normalize(std::vector<Vec3f>& tex) {
+void Cphoto::normalize(std::vector<pmvsVec3f>& tex) {
   //----------------------------------------------------------------------
   // normalize average
-  Vec3f ave;
+  pmvsVec3f ave;
   for (int i = 0; i < (int)tex.size(); ++i)
     ave += tex[i];
   ave /= (int)tex.size();
@@ -88,9 +88,9 @@ void Cphoto::normalize(std::vector<Vec3f>& tex) {
     tex[i] /= ave2;
 }
 
-void Cphoto::grabTex(const int level, const Vec2f& icoord,
-		     const Vec2f& xaxis, const Vec2f& yaxis,
-		     const int size, std::vector<Vec3f>& tex,
+void Cphoto::grabTex(const int level, const pmvsVec2f& icoord,
+		     const pmvsVec2f& xaxis, const pmvsVec2f& yaxis,
+		     const int size, std::vector<pmvsVec3f>& tex,
                      const int normalizef) const{
   const int margin = size / 2;
   
@@ -107,7 +107,7 @@ void Cphoto::grabTex(const int level, const Vec2f& icoord,
      
   //tex.reserve(size * size);
   for (int y = -margin; y <= margin; ++y) {
-    Vec2f v2ftmp = icoord - margin * xaxis + y * yaxis;
+    pmvsVec2f v2ftmp = icoord - margin * xaxis + y * yaxis;
     for (int x = -margin; x <= margin; ++x) {
       tex.push_back(Cimage::getColor(v2ftmp[0], v2ftmp[1], level));
       v2ftmp += xaxis;
@@ -118,25 +118,25 @@ void Cphoto::grabTex(const int level, const Vec2f& icoord,
     normalize(tex);
 }
 
-void Cphoto::grabTex(const int level, const Vec4f& coord,
-		     const Vec4f& pxaxis, const Vec4f& pyaxis, const Vec4f& pzaxis,
+void Cphoto::grabTex(const int level, const pmvsVec4f& coord,
+		     const pmvsVec4f& pxaxis, const pmvsVec4f& pyaxis, const pmvsVec4f& pzaxis,
 		     const int size,
-		     std::vector<Vec3f>& tex, float& weight,
+		     std::vector<pmvsVec3f>& tex, float& weight,
                      const int normalizef) const {
   const int scale = 0x0001 << level;
   
-  const Vec3f icoord3 = project(coord, level);
-  const Vec2f icoord(icoord3[0], icoord3[1]);
+  const pmvsVec3f icoord3 = project(coord, level);
+  const pmvsVec2f icoord(icoord3[0], icoord3[1]);
   
-  const Vec3f xaxis3 = project(coord + pxaxis * scale, level) - icoord3;
-  const Vec2f xaxis(xaxis3[0], xaxis3[1]);
+  const pmvsVec3f xaxis3 = project(coord + pxaxis * scale, level) - icoord3;
+  const pmvsVec2f xaxis(xaxis3[0], xaxis3[1]);
   
-  const Vec3f yaxis3 = project(coord + pyaxis * scale, level) - icoord3;
-  const Vec2f yaxis(yaxis3[0], yaxis3[1]);
+  const pmvsVec3f yaxis3 = project(coord + pyaxis * scale, level) - icoord3;
+  const pmvsVec2f yaxis(yaxis3[0], yaxis3[1]);
 
   grabTex(level, icoord, xaxis, yaxis, size, tex, normalizef);
 
-  Vec4f ray = m_center - coord;
+  pmvsVec4f ray = m_center - coord;
   unitize(ray);
   weight = max(0.0f, pzaxis * ray);
 }

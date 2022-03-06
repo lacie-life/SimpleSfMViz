@@ -195,7 +195,7 @@ void Cdog::run(const std::vector<unsigned char>& image,
 
 	  alreadydetected[y][x] = 1;
 	  Cpoint p;
-	  p.m_icoord = Vec3f(x, y, 1.0f);
+	  p.m_icoord = pmvsVec3f(x, y, 1.0f);
 	  p.m_response = fabs(cdog[y][x]);
 	  p.m_type = 1;
 	  
@@ -228,12 +228,12 @@ void Cdog::setRes(const float sigma,
   vector<float> gauss;
   setGaussI(sigma, gauss);
   
-  vector<vector<Vec3f> > vvftmp;
+  vector<vector<pmvsVec3f> > vvftmp;
   vvftmp.resize((int)m_image.size());
   for (int y = 0; y < (int)m_image.size(); ++y)
     vvftmp[y].resize((int)m_image[y].size());
 
-  vector<vector<Vec3f> > restmp = m_image;
+  vector<vector<pmvsVec3f> > restmp = m_image;
   convolveX(restmp, m_mask, gauss, vvftmp);
   convolveY(restmp, m_mask, gauss, vvftmp);
 

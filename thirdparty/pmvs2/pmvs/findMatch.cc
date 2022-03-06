@@ -115,10 +115,10 @@ void CfindMatch::init(const Soption& option) {
   m_epThreshold = 2.0f;
 }
 
-int CfindMatch::insideBimages(const Vec4f& coord) const {
+int CfindMatch::insideBimages(const pmvsVec4f& coord) const {
   for (int i = 0; i < (int)m_bindexes.size(); ++i) {
     const int index = m_bindexes[i];
-    const Vec3f icoord = m_pss.project(index, coord, m_level);
+    const pmvsVec3f icoord = m_pss.project(index, coord, m_level);
     if (icoord[0] < 0.0 || m_pss.getWidth(index, m_level) - 1 < icoord[0] ||
         icoord[1] < 0.0 || m_pss.getHeight(index, m_level) - 1 < icoord[1])
       return 0;
@@ -138,7 +138,7 @@ int CfindMatch::isNeighbor(const Patch::Cpatch& lhs, const Patch::Cpatch& rhs,
                            const float hunit, const float neighborThreshold) const {
   if (lhs.m_normal * rhs.m_normal < cos(120.0 * M_PI / 180.0))
     return 0;
-  const Vec4f diff = rhs.m_coord - lhs.m_coord;
+  const pmvsVec4f diff = rhs.m_coord - lhs.m_coord;
 
   const float vunit = lhs.m_dscale + rhs.m_dscale;
 
@@ -165,7 +165,7 @@ int CfindMatch::isNeighborRadius(const Patch::Cpatch& lhs,
                                  const float radius) const {
   if (lhs.m_normal * rhs.m_normal < cos(120.0 * M_PI / 180.0))
     return 0;
-  const Vec4f diff = rhs.m_coord - lhs.m_coord;
+  const pmvsVec4f diff = rhs.m_coord - lhs.m_coord;
 
   const float vunit = lhs.m_dscale + rhs.m_dscale;
 

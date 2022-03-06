@@ -89,7 +89,7 @@ void Cexpand::expandThread(void) {
       break;
     
     // For each direction;
-    vector<vector<Vec4f> > canCoords;
+    vector<vector<pmvsVec4f> > canCoords;
     findEmptyBlocks(ppatch, canCoords);
 
     for (int i = 0; i < (int)canCoords.size(); ++i) {
@@ -104,13 +104,13 @@ void Cexpand::expandThread(void) {
 }
 
 void Cexpand::findEmptyBlocks(const Ppatch& ppatch,
-			      std::vector<std::vector<Vec4f> >& canCoords) {
+			      std::vector<std::vector<pmvsVec4f> >& canCoords) {
   // dnum must be at most 8, because m_dflag is char
   const int dnum = 6;
   const Cpatch& patch = *ppatch;
 
   // Empty six directions
-  Vec4f xdir, ydir;
+  pmvsVec4f xdir, ydir;
   ortho(ppatch->m_normal, xdir, ydir);
   
   // -1: not empty
@@ -141,8 +141,8 @@ void Cexpand::findEmptyBlocks(const Ppatch& ppatch,
   vector<Ppatch>::iterator bpatch = neighbors.begin();
   vector<Ppatch>::iterator epatch = neighbors.end();
   while (bpatch != epatch) {
-    const Vec4f diff = (*bpatch)->m_coord - ppatch->m_coord;
-    Vec2f f2(diff * xdir, diff * ydir);
+    const pmvsVec4f diff = (*bpatch)->m_coord - ppatch->m_coord;
+    pmvsVec2f f2(diff * xdir, diff * ydir);
     const float len = norm(f2);
     if (len < radiuslow || radiushigh < len) {
       ++bpatch;
@@ -176,7 +176,7 @@ void Cexpand::findEmptyBlocks(const Ppatch& ppatch,
       continue;    
 
     const float angle = 2 * M_PI * i / dnum;
-    Vec4f canCoord = ppatch->m_coord +
+    pmvsVec4f canCoord = ppatch->m_coord +
       cos(angle) * radius * xdir + sin(angle) * radius * ydir;
     canCoords[i].push_back(canCoord);
   }
@@ -201,7 +201,7 @@ float Cexpand::computeRadius(const Patch::Cpatch& patch) {
 }
 
 int Cexpand::expandSub(const Ppatch& orgppatch, const int id,
-                       const Vec4f& canCoord) {
+                       const pmvsVec4f& canCoord) {
   // Choose the closest one
   Cpatch patch;
   patch.m_coord = canCoord;
@@ -277,7 +277,7 @@ int Cexpand::checkCounts(Patch::Cpatch& patch) {
 
   vector<int>::iterator begin = patch.m_images.begin();
   vector<int>::iterator end = patch.m_images.end();
-  vector<Vec2i>::iterator begin2 = patch.m_grids.begin();
+  vector<TVec2<int>>::iterator begin2 = patch.m_grids.begin();
   
   while (begin != end) {
     const int index = *begin;
@@ -339,7 +339,7 @@ int Cexpand::updateCounts(const Cpatch& patch) {
   {
     vector<int>::const_iterator begin = patch.m_images.begin();
     vector<int>::const_iterator end = patch.m_images.end();
-    vector<Vec2i>::const_iterator begin2 = patch.m_grids.begin();
+    vector<TVec2<int>>::const_iterator begin2 = patch.m_grids.begin();
     
     while (begin != end) {
       const int index = *begin;
@@ -375,7 +375,7 @@ int Cexpand::updateCounts(const Cpatch& patch) {
   {
     vector<int>::const_iterator begin = patch.m_vimages.begin();
     vector<int>::const_iterator end = patch.m_vimages.end();
-    vector<Vec2i>::const_iterator begin2 = patch.m_vgrids.begin();
+    vector<TVec2<int>>::const_iterator begin2 = patch.m_vgrids.begin();
     
     while (begin != end) {
       const int index = *begin;

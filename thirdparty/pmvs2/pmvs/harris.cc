@@ -72,8 +72,8 @@ void Charris::preprocess2(void) {
   }
 
   {
-    vector<vector<Vec3f> >().swap(m_dIdx);
-    vector<vector<Vec3f> >().swap(m_dIdy);
+    vector<vector<pmvsVec3f> >().swap(m_dIdx);
+    vector<vector<pmvsVec3f> >().swap(m_dIdy);
   }
   
   //----------------------------------------------------------------------
@@ -103,12 +103,12 @@ void Charris::preprocess2(void) {
 }
 
 void Charris::preprocess(void) {
-  vector<vector<Vec3f> > vvvftmp;
+  vector<vector<pmvsVec3f> > vvvftmp;
   vvvftmp.resize(m_height);
   for (int y = 0; y < m_height; ++y) {
     vvvftmp[y].resize(m_width);
     for (int x = 0; x < m_width; ++x)
-      vvvftmp[y][x] = Vec3f();
+      vvvftmp[y][x] = pmvsVec3f();
   }
   
   m_dIdx = m_image;
@@ -195,7 +195,7 @@ void Charris::run(const std::vector<unsigned char>& image,
       if ((int)resultgrids[y0][x0].size() < maxPointsGrid ||
 	  resultgrids[y0][x0].begin()->m_response < m_response[y][x]) {
 	Cpoint p;
-	p.m_icoord = Vec3f(x, y, 1.0f);
+	p.m_icoord = pmvsVec3f(x, y, 1.0f);
 	p.m_response = m_response[y][x];
 	p.m_type = 0;
 	

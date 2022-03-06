@@ -22,6 +22,9 @@
 #include <gtsam/nonlinear/DoglegOptimizer.h>
 #include <gtsam/nonlinear/Values.h>
 
+#include "thirdparty/pmvs2/pmvs/findMatch.h"
+#include "thirdparty/pmvs2/pmvs/option.h"
+
 QSfM::QSfM(QObject *parent)
     : QObject(parent)
     , m_imgFolder("")
@@ -76,7 +79,7 @@ void QSfM::run()
     featureExtract();
     triangulate();
     bundleAdjustment();
-    reconstruction();
+    reconstruction("root/");
     // TODO: Point Cloud gennerate
 }
 
@@ -116,8 +119,12 @@ void QSfM::featureExtract()
         for (auto f : m_image_names) {
             SFM_Helper::ImagePose a;
 
-            Mat img = imread(f.toStdString());
+            CONSOLE << "Image path: " << f;
+
+            cv::Mat img = cv::imread(f.toStdString(), 1);
+
             std::vector<cv::KeyPoint> kp;
+
             assert(!img.empty());
 
             resize(img, img, img.size()/IMAGE_DOWNSAMPLE);
@@ -490,12 +497,86 @@ void QSfM::bundleAdjustment()
         cout << endl;
         cout << "initial graph error = " << graph.error(initial) << endl;
         cout << "final graph error = " << graph.error(result) << endl;
+
+        CONSOLE << "Create model";
+
+        gtsam::Matrix3 K_refined = result.at<gtsam::Cal3_S2>(gtsam::Symbol('K', 0)).K();
+
+        cout << endl << "final camera matrix K" << endl << K_refined << endl;
+
+        // Convert to full resolution camera matrix
+        K_refined(0, 0) *= IMAGE_DOWNSAMPLE;
+        K_refined(1, 1) *= IMAGE_DOWNSAMPLE;
+        K_refined(0, 2) *= IMAGE_DOWNSAMPLE;
+        K_refined(1, 2) *= IMAGE_DOWNSAMPLE;
+
+        if(!QDir("root").exists()){
+            QDir().mkpath("root/visualize");
+            QDir().mkpath("root/txt");
+            QDir().mkpath("root/models");
+        }
+
+        QFile file("root/option.txt");
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return;
+
+        QTextStream out(&file);
+        out << "timages  -1 " << 0 << " " << (SFM.m_img_pose.size()-1) << "\n";
+        out << "oimages 0" << "\n";
+        out << "level 1" << "\n";
+
+        file.close();
+
+        for (int i=0; i < SFM.m_img_pose.size(); i++) {
+            Eigen::Matrix<double, 3, 3> R;
+            Eigen::Matrix<double, 3, 1> t;
+            Eigen::Matrix<double, 3, 4> P;
+            char str[256];
+
+            R = result.at<gtsam::Pose3>(gtsam::Symbol('x', i)).rotation().matrix();
+            t = result.at<gtsam::Pose3>(gtsam::Symbol('x', i)).translation().matrix();
+
+            P.block(0, 0, 3, 3) = R.transpose();
+            P.col(3) = -R.transpose()*t;
+            P = K_refined*P;
+
+            sprintf(str, "cp -f %s/%s root/visualize/%04d.jpg", m_imgFolder.toStdString().c_str(), m_image_names[i].toStdString().c_str(), (int)i);
+            system(str);
+            //imwrite(str, SFM.img_pose[i].img);
+
+
+            sprintf(str, "root/txt/%04d.txt", (int)i);
+            ofstream out(str);
+
+            out << "CONTOUR" << endl;
+
+            for (int j=0; j < 3; j++) {
+                for (int k=0; k < 4; k++) {
+                    out << P(j, k) << " ";
+                }
+                out << endl;
+            }
+        }
     }
+
 }
 
-void QSfM::reconstruction()
+void QSfM::reconstruction(QString path)
 {
     CONSOLE << "Run reconstruction";
+
+    PMVS3::Soption option;
+    option.init(path.toStdString(), "option.txt");
+
+    PMVS3::CfindMatch findMatch;
+    findMatch.init(option);
+    findMatch.run();
+
+    char buffer[1024];
+    sprintf(buffer, "%smodels/%s", path.toStdString().c_str(), path.toStdString().c_str());
+    findMatch.write(buffer);
+
+    CONSOLE << "Saved model in root/models/options.txt.ply";
 
     savePCD();
 }

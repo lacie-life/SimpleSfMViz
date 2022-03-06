@@ -329,7 +329,7 @@ void CpatchOrganizerS::addPatch(Patch::Ppatch& ppatch) {
   // First handle m_vimages
   vector<int>::iterator bimage = ppatch->m_images.begin();
   vector<int>::iterator eimage = ppatch->m_images.end();
-  vector<Vec2i>::iterator bgrid = ppatch->m_grids.begin();
+  vector<TVec2<int>>::iterator bgrid = ppatch->m_grids.begin();
   while (bimage != eimage) {
     const int index = *bimage;
     if (m_fm.m_tnum <= index) {
@@ -368,7 +368,7 @@ void CpatchOrganizerS::addPatch(Patch::Ppatch& ppatch) {
 
 void CpatchOrganizerS::updateDepthMaps(Ppatch& ppatch) {
   for (int image = 0; image < m_fm.m_tnum; ++image) {
-    const Vec3f icoord = m_fm.m_pss.project(image, ppatch->m_coord, m_fm.m_level);
+    const pmvsVec3f icoord = m_fm.m_pss.project(image, ppatch->m_coord, m_fm.m_level);
 
     const float fx = icoord[0] / m_fm.m_csize;
     const int xs[2] = {(int)floor(fx), (int)ceil(fx)};
@@ -407,13 +407,13 @@ void CpatchOrganizerS::setGridsImages(Patch::Cpatch& patch,
   vector<int>::const_iterator bimage = images.begin();
   vector<int>::const_iterator eimage = images.end();
   while (bimage != eimage) {
-    const Vec3f icoord = m_fm.m_pss.project(*bimage, patch.m_coord, m_fm.m_level);
+    const pmvsVec3f icoord = m_fm.m_pss.project(*bimage, patch.m_coord, m_fm.m_level);
     const int ix = ((int)floor(icoord[0] + 0.5f)) / m_fm.m_csize;
     const int iy = ((int)floor(icoord[1] + 0.5f)) / m_fm.m_csize;
     if (0 <= ix && ix < m_gwidths[*bimage] &&
         0 <= iy && iy < m_gheights[*bimage]) {
       patch.m_images.push_back(*bimage);
-      patch.m_grids.push_back(Vec2i(ix, iy));
+      patch.m_grids.push_back(TVec2<int>(ix, iy));
     }
     ++bimage;
   }
@@ -427,7 +427,7 @@ void CpatchOrganizerS::setGrids(Cpatch& patch) const{
   patch.m_grids.clear();
   for (int i = 0; i < (int)patch.m_images.size(); ++i) {
     const int image = patch.m_images[i];
-    Vec3f icoord = m_fm.m_pss.project(image, patch.m_coord, m_fm.m_level);
+    pmvsVec3f icoord = m_fm.m_pss.project(image, patch.m_coord, m_fm.m_level);
     const int ix = ((int)floor(icoord[0] + 0.5f)) / m_fm.m_csize;
     const int iy = ((int)floor(icoord[1] + 0.5f)) / m_fm.m_csize;
     patch.m_grids.push_back(TVec2<int>(ix, iy));
@@ -511,7 +511,7 @@ void CpatchOrganizerS::removePatch(const Ppatch& ppatch) {
 int CpatchOrganizerS::isVisible0(const Cpatch& patch, const int image,
                                 int& ix, int& iy,
                                 const float strict, const int lock) {
-  const Vec3f icoord =
+  const pmvsVec3f icoord =
     m_fm.m_pss.project(image, patch.m_coord, m_fm.m_level);
   ix = ((int)floor(icoord[0] + 0.5f)) / m_fm.m_csize;
   iy = ((int)floor(icoord[1] + 0.5f)) / m_fm.m_csize;
@@ -550,7 +550,7 @@ int CpatchOrganizerS::isVisible(const Cpatch& patch, const int image,
     return 1;
   
 
-  Vec4f ray = patch.m_coord - m_fm.m_pss.m_photos[image].m_center;
+  pmvsVec4f ray = patch.m_coord - m_fm.m_pss.m_photos[image].m_center;
   unitize(ray);
   const float diff = ray * (patch.m_coord - dppatch->m_coord);
   const float factor = min(2.0, 2.0 + ray * patch.m_normal);
@@ -570,7 +570,7 @@ void CpatchOrganizerS::findNeighbors(const Patch::Cpatch& patch,
   
   vector<int>::const_iterator bimage = patch.m_images.begin();
   vector<int>::const_iterator eimage = patch.m_images.end();
-  vector<Vec2i>::const_iterator bgrid = patch.m_grids.begin();
+  vector<TVec2<int>>::const_iterator bgrid = patch.m_grids.begin();
 
 #ifdef DEBUG
   if (patch.m_images.empty()) {
@@ -699,7 +699,7 @@ float CpatchOrganizerS::computeUnit(const Patch::Cpatch& patch) const{
 void CpatchOrganizerS::setScales(Patch::Cpatch& patch) const {
   const float unit = m_fm.m_optim.getUnit(patch.m_images[0], patch.m_coord);
   const float unit2 = 2.0f * unit;
-  Vec4f ray = patch.m_coord - m_fm.m_pss.m_photos[patch.m_images[0]].m_center;
+  pmvsVec4f ray = patch.m_coord - m_fm.m_pss.m_photos[patch.m_images[0]].m_center;
   unitize(ray);
 
   const int inum = min(m_fm.m_tau, (int)patch.m_images.size());
@@ -707,7 +707,7 @@ void CpatchOrganizerS::setScales(Patch::Cpatch& patch) const {
   // First compute, how many pixel difference per unit along vertical
   //for (int i = 1; i < (int)patch.m_images.size(); ++i) {
   for (int i = 1; i < inum; ++i) {
-    Vec3f diff = m_fm.m_pss.project(patch.m_images[i], patch.m_coord, m_fm.m_level) -
+    pmvsVec3f diff = m_fm.m_pss.project(patch.m_images[i], patch.m_coord, m_fm.m_level) -
       m_fm.m_pss.project(patch.m_images[i], patch.m_coord - ray * unit2, m_fm.m_level);
     patch.m_dscale += norm(diff);
   }
@@ -744,7 +744,7 @@ void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
   
   while (bpatch != bend) {
     // Get color
-    Vec3i color;
+    TVec3<int> color;
     
     const int mode = 0;
     // 0: color from images
@@ -752,7 +752,7 @@ void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
     // 2: angle
     if (mode == 0) {
       int denom = 0;
-      Vec3f colorf;
+      pmvsVec3f colorf;
       for (int i = 0; i < (int)(*bpatch)->m_images.size(); ++i) {
         const int image = (*bpatch)->m_images[i];
         colorf += m_fm.m_pss.getColor((*bpatch)->m_coord, image, m_fm.m_level);
@@ -782,7 +782,7 @@ void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
 
       while (bimage != eimage) {
         const int index = *bimage;
-        Vec4f ray = m_fm.m_pss.m_photos[index].m_center - (*bpatch)->m_coord;
+        pmvsVec4f ray = m_fm.m_pss.m_photos[index].m_center - (*bpatch)->m_coord;
         ray[3] = 0.0f;
         unitize(ray);
 
@@ -812,7 +812,7 @@ void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
 
 void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
                                 const std::string filename,
-                                const std::vector<Vec3i>& colors) {
+                                const std::vector<TVec3<int>>& colors) {
   ofstream ofstr;
   ofstr.open(filename.c_str());
   ofstr << "ply" << endl
@@ -831,7 +831,7 @@ void CpatchOrganizerS::writePLY(const std::vector<Ppatch>& patches,
 
   vector<Ppatch>::const_iterator bpatch = patches.begin();
   vector<Ppatch>::const_iterator bend = patches.end();
-  vector<Vec3i>::const_iterator colorb = colors.begin();
+  vector<TVec3<int>>::const_iterator colorb = colors.begin();
   
   while (bpatch != bend) {
     ofstr << (*bpatch)->m_coord[0] << ' '

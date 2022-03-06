@@ -64,42 +64,42 @@ inline TMat4<T>& TMat4<T>::operator=(const TMat4<T>& m)
 {
     m_row[0] = m[0]; m_row[1] = m[1]; m_row[2] = m[2]; m_row[3] = m[3];
     return *this;
-};
+}
 
 template <class T>
 inline TMat4<T>& TMat4<T>::operator=(T s)
 {
     m_row[0]=s;  m_row[1]=s;  m_row[2]=s;  m_row[3]=s;
     return *this;
-};
+}
 
 template <class T>
 inline TMat4<T>& TMat4<T>::operator+=(const TMat4<T>& m)
 {
     m_row[0] += m[0]; m_row[1] += m[1]; m_row[2] += m[2]; m_row[3] += m[3];
     return *this;
-};
+}
 
 template <class T>
 inline TMat4<T>& TMat4<T>::operator-=(const TMat4<T>& m)
 {
     m_row[0] -= m[0]; m_row[1] -= m[1]; m_row[2] -= m[2]; m_row[3] -= m[3];
     return *this;
-};
+}
 
 template <class T>
 inline TMat4<T>& TMat4<T>::operator*=(T s)
 {
     m_row[0] *= s; m_row[1] *= s; m_row[2] *= s; m_row[3] *= s;
     return *this;
-};
+}
 
 template <class T>
 inline TMat4<T>& TMat4<T>::operator/=(T s)
 {
     m_row[0] /= s; m_row[1] /= s; m_row[2] /= s; m_row[3] /= s;
     return *this;
-};
+}
 
 template <class T>
 inline bool TMat4<T>::operator==(const TMat4<T>& m) const {
@@ -108,12 +108,12 @@ inline bool TMat4<T>::operator==(const TMat4<T>& m) const {
 	return true;
     else
 	return false;
-};
+}
 
 template <class T>
 inline bool TMat4<T>::operator!=(const TMat4<T>& m) const {
     return !(*this == m);
-};
+}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -123,30 +123,30 @@ inline bool TMat4<T>::operator!=(const TMat4<T>& m) const {
 
 template <class T>
 inline TMat4<T> operator+(const TMat4<T>& n, const TMat4<T>& m)
-{ return TMat4<T>(n[0]+m[0], n[1]+m[1], n[2]+m[2], n[3]+m[3]); };
+{ return TMat4<T>(n[0]+m[0], n[1]+m[1], n[2]+m[2], n[3]+m[3]); }
 
 template <class T>
 inline TMat4<T> operator-(const TMat4<T>& n, const TMat4<T>& m)
-{ return TMat4<T>(n[0]-m[0], n[1]-m[1], n[2]-m[2], n[3]-m[3]); };
+{ return TMat4<T>(n[0]-m[0], n[1]-m[1], n[2]-m[2], n[3]-m[3]); }
 
 template <class T>
 inline TMat4<T> operator-(const TMat4<T>& n)
-{ return TMat4<T>(-n[0], -n[1], -n[2], -n[3]); };
+{ return TMat4<T>(-n[0], -n[1], -n[2], -n[3]); }
 
 template <class T>
 inline TMat4<T> operator*(T s, const TMat4<T>& m)
-{ return TMat4<T>(m[0]*s, m[1]*s, m[2]*s, m[3]*s); };
+{ return TMat4<T>(m[0]*s, m[1]*s, m[2]*s, m[3]*s); }
 template <class T>
 inline TMat4<T> operator*(const TMat4<T>& m, T s)
-{ return s*m; };
+{ return s*m; }
 
 template <class T>
 inline TMat4<T> operator/(const TMat4<T>& m, T s)
-{ return TMat4<T>(m[0]/s, m[1]/s, m[2]/s, m[3]/s); };
+{ return TMat4<T>(m[0]/s, m[1]/s, m[2]/s, m[3]/s); }
 
 template <class T>
 inline TVec4<T> operator*(const TMat4<T>& m, const TVec4<T>& v)
-{ return TVec4<T>(m[0]*v, m[1]*v, m[2]*v, m[3]*v); };
+{ return TVec4<T>(m[0]*v, m[1]*v, m[2]*v, m[3]*v); }
 
 //
 // Transform a homogeneous 3-vector and reproject into normal 3-space
@@ -159,15 +159,15 @@ inline TVec3<T> operator*(const TMat4<T>& m, const TVec3<T>& v)
 
     if(w==0.0)  return TVec3<T>(m[0]*u, m[1]*u, m[2]*u);
     else        return TVec3<T>(m[0]*u/w, m[1]*u/w, m[2]*u/w);
-};
+}
 
 template <class T>
 inline std::ostream &operator<<(std::ostream &out, const TMat4<T>& M)
-{ return out<<M[0]<<std::endl<<M[1]<<std::endl<<M[2]<<std::endl<<M[3]; };
+{ return out<<M[0]<<std::endl<<M[1]<<std::endl<<M[2]<<std::endl<<M[3]; }
 
 template <class T>
 inline std::istream &operator>>(std::istream &in, TMat4<T>& M)
-{ return in >> M[0] >> M[1] >> M[2] >> M[3]; };
+{ return in >> M[0] >> M[1] >> M[2] >> M[3]; }
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -176,7 +176,7 @@ inline std::istream &operator>>(std::istream &in, TMat4<T>& M)
 
 template <class T>
 inline TMat4<T> rotation_matrix_deg(T theta, const TVec3<T>& axis)
-{ return rotation_matrix_rad(theta*M_PI/180.0, axis); };
+{ return rotation_matrix_rad(theta*M_PI/180.0, axis); }
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -403,7 +403,7 @@ inline void Trans2WT(const TMat4<T>& trans, TVec3<T>& w, TVec3<T>& t) {
   const T sinomegalen = sin(omegalen);
 
   if (sinomegalen == 0.0f)
-    w = Vec3f();
+    w = pmvsVec3f();
   else {
     w[0] = trans[2][1] - trans[1][2];
     w[1] = trans[0][2] - trans[2][0];
@@ -412,7 +412,7 @@ inline void Trans2WT(const TMat4<T>& trans, TVec3<T>& w, TVec3<T>& t) {
     unitize(w);
     w *= omegalen;      
   }
-};
+}
 
 template <class T>
 inline void WT2Trans(const TVec3<T>& w, const TVec3<T>& t, TMat4<T>& trans) {
@@ -448,16 +448,16 @@ inline void WT2Trans(const TVec3<T>& w, const TVec3<T>& t, TMat4<T>& trans) {
       for (int x = 0; x < 3; ++x)
 	trans[y][x] += a * omegahat[y][x] + b * omegahat2[y][x];
   }
-};
+}
 
 template <class T>
 inline TMat3<T> hat(const TVec3<T>& vec) {
   return TMat3<T>(TVec3<T>(0.0, -vec[2], vec[1]),
 		  TVec3<T>(vec[2], 0.0, -vec[0]),
 		  TVec3<T>(-vec[1], vec[0], 0.0));
-};
+}
 
 typedef TMat4<double> Mat4;
-typedef TMat4<float> Mat4f;
+typedef TMat4<float> pmvsMat4f;
 
 #endif // MAT4_H

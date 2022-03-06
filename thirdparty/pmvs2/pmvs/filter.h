@@ -67,6 +67,6 @@ class Cfilter {
   CfindMatch& m_fm;
   
 };
-};
+}
 
 #endif // PMVS3_FILTER_H

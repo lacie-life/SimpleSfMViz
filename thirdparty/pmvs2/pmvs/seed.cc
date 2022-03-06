@@ -344,7 +344,7 @@ int Cseed::canAdd(const int index, const int x, const int y) {
 
 void Cseed::unproject(const int index0, const int index1,
                       const Cpoint& p0, const Cpoint& p1,
-                      Vec4f& coord) const{
+                      pmvsVec4f& coord) const{
   Mat4 A;
   A[0][0] =
     m_fm.m_pss.m_photos[index0].m_projection[m_fm.m_level][0][0] -

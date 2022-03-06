@@ -17,7 +17,7 @@ class Cdetector {
   int isCloseBoundary(const int x, const int y, const int margin) const;
   int m_width;
   int m_height;
-  std::vector<std::vector<Vec3f> > m_image;  
+  std::vector<std::vector<pmvsVec3f> > m_image;  
   std::vector<std::vector<unsigned char> > m_mask;
   
  public:  

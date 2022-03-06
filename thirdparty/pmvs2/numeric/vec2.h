@@ -66,27 +66,27 @@ public:
 // Method definitions
 //
 template<class T> inline TVec2<T>& TVec2<T>::operator+=(const TVec2<T>& v)
-{ m_elt[0] += v[0];   m_elt[1] += v[1];   return *this; };
+{ m_elt[0] += v[0];   m_elt[1] += v[1];   return *this; }
 
 template<class T> inline TVec2<T>& TVec2<T>::operator-=(const TVec2<T>& v)
-{ m_elt[0] -= v[0];   m_elt[1] -= v[1];   return *this; };
+{ m_elt[0] -= v[0];   m_elt[1] -= v[1];   return *this; }
 
 template<class T> inline TVec2<T>& TVec2<T>::operator*=(T s)
-{ m_elt[0] *= s;   m_elt[1] *= s;   return *this; };
+{ m_elt[0] *= s;   m_elt[1] *= s;   return *this; }
 
 template<class T> inline TVec2<T>& TVec2<T>::operator/=(T s)
-{ m_elt[0] /= s;   m_elt[1] /= s;   return *this; };
+{ m_elt[0] /= s;   m_elt[1] /= s;   return *this; }
 
 template<class T> inline bool TVec2<T>::operator==(const TVec2<T>& v) const{
     if (m_elt[0] == v.m_elt[0] && m_elt[1] == v.m_elt[1])
 	return true;
     else
 	return false;
-};
+}
 
 template<class T> inline bool TVec2<T>::operator!=(const TVec2<T>& v) const{
     return !(*this == v);
-};
+}
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -95,46 +95,46 @@ template<class T> inline bool TVec2<T>::operator!=(const TVec2<T>& v) const{
 
 template<class T>
 inline TVec2<T> operator+(const TVec2<T> &u, const TVec2<T> &v)
-{ return TVec2<T>(u[0]+v[0], u[1]+v[1]); };
+{ return TVec2<T>(u[0]+v[0], u[1]+v[1]); }
 
 template<class T>
 inline TVec2<T> operator-(const TVec2<T> &u, const TVec2<T> &v)
-{ return TVec2<T>(u[0]-v[0], u[1]-v[1]); };
+{ return TVec2<T>(u[0]-v[0], u[1]-v[1]); }
 
 template<class T> inline TVec2<T> operator-(const TVec2<T> &v)
-{ return TVec2<T>(-v[0], -v[1]); };
+{ return TVec2<T>(-v[0], -v[1]); }
 
 template<class T, class N> inline TVec2<T> operator*(N s, const TVec2<T> &v)
-{ return TVec2<T>(v[0]*s, v[1]*s); };
+{ return TVec2<T>(v[0]*s, v[1]*s); }
 template<class T, class N> inline TVec2<T> operator*(const TVec2<T> &v, N s)
-{ return s*v; };
+{ return s*v; }
 
 template<class T, class N> inline TVec2<T> operator/(const TVec2<T> &v, N s)
-{ return TVec2<T>(v[0]/s, v[1]/s); };
+{ return TVec2<T>(v[0]/s, v[1]/s); }
 
 template<class T> inline T operator*(const TVec2<T> &u, const TVec2<T>& v)
-{ return u[0]*v[0] + u[1]*v[1]; };
+{ return u[0]*v[0] + u[1]*v[1]; }
 
 template<class T> inline TVec2<T> perp(const TVec2<T> &v)
-{ return TVec2<T>(v[1], -v[0]); };
+{ return TVec2<T>(v[1], -v[0]); }
 
 template<class T>
 inline std::ostream &operator<<(std::ostream &out, const TVec2<T> &v)
-{ return out << v[0] << " " << v[1]; };
+{ return out << v[0] << " " << v[1]; }
 
 template<class T>
 inline std::istream &operator>>(std::istream &in, TVec2<T>& v)
-{ return in >> v[0] >> v[1]; };
+{ return in >> v[0] >> v[1]; }
 
 //----------------------------------------------------------------------
-template<class T> inline T norm2(const TVec2<T>& v)  { return v*v; };
-template<class T> inline T norm(const TVec2<T>& v)   { return sqrt(norm2(v)); };
+template<class T> inline T norm2(const TVec2<T>& v)  { return v*v; }
+template<class T> inline T norm(const TVec2<T>& v)   { return sqrt(norm2(v)); }
 
 template<class T> inline void unitize(TVec2<T>& v)
 {
     T l = norm2(v);
     if( l!=1.0 && l!=0.0 )  v /= sqrt(l);
-};
+}
 
 template<class T>
 bool predVec20(const TVec2<T>& lhs, const TVec2<T>& rhs) {
@@ -142,7 +142,7 @@ bool predVec20(const TVec2<T>& lhs, const TVec2<T>& rhs) {
     return true;
   else
     return false;
-};
+}
 
 template<class T>
 bool predVec21(const TVec2<T>& lhs, const TVec2<T>& rhs) {
@@ -150,7 +150,7 @@ bool predVec21(const TVec2<T>& lhs, const TVec2<T>& rhs) {
     return true;
   else
     return false;
-};
+}
 
 template<class T>
 int isOverlapUnsorted(const TVec2<T>& lhs,
@@ -184,7 +184,7 @@ int overlap(const TVec2<T>& lhs, const TVec2<T>& rhs, TVec2<T>& intersect) {
 }
 
 typedef TVec2<double> Vec2;
-typedef TVec2<float>  Vec2f;
+typedef TVec2<float>  pmvsVec2f;
 typedef TVec2<int>    Vec2i;
 
 template<class T>

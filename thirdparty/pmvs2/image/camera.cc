@@ -115,33 +115,33 @@ void Ccamera::updateCamera(void) {
 
   m_center = getOpticalCenter();
 
-  m_zaxis = Vec3f(m_oaxis[0], m_oaxis[1], m_oaxis[2]);
-  m_xaxis = Vec3f(m_projection[0][0][0],
+  m_zaxis = pmvsVec3f(m_oaxis[0], m_oaxis[1], m_oaxis[2]);
+  m_xaxis = pmvsVec3f(m_projection[0][0][0],
 		  m_projection[0][0][1],
 		  m_projection[0][0][2]);
   m_yaxis = cross(m_zaxis, m_xaxis);
   unitize(m_yaxis);
   m_xaxis = cross(m_yaxis, m_zaxis);
   
-  Vec4f xaxis = m_projection[0][0];  xaxis[3] = 0.0f;    
-  Vec4f yaxis = m_projection[0][1];  yaxis[3] = 0.0f;
+  pmvsVec4f xaxis = m_projection[0][0];  xaxis[3] = 0.0f;    
+  pmvsVec4f yaxis = m_projection[0][1];  yaxis[3] = 0.0f;
   float ftmp2 = (norm(xaxis) + norm(yaxis)) / 2.0f;
   if (ftmp2 == 0.0f)
     ftmp2 = 1.0f;
   m_ipscale = ftmp2;
 }
 
-Vec4f Ccamera::getOpticalCenter(void) const {
+pmvsVec4f Ccamera::getOpticalCenter(void) const {
   // orthographic case
-  Vec4f ans;
+  pmvsVec4f ans;
   if (m_projection[0][2][0] == 0.0 && m_projection[0][2][1] == 0.0 &&
       m_projection[0][2][2] == 0.0) {
-    Vec3f vtmp[2];
+    pmvsVec3f vtmp[2];
     for (int i = 0; i < 2; ++i)
       for (int y = 0; y < 3; ++y)
 	vtmp[i][y] = m_projection[0][i][y];
 	
-    Vec3f vtmp2 = cross(vtmp[0], vtmp[1]);
+    pmvsVec3f vtmp2 = cross(vtmp[0], vtmp[1]);
     unitize(vtmp2);
     for (int y = 0; y < 3; ++y)
       ans[y] = vtmp2[y];
@@ -167,7 +167,7 @@ Vec4f Ccamera::getOpticalCenter(void) const {
 }
 
 // get scale
-float Ccamera::getScale(const Vec4f& coord, const int level) const {
+float Ccamera::getScale(const pmvsVec4f& coord, const int level) const {
   if (m_maxLevel <= level) {
     cerr << "Level is not within a range: " << level << ' ' << m_maxLevel << endl;
     exit (1);
@@ -176,9 +176,9 @@ float Ccamera::getScale(const Vec4f& coord, const int level) const {
   // For orthographic case
   if (m_projection[0][2][0] == 0.0 && m_projection[0][2][1] == 0.0 &&
       m_projection[0][2][2] == 0.0) {
-    const Vec3f xaxis(m_projection[0][0][0], m_projection[0][0][1],
+    const pmvsVec3f xaxis(m_projection[0][0][0], m_projection[0][0][1],
 		      m_projection[0][0][2]);
-    const Vec3f yaxis(m_projection[0][1][0], m_projection[0][1][1],
+    const pmvsVec3f yaxis(m_projection[0][1][0], m_projection[0][1][1],
 		      m_projection[0][1][2]);
     return (0x0001 << level) / ((xaxis.norm() + yaxis.norm()) / 2.0);
   }
@@ -186,12 +186,12 @@ float Ccamera::getScale(const Vec4f& coord, const int level) const {
     //const float fz = coord * m_projection[level][2];    
     //return fz * (0x0001 << level) / m_ipscale;
     // ???? new by take into angle difference
-    Vec4f ray = coord - m_center;
+    pmvsVec4f ray = coord - m_center;
     return norm(ray) * (0x0001 << level) / m_ipscale;
   }
 }
 
-void Ccamera::setK(Mat3f& K) const{
+void Ccamera::setK(pmvsMat3f& K) const{
   if (m_txtType != 2) {
     cerr << "getK not supported for txtType: " << m_txtType << endl;
     exit (1);
@@ -209,7 +209,7 @@ void Ccamera::setK(Mat3f& K) const{
   K[2][2] = 1.0;
 }
 
-void Ccamera::setRT(Mat4f& RT) const{
+void Ccamera::setRT(pmvsMat4f& RT) const{
   if (m_txtType != 2) {
     cerr << "getRT not supported for txtType: " << m_txtType << endl;
     exit (1);
@@ -227,7 +227,7 @@ void Ccamera::setRT(Mat4f& RT) const{
       RT[y][x] = RTd[y][x];
 }
 
-void Ccamera::getR(Mat3f& R) const {
+void Ccamera::getR(pmvsMat3f& R) const {
   if (m_txtType != 2) {
     cerr << "Not supported: " << m_txtType << endl;
     exit (1);
@@ -246,7 +246,7 @@ void Ccamera::getR(Mat3f& R) const {
 
 void Ccamera::setProjection(const std::vector<float>& intrinsics,
 			   const std::vector<float>& extrinsics,
-			   std::vector<Vec4f>& projection,
+			   std::vector<pmvsVec4f>& projection,
 			   const int txtType) {
   projection.resize(3);
   double params[12];
@@ -311,7 +311,7 @@ void Ccamera::setProjection(const std::vector<float>& intrinsics,
   }
 }
 
-void Ccamera::setProjectionSub(double params[], std::vector<Vec4f>& projection, const int level) {
+void Ccamera::setProjectionSub(double params[], std::vector<pmvsVec4f>& projection, const int level) {
   const double rx = params[6] * M_PI / 180.0;
   const double ry = params[7] * M_PI / 180.0;
   const double rz = params[8] * M_PI / 180.0;
@@ -426,7 +426,7 @@ void Ccamera::q2proj(const double q[6], Mat4& mat) {
   mat[3][3] = 1.0;
 }
 
-float Ccamera::computeDepthDif(const Vec4f& lhs, const Vec4f& rhs) const {
+float Ccamera::computeDepthDif(const pmvsVec4f& lhs, const pmvsVec4f& rhs) const {
   // orthographic projection case
   if (m_projection[0][2][0] == 0.0 && m_projection[0][2][1] == 0.0 &&
       m_projection[0][2][2] == 0.0) {
@@ -437,7 +437,7 @@ float Ccamera::computeDepthDif(const Vec4f& lhs, const Vec4f& rhs) const {
   }
 }
 
-float Ccamera::computeDistance(const Vec4f& point) const {
+float Ccamera::computeDistance(const pmvsVec4f& point) const {
   const float fx = point[0] - m_center[0];
   const float fy = point[1] - m_center[1];
   const float fz = point[2] - m_center[2];
@@ -445,7 +445,7 @@ float Ccamera::computeDistance(const Vec4f& point) const {
   return sqrt(fx * fx + fy * fy + fz * fz);
 }
 
-float Ccamera::computeDepth(const Vec4f& point) const {
+float Ccamera::computeDepth(const pmvsVec4f& point) const {
   // orthographic projection case
   if (m_projection[0][2][0] == 0.0 && m_projection[0][2][1] == 0.0 &&
       m_projection[0][2][2] == 0.0) {
@@ -458,15 +458,15 @@ float Ccamera::computeDepth(const Vec4f& point) const {
   }
 }
 
-void Ccamera::getPAxes(const Vec4f& coord, const Vec4f& normal,
-		       Vec4f& pxaxis, Vec4f& pyaxis, const int level) const {
+void Ccamera::getPAxes(const pmvsVec4f& coord, const pmvsVec4f& normal,
+		       pmvsVec4f& pxaxis, pmvsVec4f& pyaxis, const int level) const {
   // yasu changed here for fpmvs
   const float pscale = getScale(coord, level);
 
-  Vec3f normal3(normal[0], normal[1], normal[2]);
-  Vec3f yaxis3 = cross(normal3, m_xaxis);
+  pmvsVec3f normal3(normal[0], normal[1], normal[2]);
+  pmvsVec3f yaxis3 = cross(normal3, m_xaxis);
   unitize(yaxis3);
-  Vec3f xaxis3 = cross(yaxis3, normal3);
+  pmvsVec3f xaxis3 = cross(yaxis3, normal3);
   pxaxis[0] = xaxis3[0];  pxaxis[1] = xaxis3[1];  pxaxis[2] = xaxis3[2];  pxaxis[3] = 0.0;
   pyaxis[0] = yaxis3[0];  pyaxis[1] = yaxis3[1];  pyaxis[2] = yaxis3[2];  pyaxis[3] = 0.0;
 
@@ -480,11 +480,11 @@ void Ccamera::getPAxes(const Vec4f& coord, const Vec4f& normal,
   pyaxis *= m_axesScale / ydis;
   
   /*
-  Vec3f normal3(normal[0], normal[1], normal[2]);
+  pmvsVec3f normal3(normal[0], normal[1], normal[2]);
 
-  Vec3f yaxis3 = cross(normal3, m_xaxis);
+  pmvsVec3f yaxis3 = cross(normal3, m_xaxis);
   unitize(yaxis3);
-  Vec3f xaxis3 = cross(yaxis3, normal3);
+  pmvsVec3f xaxis3 = cross(yaxis3, normal3);
 
   pxaxis[0] = xaxis3[0];  pxaxis[1] = xaxis3[1];
   pxaxis[2] = xaxis3[2];  pxaxis[3] = 0.0;
@@ -524,16 +524,16 @@ void Ccamera::setAxesScale(const float axesScale) {
   m_axesScale = axesScale;
 }  
 
-void Ccamera::intersect(const Vec4f& coord, const Vec4f& abcd,
-                        Vec4f& cross, float& distance) const {
-  Vec4f ray = coord - m_center;
+void Ccamera::intersect(const pmvsVec4f& coord, const pmvsVec4f& abcd,
+                        pmvsVec4f& cross, float& distance) const {
+  pmvsVec4f ray = coord - m_center;
   unitize(ray);
   const float A = coord * abcd;
   const float B = ray * abcd;
 
   if (B == 0.0f) {
     distance = 0xffff;
-    cross = Vec4f(0.0f, 0.0f, 0.0f, -1.0f);
+    cross = pmvsVec4f(0.0f, 0.0f, 0.0f, -1.0f);
   }
   else {
     distance = - A / B;
@@ -541,19 +541,19 @@ void Ccamera::intersect(const Vec4f& coord, const Vec4f& abcd,
   }  
 }
 
-Vec4f Ccamera::intersect(const Vec4f& coord, const Vec4f& abcd) const {
-  Vec4f ray = m_center - coord;
+pmvsVec4f Ccamera::intersect(const pmvsVec4f& coord, const pmvsVec4f& abcd) const {
+  pmvsVec4f ray = m_center - coord;
 
   const float A = coord * abcd;
   const float B = ray * abcd;
 
   if (B == 0.0f)
-    return Vec4f(0.0f, 0.0f, 0.0f, -1.0f);
+    return pmvsVec4f(0.0f, 0.0f, 0.0f, -1.0f);
   else
     return coord - A / B * ray;
 }
 
-Vec4f Ccamera::unproject(const Vec3f& icoord, const int m_level) const {
+pmvsVec4f Ccamera::unproject(const pmvsVec3f& icoord, const int m_level) const {
   Mat3 A;
   Vec3 b(icoord[0], icoord[1], icoord[2]);
   for (int y = 0; y < 3; ++y) {
@@ -564,5 +564,5 @@ Vec4f Ccamera::unproject(const Vec3f& icoord, const int m_level) const {
   Mat3 IA;
   invert(IA, A);
   Vec3 x = IA * b;
-  return Vec4f(x, 1.0f);
+  return pmvsVec4f(x, 1.0f);
 }

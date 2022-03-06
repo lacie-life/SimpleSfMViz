@@ -66,27 +66,27 @@ class TMat3
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator=(const TMat3<T>& m)
-{ m_row[0] = m[0]; m_row[1] = m[1]; m_row[2] = m[2];  return *this; };
+{ m_row[0] = m[0]; m_row[1] = m[1]; m_row[2] = m[2];  return *this; }
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator=(T s)
-{ m_row[0]=s;  m_row[1]=s;  m_row[2]=s;  return *this; };
+{ m_row[0]=s;  m_row[1]=s;  m_row[2]=s;  return *this; }
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator+=(const TMat3<T>& m)
-{ m_row[0] += m[0]; m_row[1] += m[1]; m_row[2] += m[2]; return *this; };
+{ m_row[0] += m[0]; m_row[1] += m[1]; m_row[2] += m[2]; return *this; }
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator-=(const TMat3<T>& m)
-{ m_row[0] -= m[0]; m_row[1] -= m[1]; m_row[2] -= m[2]; return *this; };
+{ m_row[0] -= m[0]; m_row[1] -= m[1]; m_row[2] -= m[2]; return *this; }
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator*=(T s)
-{ m_row[0] *= s; m_row[1] *= s; m_row[2] *= s;  return *this; };
+{ m_row[0] *= s; m_row[1] *= s; m_row[2] *= s;  return *this; }
 
 template <class T>
 inline TMat3<T>& TMat3<T>::operator/=(T s)
-{ m_row[0] /= s; m_row[1] /= s; m_row[2] /= s;  return *this; };
+{ m_row[0] /= s; m_row[1] /= s; m_row[2] /= s;  return *this; }
 
 template <class T>
 inline bool TMat3<T>::operator==(const TMat3<T>& m) const {
@@ -94,12 +94,12 @@ inline bool TMat3<T>::operator==(const TMat3<T>& m) const {
     return true;
   else
     return false;
-};
+}
 
 template <class T>
 inline bool TMat3<T>::operator!=(const TMat3<T>& m) const {
   return !(*this == m);
-};
+}
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -108,45 +108,45 @@ inline bool TMat3<T>::operator!=(const TMat3<T>& m) const {
 
 template <class T>
 inline TMat3<T> operator+(const TMat3<T>& n, const TMat3<T>& m)
-{ return TMat3<T>(n[0]+m[0], n[1]+m[1], n[2]+m[2]); };
+{ return TMat3<T>(n[0]+m[0], n[1]+m[1], n[2]+m[2]); }
 
 template <class T>
 inline TMat3<T> operator-(const TMat3<T>& n, const TMat3<T>& m)
-{ return TMat3<T>(n[0]-m[0], n[1]-m[1], n[2]-m[2]); };
+{ return TMat3<T>(n[0]-m[0], n[1]-m[1], n[2]-m[2]); }
 
 template <class T>
 inline TMat3<T> operator-(const TMat3<T>& m)
-{ return TMat3<T>(-m[0], -m[1], -m[2]); };
+{ return TMat3<T>(-m[0], -m[1], -m[2]); }
 
 template <class T>
 inline TMat3<T> operator*(T s, const TMat3<T>& m)
-{ return TMat3<T>(m[0]*s, m[1]*s, m[2]*s); };
+{ return TMat3<T>(m[0]*s, m[1]*s, m[2]*s); }
 template <class T>
 inline TMat3<T> operator*(const TMat3<T>& m, T s)
-{ return s*m; };
+{ return s*m; }
 
 template <class T>
 inline TMat3<T> operator/(const TMat3<T>& m, T s)
-{ return TMat3<T>(m[0]/s, m[1]/s, m[2]/s); };
+{ return TMat3<T>(m[0]/s, m[1]/s, m[2]/s); }
 
 template <class T>
 inline TVec3<T> operator*(const TMat3<T>& m, const TVec3<T>& v)
-{ return TVec3<T>(m[0]*v, m[1]*v, m[2]*v); };
+{ return TVec3<T>(m[0]*v, m[1]*v, m[2]*v); }
 
 template <class T>
 inline std::ostream &operator<<(std::ostream &out, const TMat3<T>& M)
-{ return out << M[0] << std::endl << M[1] << std::endl << M[2]; };
+{ return out << M[0] << std::endl << M[1] << std::endl << M[2]; }
 
 template <class T>
 inline std::istream &operator>>(std::istream &in, TMat3<T>& M)
-{ return in >> M[0] >> M[1] >> M[2]; };
+{ return in >> M[0] >> M[1] >> M[2]; }
 
 ////////////////////////////////////////////////////////////////////////
 //
 // Misc. function definitions
 //
 template <class T>
-TMat3<T> TMat3<T>::I() { return TMat3<T>(TVec3<T>(1,0,0), TVec3<T>(0,1,0), TVec3<T>(0,0,1)); };
+TMat3<T> TMat3<T>::I() { return TMat3<T>(TVec3<T>(1,0,0), TVec3<T>(0,1,0), TVec3<T>(0,0,1)); }
 
 template <class T>
 TMat3<T> &TMat3<T>::diag(T d)
@@ -154,13 +154,13 @@ TMat3<T> &TMat3<T>::diag(T d)
   *this = 0.0;
   m_row[0][0] = m_row[1][1] = m_row[2][2] = d;
   return *this;
-};
+}
 
 template <class T>
 TMat3<T> diag(const TVec3<T>& v)
 {
   return TMat3<T>(TVec3<T>(v[0],0,0),  TVec3<T>(0,v[1],0),  TVec3<T>(0,0,v[2]));
-};
+}
 
 template <class T>
 TMat3<T> TMat3<T>::outer_product(const TVec3<T>& v)
@@ -173,7 +173,7 @@ TMat3<T> TMat3<T>::outer_product(const TVec3<T>& v)
   A(2,0)=A(0,2); A(2,1)=A(1,2); A(2,2) = z*z;
   
   return A;
-};
+}
 
 template <class T>
 TMat3<T> TMat3<T>::outer_product(const TVec3<T>& u, const TVec3<T>& v)
@@ -185,7 +185,7 @@ TMat3<T> TMat3<T>::outer_product(const TVec3<T>& u, const TVec3<T>& v)
       A(i, j) = u[i]*v[j];
   
   return A;
-};
+}
 
 template <class T>
 TMat3<T> operator*(const TMat3<T>& n, const TMat3<T>& m)
@@ -197,7 +197,7 @@ TMat3<T> operator*(const TMat3<T>& n, const TMat3<T>& m)
       A(i,j) = n[i]*m.col(j);
   
   return A;
-};
+}
 
 template <class T>
 TMat3<T> adjoint(const TMat3<T>& m)
@@ -205,7 +205,7 @@ TMat3<T> adjoint(const TMat3<T>& m)
   return TMat3<T>(m[1]^m[2],
 		  m[2]^m[0],
 		  m[0]^m[1]);
-};
+}
 
 template <class T>
 T invert(TMat3<T>& inv, const TMat3<T>& m)
@@ -218,20 +218,20 @@ T invert(TMat3<T>& inv, const TMat3<T>& m)
   
   inv = transpose(A) / d;
   return d;
-};
+}
 
 template <class T>
-inline T det(const TMat3<T>& m) { return m[0] * (m[1] ^ m[2]); };
+inline T det(const TMat3<T>& m) { return m[0] * (m[1] ^ m[2]); }
 
 template <class T>
-inline T trace(const TMat3<T>& m) { return m(0,0) + m(1,1) + m(2,2); };
+inline T trace(const TMat3<T>& m) { return m(0,0) + m(1,1) + m(2,2); }
 
 template <class T>
 inline TMat3<T> transpose(const TMat3<T>& m)
-{ return TMat3<T>(m.col(0), m.col(1), m.col(2)); };
+{ return TMat3<T>(m.col(0), m.col(1), m.col(2)); }
 
 template <class T>
-inline TMat3<T> row_extend(const TVec3<T>& v) { return TMat3<T>(v, v, v); };
+inline TMat3<T> row_extend(const TVec3<T>& v) { return TMat3<T>(v, v, v); }
 
 /*
 template <class T>
@@ -272,7 +272,7 @@ inline TMat3<T> rodrigues(const TVec3<T>& axis) {
   const T b = (1 - cos(theta)) / (theta * theta);
 
   return TMat3<T>::I() + wx * a + (wx * wx) * b;
-};
+}
 
 template <class T>
 inline TVec3<T> irodrigues(const TMat3<T>& rot) {
@@ -298,9 +298,9 @@ inline TVec3<T> irodrigues(const TMat3<T>& rot) {
   const T len = norm(vec);
   const int inum = (int)floor(len / (2 * M_PI));
   */
-};
+}
 
 typedef TMat3<double> Mat3;
-typedef TMat3<float> Mat3f;
+typedef TMat3<float> pmvsMat3f;
 
 #endif // MAT3_H

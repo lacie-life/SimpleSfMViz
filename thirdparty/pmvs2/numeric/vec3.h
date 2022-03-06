@@ -79,27 +79,27 @@ private:
 //
 
 template<class T> inline TVec3<T>& TVec3<T>::operator+=(const TVec3<T>& v)
-{ m_elt[0] += v[0];   m_elt[1] += v[1];   m_elt[2] += v[2];  return *this; };
+{ m_elt[0] += v[0];   m_elt[1] += v[1];   m_elt[2] += v[2];  return *this; }
 
 template<class T> inline TVec3<T>& TVec3<T>::operator-=(const TVec3<T>& v)
-{ m_elt[0] -= v[0];   m_elt[1] -= v[1];   m_elt[2] -= v[2];  return *this; };
+{ m_elt[0] -= v[0];   m_elt[1] -= v[1];   m_elt[2] -= v[2];  return *this; }
 
 template<class T> inline TVec3<T>& TVec3<T>::operator*=(T s)
-{ m_elt[0] *= s;   m_elt[1] *= s;   m_elt[2] *= s;  return *this; };
+{ m_elt[0] *= s;   m_elt[1] *= s;   m_elt[2] *= s;  return *this; }
 
 template<class T> inline TVec3<T>& TVec3<T>::operator/=(T s)
-{ m_elt[0] /= s;   m_elt[1] /= s;   m_elt[2] /= s;  return *this; };
+{ m_elt[0] /= s;   m_elt[1] /= s;   m_elt[2] /= s;  return *this; }
 
 template<class T> inline bool TVec3<T>::operator==(const TVec3<T>& v) const{
     if (m_elt[0] == v.m_elt[0] && m_elt[1] == v.m_elt[1] && m_elt[2] == v.m_elt[2])
 	return true;
     else
 	return false;
-};
+}
 
 template<class T> inline bool TVec3<T>::operator!=(const TVec3<T>& v) const{
     return !(*this == v);
-};
+}
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -108,59 +108,59 @@ template<class T> inline bool TVec3<T>::operator!=(const TVec3<T>& v) const{
 
 template<class T>
 inline TVec3<T> operator+(const TVec3<T> &u, const TVec3<T>& v)
-{ return TVec3<T>(u[0]+v[0], u[1]+v[1], u[2]+v[2]); };
+{ return TVec3<T>(u[0]+v[0], u[1]+v[1], u[2]+v[2]); }
 
 template<class T>
 inline TVec3<T> operator-(const TVec3<T> &u, const TVec3<T>& v)
-{ return TVec3<T>(u[0]-v[0], u[1]-v[1], u[2]-v[2]); };
+{ return TVec3<T>(u[0]-v[0], u[1]-v[1], u[2]-v[2]); }
 
 template<class T> inline TVec3<T> operator-(const TVec3<T> &v)
-{ return TVec3<T>(-v[0], -v[1], -v[2]); };
+{ return TVec3<T>(-v[0], -v[1], -v[2]); }
 
 template<class T, class N> inline TVec3<T> operator*(N s, const TVec3<T> &v)
-{ return TVec3<T>(v[0]*s, v[1]*s, v[2]*s); };
+{ return TVec3<T>(v[0]*s, v[1]*s, v[2]*s); }
 template<class T, class N> inline TVec3<T> operator*(const TVec3<T> &v, N s)
-{ return s*v; };
+{ return s*v; }
 
 template<class T, class N> inline TVec3<T> operator/(const TVec3<T> &v, N s)
-{ return TVec3<T>(v[0]/s, v[1]/s, v[2]/s); };
+{ return TVec3<T>(v[0]/s, v[1]/s, v[2]/s); }
 
 template<class T> inline T operator*(const TVec3<T> &u, const TVec3<T>& v)
-{ return u[0]*v[0] + u[1]*v[1] + u[2]*v[2]; };
+{ return u[0]*v[0] + u[1]*v[1] + u[2]*v[2]; }
 
 template<class T> inline TVec3<T> cross(const TVec3<T>& u, const TVec3<T>& v)
 {
     return TVec3<T>( u[1]*v[2] - v[1]*u[2],
 		-u[0]*v[2] + v[0]*u[2],
 		 u[0]*v[1] - v[0]*u[1] );
-};
+}
 
 template<class T>
 inline TVec3<T> operator^(const TVec3<T>& u, const TVec3<T>& v)
-{ return cross(u, v); };
+{ return cross(u, v); }
 
 
 template<class T>
 inline std::ostream &operator<<(std::ostream &out, const TVec3<T>& v)
-{ return out << v[0] << " " << v[1] << " " << v[2]; };
+{ return out << v[0] << " " << v[1] << " " << v[2]; }
 
 template<class T>
 inline std::istream &operator>>(std::istream &in, TVec3<T>& v)
-{ return in >> v[0] >> v[1] >> v[2]; };
+{ return in >> v[0] >> v[1] >> v[2]; }
 
 ////////////////////////////////////////////////////////////////////////
 //
 // Misc. function definitions
 //
 
-template<class T> inline T norm2(const TVec3<T>& v)  { return v*v; };
-template<class T> inline T norm(const TVec3<T>& v)   { return sqrt(norm2(v)); };
+template<class T> inline T norm2(const TVec3<T>& v)  { return v*v; }
+template<class T> inline T norm(const TVec3<T>& v)   { return sqrt(norm2(v)); }
 
 template<class T> inline void unitize(TVec3<T>& v)
 {
     T l = norm2(v);
     if( l!=1.0 && l!=0.0 )  v /= sqrt(l);
-};
+}
 
 template<class T> inline TVec2<T> proj(const TVec3<T>& v)
 {
@@ -168,7 +168,7 @@ template<class T> inline TVec2<T> proj(const TVec3<T>& v)
     if( v[2]!=1.0 && v[2]!=0.0 )
 	u /= v[2];
     return u;
-};
+}
 
 template<class T> inline void ortho(const TVec3<T>& z,
 				    TVec3<T>& x, TVec3<T>& y) {
@@ -183,7 +183,7 @@ template<class T> inline void ortho(const TVec3<T>& z,
   }
   unitize(x);
   y = cross(z, x);
-};
+}
 
 template<class T>
 bool predVec30(const TVec3<T>& lhs, const TVec3<T>& rhs) {
@@ -191,7 +191,7 @@ bool predVec30(const TVec3<T>& lhs, const TVec3<T>& rhs) {
     return true;
   else
     return false;
-};
+}
 
 template<class T>
 bool predVec31(const TVec3<T>& lhs, const TVec3<T>& rhs) {
@@ -199,7 +199,7 @@ bool predVec31(const TVec3<T>& lhs, const TVec3<T>& rhs) {
     return true;
   else
     return false;
-};
+}
 
 template<class T>
 bool predVec32(const TVec3<T>& lhs, const TVec3<T>& rhs) {
@@ -207,10 +207,10 @@ bool predVec32(const TVec3<T>& lhs, const TVec3<T>& rhs) {
     return true;
   else
     return false;
-};
+}
 
 typedef TVec3<double> Vec3;
-typedef TVec3<float>  Vec3f;
+typedef TVec3<float>  pmvsVec3f;
 typedef TVec3<int>    Vec3i;
 
 template<class T>

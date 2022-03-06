@@ -28,8 +28,8 @@ class Charris: public Cdetector {
   std::vector<float> m_gaussD;
   std::vector<float> m_gaussI;
   
-  std::vector<std::vector<Vec3f> > m_dIdx;
-  std::vector<std::vector<Vec3f> > m_dIdy;
+  std::vector<std::vector<pmvsVec3f> > m_dIdx;
+  std::vector<std::vector<pmvsVec3f> > m_dIdy;
   
   std::vector<std::vector<float> > m_dIdxdIdx;
   std::vector<std::vector<float> > m_dIdydIdy;

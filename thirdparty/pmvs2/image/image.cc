@@ -882,15 +882,15 @@ void Cimage::writeJpegImage(const std::string filename,
   jpeg_destroy_compress(&cinfo);
 }
 
-void Cimage::rgb2hs(const Vec3f& rgb, float& h, float& s) {
+void Cimage::rgb2hs(const pmvsVec3f& rgb, float& h, float& s) {
   rgb2hs(rgb[0], rgb[1], rgb[2], h, s);
 }
 
-void Cimage::rgb2hs(const Vec3f& rgb, Vec2f& hs) {
+void Cimage::rgb2hs(const pmvsVec3f& rgb, pmvsVec2f& hs) {
   rgb2hs(rgb[0], rgb[1], rgb[2], hs[0], hs[1]);
 }
 
-void Cimage::rgb2hs(const float r, const float g, const float b, Vec2f& hs) {
+void Cimage::rgb2hs(const float r, const float g, const float b, pmvsVec2f& hs) {
   rgb2hs(r, g, b, hs[0], hs[1]);
 }
 
@@ -947,26 +947,26 @@ void Cimage::rgb2hsv(const float r, const float g, const float b,
   }
 }
 
-void Cimage::rgb2hsv(const Vec3f& rgb, Vec3f& hsv) {
+void Cimage::rgb2hsv(const pmvsVec3f& rgb, pmvsVec3f& hsv) {
   rgb2hsv(rgb[0], rgb[1], rgb[2], hsv[0], hsv[1], hsv[2]);
 }
 
-void Cimage::rgb2hsv(const Vec3f& rgb, float& hr, float& sr, float& vr) {
+void Cimage::rgb2hsv(const pmvsVec3f& rgb, float& hr, float& sr, float& vr) {
   rgb2hsv(rgb[0], rgb[1], rgb[2], hr, sr, vr);
 }
 
-void Cimage::rgb2hsv(const float r, const float g, const float b, Vec3f& hsv) {
+void Cimage::rgb2hsv(const float r, const float g, const float b, pmvsVec3f& hsv) {
   rgb2hsv(r, g, b, hsv[0], hsv[1], hsv[2]);
 }
 
 float Cimage::hsdis(const float h0, const float s0, const float h1, const float s1) {
   // Represent by 2d vector each
   const float angle0 = h0 * M_PI / 180.0;
-  Vec2f axis0(cos(angle0), sin(angle0));
+  pmvsVec2f axis0(cos(angle0), sin(angle0));
   axis0 *= s0;
 
   const float angle1 = h1 * M_PI / 180.0;
-  Vec2f axis1(cos(angle1), sin(angle1));
+  pmvsVec2f axis1(cos(angle1), sin(angle1));
   axis1 *= s1;
 
   return norm(axis0 - axis1) / 2.0;
@@ -1156,8 +1156,8 @@ void Cimage::createFilter(const float sigma, std::vector<float>& filter) {
     filter[i] /= sum;
 }
 
-void Cimage::sift(const Vec3f& center,
-                  const Vec3f& xaxis, const Vec3f& yaxis,
+void Cimage::sift(const pmvsVec3f& center,
+                  const pmvsVec3f& xaxis, const pmvsVec3f& yaxis,
                   std::vector<float>& descriptor) const {
   const float step = (norm(xaxis) + norm(yaxis)) / 2.0f;
   const int level = max(0, min(m_maxLevel - 1,
@@ -1172,8 +1172,8 @@ void Cimage::sift(const Vec3f& center,
     sift(center, xaxis, yaxis, 0, descriptor);
 }
   
-void Cimage::sift(const Vec3f& center,
-                  const Vec3f& xaxis, const Vec3f& yaxis,
+void Cimage::sift(const pmvsVec3f& center,
+                  const pmvsVec3f& xaxis, const pmvsVec3f& yaxis,
                   const int level, std::vector<float>& descriptor) const {
   /*
   Mat2f A;
@@ -1198,10 +1198,10 @@ void Cimage::sift(const Vec3f& center,
 
   // Bounding box check
   const float width205 = width2 - 0.5f;
-  const Vec3f topleft = center - width205 * yaxis - width205 * xaxis;
-  const Vec3f topright = center - width205 * yaxis + width205 * xaxis;
-  const Vec3f bottomleft = center + width205 * yaxis - width205 * xaxis;
-  const Vec3f bottomright = center + width205 * yaxis + width205 * xaxis;
+  const pmvsVec3f topleft = center - width205 * yaxis - width205 * xaxis;
+  const pmvsVec3f topright = center - width205 * yaxis + width205 * xaxis;
+  const pmvsVec3f bottomleft = center + width205 * yaxis - width205 * xaxis;
+  const pmvsVec3f bottomright = center + width205 * yaxis + width205 * xaxis;
 
   const float minx = min(min(topleft[0], topright[0]),
                          min(bottomleft[0], bottomright[0]));
@@ -1221,7 +1221,7 @@ void Cimage::sift(const Vec3f& center,
   const float sigma2 = 2 * width2 * width2;  
   
   for (int y = 0; y < width; ++y) {
-    Vec3f start = topleft + y * yaxis;
+    pmvsVec3f start = topleft + y * yaxis;
     const int ybin = y / pnum;
     // deviation from center
     const float fy = y - width2 + 0.5f;
@@ -1229,8 +1229,8 @@ void Cimage::sift(const Vec3f& center,
     for (int x = 0; x < width; ++x) {
       const int xbin = x / pnum;
       
-      const Vec3f px = start - xaxis;   const Vec3f nx = start + xaxis;
-      const Vec3f py = start - yaxis;   const Vec3f ny = start + yaxis;
+      const pmvsVec3f px = start - xaxis;   const pmvsVec3f nx = start + xaxis;
+      const pmvsVec3f py = start - yaxis;   const pmvsVec3f ny = start + yaxis;
 
       const float dx = getColor(nx[0], nx[1], level).sum() -
         getColor(px[0], px[1], level).sum();
@@ -1333,7 +1333,7 @@ void Cimage::setInOut(const std::vector<vector<float> >& data, std::vector<int>&
 
 // Used to filter out outliers. Very general algorithm.
 // Use mean and deviation
-void Cimage::setInOut(const std::vector<Vec3f>& data, std::vector<int>& inout,
+void Cimage::setInOut(const std::vector<pmvsVec3f>& data, std::vector<int>& inout,
 		      const float sigma, const int specular) {
   const int size = (int)data.size();
   if (size == 0)
@@ -1368,7 +1368,7 @@ void Cimage::setInOut(const std::vector<Vec3f>& data, std::vector<int>& inout,
 }
 
 // Used to filter out outliers. HSV version for specular highlights.
-void Cimage::setInOutHSV(const std::vector<Vec3f>& hsvs, std::vector<int>& inout,
+void Cimage::setInOutHSV(const std::vector<pmvsVec3f>& hsvs, std::vector<int>& inout,
 			 const float sigma, const int specular) {
   const int size = (int)hsvs.size();
   if (size == 0)

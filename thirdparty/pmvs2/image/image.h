@@ -19,20 +19,20 @@ class Cimage {
   virtual void init(const std::string name, const std::string mname,
                     const std::string ename, const int maxLevel = 1);
 
-  void sift(const Vec3f& center, const Vec3f& xaxis, const Vec3f& yaxis,
+  void sift(const pmvsVec3f& center, const pmvsVec3f& xaxis, const pmvsVec3f& yaxis,
             std::vector<float>& descriptor) const;
   
-  void sift(const Vec3f& center, const Vec3f& xaxis, const Vec3f& yaxis,
+  void sift(const pmvsVec3f& center, const pmvsVec3f& xaxis, const pmvsVec3f& yaxis,
             const int level, std::vector<float>& descriptor) const;
             
   void setEdge(const float threshold);
   
   // access to image/masks
-  inline Vec3f getColor(const float fx, const float fy, const int level) const;
-  inline Vec3f getColor(const int ix, const int iy, const int level) const;
+  inline pmvsVec3f getColor(const float fx, const float fy, const int level) const;
+  inline pmvsVec3f getColor(const int ix, const int iy, const int level) const;
 
   inline void setColor(const int ix, const int iy, const int level,
-                       const Vec3f& rgb);
+                       const pmvsVec3f& rgb);
   
   inline int getMask(const float fx, const float fy, const int level) const;
   inline int getMask(const int ix, const int iy, const int level) const;
@@ -52,7 +52,7 @@ class Cimage {
   inline std::vector<unsigned char>& getMask(const int level);
   inline std::vector<unsigned char>& getEdge(const int level);
   
-  inline int isSafe(const Vec3f& icoord, const int level) const;
+  inline int isSafe(const pmvsVec3f& icoord, const int level) const;
   // Check if a mask image exists
   inline int isMask(void) const;
   // Check if an edge image exists
@@ -104,15 +104,15 @@ class Cimage {
   
   static void rgb2hsv(const float r, const float g, const float b,
 		      float& hr, float& sr, float& vr);
-  static void rgb2hsv(const Vec3f& rgb, Vec3f& hsv);
-  static void rgb2hsv(const Vec3f& rgb, float& hr, float& sr, float& vr);
-  static void rgb2hsv(const float r, const float g, const float b, Vec3f& hsv);  
+  static void rgb2hsv(const pmvsVec3f& rgb, pmvsVec3f& hsv);
+  static void rgb2hsv(const pmvsVec3f& rgb, float& hr, float& sr, float& vr);
+  static void rgb2hsv(const float r, const float g, const float b, pmvsVec3f& hsv);  
   
   static void rgb2hs(const float r, const float g, const float b,
 		     float& h, float& s);
-  static void rgb2hs(const Vec3f& rgb, float& h, float& s);
-  static void rgb2hs(const Vec3f& rgb, Vec2f& hs);
-  static void rgb2hs(const float r, const float g, const float b, Vec2f& hs);
+  static void rgb2hs(const pmvsVec3f& rgb, float& h, float& s);
+  static void rgb2hs(const pmvsVec3f& rgb, pmvsVec2f& hs);
+  static void rgb2hs(const float r, const float g, const float b, pmvsVec2f& hs);
   
   static void gray2rgb(const float gray, float& r, float& g, float& b);
 
@@ -149,11 +149,11 @@ class Cimage {
 		       const float sigma = 1.0f, const int specular = 0);
 
   // Used to filter out outliers. RGB version for specular highlights.
-  static void setInOut(const std::vector<Vec3f>& rgbs, std::vector<int>& inout,
+  static void setInOut(const std::vector<pmvsVec3f>& rgbs, std::vector<int>& inout,
 		       const float sigma = 1.0f, const int specular = 0);
   
   // Used to filter out outliers. HSV version for specular highlights.
-  static void setInOutHSV(const std::vector<Vec3f>& hsvs, std::vector<int>& inout,
+  static void setInOutHSV(const std::vector<pmvsVec3f>& hsvs, std::vector<int>& inout,
 			  const float sigma = 1.0f, const int specular = 0);
   */
  protected:
@@ -212,7 +212,7 @@ class Cimage {
   int m_maxLevel;
 };
   
-inline int Cimage::isSafe(const Vec3f& icoord, const int level) const {
+inline int Cimage::isSafe(const pmvsVec3f& icoord, const int level) const {
 #ifdef FURUKAWA_IMAGE_BICUBIC
   if (icoord[0] < 1.0 || m_widths[level] - 3 < icoord[0] ||
       icoord[1] < 1.0 || m_heights[level] - 3 < icoord[1])
@@ -226,7 +226,7 @@ inline int Cimage::isSafe(const Vec3f& icoord, const int level) const {
   else
     return 1;
 #endif
-};
+}
  
 // Check if a mask image exists
 inline int Cimage::isMask(void) const {
@@ -234,7 +234,7 @@ inline int Cimage::isMask(void) const {
     return 0;
   else
     return 1;
- };
+ }
  
 // Check if an edge image exists
 inline int Cimage::isEdge(void) const {
@@ -242,7 +242,7 @@ inline int Cimage::isEdge(void) const {
     return 0;
   else
     return 1;
- };
+ }
  
 inline const std::vector<unsigned char>& Cimage::getImage(const int level) const{
   if (m_alloc != 2) {
@@ -256,7 +256,7 @@ inline const std::vector<unsigned char>& Cimage::getImage(const int level) const
 #endif
   
   return m_images[level];
-};
+}
 
 inline const std::vector<unsigned char>& Cimage::getMask(const int level) const{
   if (m_alloc != 2) {
@@ -264,7 +264,7 @@ inline const std::vector<unsigned char>& Cimage::getMask(const int level) const{
     exit (1);
   }  
   return m_masks[level];
-};
+}
 
 inline const std::vector<unsigned char>& Cimage::getEdge(const int level) const{
   if (m_alloc != 2) {
@@ -272,7 +272,7 @@ inline const std::vector<unsigned char>& Cimage::getEdge(const int level) const{
     exit (1);
   }  
   return m_edges[level];
-};
+}
 
 inline std::vector<unsigned char>& Cimage::getImage(const int level){
   if (m_alloc != 2) {
@@ -286,7 +286,7 @@ inline std::vector<unsigned char>& Cimage::getImage(const int level){
 #endif
   
   return m_images[level];
-};
+}
 
 inline std::vector<unsigned char>& Cimage::getMask(const int level){
   if (m_alloc != 2) {
@@ -294,7 +294,7 @@ inline std::vector<unsigned char>& Cimage::getMask(const int level){
     exit (1);
   }  
   return m_masks[level];
-};
+}
 
 inline std::vector<unsigned char>& Cimage::getEdge(const int level){
   if (m_alloc != 2) {
@@ -302,7 +302,7 @@ inline std::vector<unsigned char>& Cimage::getEdge(const int level){
     exit (1);
   }  
   return m_edges[level];
-};
+}
 
 int Cimage::getWidth(const int level) const{
   if (m_alloc == 0) {
@@ -310,7 +310,7 @@ int Cimage::getWidth(const int level) const{
     exit (1);
   }
   return m_widths[level];
-};
+}
  
 int Cimage::getHeight(const int level) const{
   if (m_alloc == 0) {
@@ -319,7 +319,7 @@ int Cimage::getHeight(const int level) const{
     exit (1);
   }    
   return m_heights[level];
-};
+}
 
 /* 
 int Cimage::getCWidth(const int beta, const int level) const{
@@ -342,7 +342,7 @@ int Cimage::getCHeight(const int beta, const int level) const{
 };
 */
  
-Vec3f Cimage::getColor(const float x, const float y, const int level) const{
+pmvsVec3f Cimage::getColor(const float x, const float y, const int level) const{
 #ifdef FURUKAWA_DEBUG
   if (m_alloc != 2) {
     std::cerr << "First allocate" << std::endl;
@@ -501,7 +501,7 @@ Vec3f Cimage::getColor(const float x, const float y, const int level) const{
   float g = wy0 * row0[1] + wy1 * row1[1] + wy2 * row2[1] + wy3 * row3[1];
   float b = wy0 * row0[2] + wy1 * row1[2] + wy2 * row2[2] + wy3 * row3[2];
   
-  return Vec3f(r, g, b);
+  return pmvsVec3f(r, g, b);
 #else
   // Bilinear case
   const int lx = (int)floor(x);
@@ -525,9 +525,9 @@ Vec3f Cimage::getColor(const float x, const float y, const int level) const{
   r += *(++fp0) * f10 + *(++fp1) * f11;
   g += *(++fp0) * f10 + *(++fp1) * f11;
   b += *(++fp0) * f10 + *(++fp1) * f11;
-  return Vec3f(r, g, b);
+  return pmvsVec3f(r, g, b);
   /*
-  return Vec3f(m_dimages[level][index] * f00 + m_dimages[level][index + 3] * f10 +
+  return pmvsVec3f(m_dimages[level][index] * f00 + m_dimages[level][index + 3] * f10 +
                m_dimages[level][index2] * f01 + m_dimages[level][index2 + 3] * f11,
                m_dimages[level][index + 1] * f00 + m_dimages[level][index + 4] * f10 +
                m_dimages[level][index2 + 1] * f01 + m_dimages[level][index2 + 4] * f11,
@@ -544,9 +544,9 @@ Vec3f Cimage::getColor(const float x, const float y, const int level) const{
   r += *(++ucp0) * f10 + *(++ucp1) * f11;
   g += *(++ucp0) * f10 + *(++ucp1) * f11;
   b += *(++ucp0) * f10 + *(++ucp1) * f11;
-  return Vec3f(r, g, b);
+  return pmvsVec3f(r, g, b);
   /*
-  return Vec3f(m_images[level][index] * f00 + m_images[level][index + 3] * f10 +
+  return pmvsVec3f(m_images[level][index] * f00 + m_images[level][index + 3] * f10 +
                m_images[level][index2] * f01 + m_images[level][index2 + 3] * f11,
                
                m_images[level][index + 1] * f00 + m_images[level][index + 4] * f10 +
@@ -560,18 +560,18 @@ Vec3f Cimage::getColor(const float x, const float y, const int level) const{
   const int lx = (int)floor(x);    const int ux = lx + 1;
   const int ly = (int)floor(y);    const int uy = ly + 1;
 
-  const Vec3f vc[2][2] = {{getColor(lx, ly, level), getColor(lx, uy, level)},
+  const pmvsVec3f vc[2][2] = {{getColor(lx, ly, level), getColor(lx, uy, level)},
 			  {getColor(ux, ly, level), getColor(ux, uy, level)}};
   
-  const Vec3f color = vc[0][0] * (ux - x) * (uy - y) + vc[0][1] * (ux - x) * (y - ly) +
+  const pmvsVec3f color = vc[0][0] * (ux - x) * (uy - y) + vc[0][1] * (ux - x) * (y - ly) +
     vc[1][0] * (x - lx) * (uy - y) + vc[1][1] * (x - lx) * (y - ly);
   return color;
   */
 #endif
-};
+}
 
 void Cimage::setColor(const int ix, const int iy, const int level,
-                      const Vec3f& rgb) {
+                      const pmvsVec3f& rgb) {
 #ifdef FURUKAWA_DEBUG
   if (m_alloc != 2) {
     std::cerr << "First allocate" << std::endl;
@@ -589,9 +589,9 @@ void Cimage::setColor(const int ix, const int iy, const int level,
   m_images[level][index+1] = (unsigned char)floor(rgb[1] + 0.5f);
   m_images[level][index+2] = (unsigned char)floor(rgb[2] + 0.5f);
 #endif
-};
+}
 
-Vec3f Cimage::getColor(const int ix, const int iy, const int level) const{
+pmvsVec3f Cimage::getColor(const int ix, const int iy, const int level) const{
 #ifdef FURUKAWA_DEBUG
   if (m_alloc != 2) {
     std::cerr << "First allocate" << std::endl;
@@ -601,15 +601,15 @@ Vec3f Cimage::getColor(const int ix, const int iy, const int level) const{
   const int index = (iy * m_widths[level] + ix) * 3;
 
 #ifdef FURUKAWA_IMAGE_GAMMA
-  return Vec3f(m_dimages[level][index],
+  return pmvsVec3f(m_dimages[level][index],
 	       m_dimages[level][index+1],
 	       m_dimages[level][index+2]);
 #else
-  return Vec3f(m_images[level][index],
+  return pmvsVec3f(m_images[level][index],
 	       m_images[level][index+1],
 	       m_images[level][index+2]);
 #endif
-};
+}
 
 int Cimage::getMask(const float fx, const float fy, const int level) const{
   if (m_alloc != 2) {
@@ -623,7 +623,7 @@ int Cimage::getMask(const float fx, const float fy, const int level) const{
   const int ix = (int)floor(fx + 0.5f);
   const int iy = (int)floor(fy + 0.5f);
   return getMask(ix, iy, level);
-};
+}
 
 int Cimage::getMask(const int ix, const int iy, const int level) const{
   if (m_alloc != 2) {
@@ -639,7 +639,7 @@ int Cimage::getMask(const int ix, const int iy, const int level) const{
   
   const int index = iy * m_widths[level] + ix;
   return m_masks[level][index];
-};
+}
 
 int Cimage::getEdge(const float fx, const float fy, const int level) const{
   if (m_alloc != 2) {
@@ -652,7 +652,7 @@ int Cimage::getEdge(const float fx, const float fy, const int level) const{
   const int ix = (int)floor(fx + 0.5f);
   const int iy = (int)floor(fy + 0.5f);
   return getEdge(ix, iy, level);
-};
+}
 
 int Cimage::getEdge(const int ix, const int iy, const int level) const{
   if (m_alloc != 2) {
@@ -668,8 +668,8 @@ int Cimage::getEdge(const int ix, const int iy, const int level) const{
   
   const int index = iy * m_widths[level] + ix;
   return m_edges[level][index];
-};
+}
   
-};
+}
 
 #endif // IMAGE_H

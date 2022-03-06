@@ -5,6 +5,7 @@
 #include <vector>
 #include "patch.h"
 #include "point.h"
+#include "../numeric/vec3.h"
 
 #include <pthread.h>
 
@@ -27,7 +28,7 @@ class Cseed {
 
   void initialMatch(const int index, const int id);
   void collectCells(const int index0, const int index1,
-                    const Cpoint& p0, std::vector<Vec2i>& cells);
+                    const Cpoint& p0, std::vector<TVec2<int>>& cells);
   
   void collectCandidates(const int index, const std::vector<int>& indexes,
                          const Cpoint& point, std::vector<Ppoint>& vcp);
@@ -37,7 +38,7 @@ class Cseed {
   
   void unproject(const int index0, const int index1,
                  const Cpoint& p0, const Cpoint& p1,
-                 Vec4f& coord) const;
+                 pmvsVec4f& coord) const;
 
   //----------------------------------------------------------------------
   CfindMatch& m_fm;
@@ -59,6 +60,6 @@ class Cseed {
   // Number passes
   std::vector<int> m_pcounts;
 };
-};
+}
 
 #endif // PMVS3_SEED_H

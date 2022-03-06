@@ -10,7 +10,7 @@ class Cpoint {
   Cpoint(void);
   virtual ~Cpoint();
   
-  Vec3f m_icoord;
+  pmvsVec3f m_icoord;
   float m_response;
 
   // 0: Harris
@@ -21,7 +21,7 @@ class Cpoint {
   int m_itmp;
 
   // 3D coordinate
-  Vec4f m_coord;
+  pmvsVec4f m_coord;
   
   bool operator < (const Cpoint& rhs) const {
     return m_response < rhs.m_response;
@@ -35,6 +35,6 @@ bool SortCpoint(const Cpoint& a, const Cpoint& b);
 
 std::istream& operator >>(std::istream& istr, Cpoint& rhs);
 std::ostream& operator <<(std::ostream& ostr, const Cpoint& rhs);
-};
+}
 
 #endif //PMVS3_POINT_H

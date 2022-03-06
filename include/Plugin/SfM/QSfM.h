@@ -113,7 +113,7 @@ private:
     void featureExtract();
     void triangulate();
     void bundleAdjustment();
-    void reconstruction();
+    void reconstruction(QString path);
     void savePCD();
 
 private:

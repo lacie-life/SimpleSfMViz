@@ -22,7 +22,7 @@ set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     FORCE
 )
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+#set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
@@ -140,7 +140,8 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
     ${Boost_LIBRARIES}
     ${OpenCV_LIBS}
     -lgtsam
-    -ltbb)
+    -ltbb
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pmvs2/lib/libPMVS2.so)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 #target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04

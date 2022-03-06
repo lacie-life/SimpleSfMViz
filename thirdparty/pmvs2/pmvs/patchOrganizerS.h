@@ -2,6 +2,7 @@
 #define PMVS3_PATCHORGANIZERS_H
 
 #include "patch.h"
+#include "../numeric/vec3.h"
 #include <queue>
 
 namespace PMVS3 {
@@ -36,7 +37,7 @@ class CpatchOrganizerS {
                 const std::string filename);
   void writePLY(const std::vector<Patch::Ppatch>& patches,
                 const std::string filename,
-                const std::vector<Vec3i>& colors);
+                const std::vector<TVec3<int>>& colors);
   
   void readPatches(void);
   
@@ -100,6 +101,6 @@ class CpatchOrganizerS {
  protected:
   CfindMatch& m_fm;
 };
-};
+}
 
 #endif //PMVS3_PATCHORGANIZERS_H

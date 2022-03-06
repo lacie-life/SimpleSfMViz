@@ -22,9 +22,9 @@ class Cpatch {
   //----------------------------------------------------------------------
   // saved information
   // 3D coordinates of the center of the patch
-  Vec4f m_coord;
+  pmvsVec4f m_coord;
   // patch outward normal vector
-  Vec4f m_normal;
+  pmvsVec4f m_normal;
   
   // associated image ids. first image id is the reference one. images
   // can be non-targetting image.
@@ -83,6 +83,6 @@ struct Spatchcmp {
 std::istream& operator >>(std::istream& istr, Patch::Cpatch& rhs);
 std::ostream& operator <<(std::ostream& ostr, const Patch::Cpatch& rhs);
  
-};
+}
 
 #endif // PMVS3_PATCH_H

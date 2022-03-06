@@ -443,7 +443,7 @@ int Cfilter::filterQuad(const Patch::Cpatch& patch,
   vector<vector<float> > A;
   vector<float> b, x;
 
-  Vec4f xdir, ydir;
+  pmvsVec4f xdir, ydir;
   ortho(patch.m_normal, xdir, ydir);
 
   const int nsize = (int)neighbors.size();
@@ -462,7 +462,7 @@ int Cfilter::filterQuad(const Patch::Cpatch& patch,
   fzs.resize(nsize);
   for (int n = 0; n < nsize; ++n) {
     A[n].resize(5);
-    Vec4f diff = neighbors[n]->m_coord - patch.m_coord;
+    pmvsVec4f diff = neighbors[n]->m_coord - patch.m_coord;
     fxs[n] = diff * xdir / h;
     fys[n] = diff * ydir / h;
     fzs[n] = diff * patch.m_normal;
@@ -754,7 +754,7 @@ void Cfilter::setDepthMapsThread(void) {
 
     while (bpatch != epatch) {
       Ppatch& ppatch = *bpatch;
-      const Vec3f icoord =
+      const pmvsVec3f icoord =
         m_fm.m_pss.project(index, ppatch->m_coord, m_fm.m_level);
       
       const float fx = icoord[0] / m_fm.m_csize;
@@ -876,7 +876,7 @@ void Cfilter::addPatchVThread(void) {
       Ppatch& ppatch = *bpatch;
       vector<int>::iterator bimage = ppatch->m_vimages.begin();
       vector<int>::iterator eimage = ppatch->m_vimages.end();
-      vector<Vec2i>::iterator bgrid = ppatch->m_vgrids.begin();
+      vector<TVec2<int>>::iterator bgrid = ppatch->m_vgrids.begin();
       while (bimage != eimage) {
 	if (*bimage == index) {
 	  const int& ix = (*bgrid)[0];

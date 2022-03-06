@@ -46,6 +46,6 @@ struct Soption{
   void initVisdata(void);
   void initVisdata2(void);
 };
-};
+}
 
 #endif // PMVS3_OPTION_H

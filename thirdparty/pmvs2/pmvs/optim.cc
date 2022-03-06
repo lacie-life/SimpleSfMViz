@@ -5,7 +5,7 @@
 #include "findMatch.h"
 #include "optim.h"
 #include <cstdio>
-#include <lmmin.h>
+#include "../numeric/lmmin/lmmin.h"
 
 using namespace Patch;
 using namespace PMVS3;
@@ -47,10 +47,10 @@ void Coptim::setAxesScales(void) {
   m_yaxes.resize(m_fm.m_num);
   m_zaxes.resize(m_fm.m_num);
   for (int index = 0; index < m_fm.m_num; ++index) {
-    m_zaxes[index] = Vec3f(m_fm.m_pss.m_photos[index].m_oaxis[0],
+    m_zaxes[index] = pmvsVec3f(m_fm.m_pss.m_photos[index].m_oaxis[0],
                            m_fm.m_pss.m_photos[index].m_oaxis[1],
                            m_fm.m_pss.m_photos[index].m_oaxis[2]);
-    m_xaxes[index] = Vec3f(m_fm.m_pss.m_photos[index].m_projection[0][0][0],
+    m_xaxes[index] = pmvsVec3f(m_fm.m_pss.m_photos[index].m_projection[0][0][0],
                            m_fm.m_pss.m_photos[index].m_projection[0][0][1],
                            m_fm.m_pss.m_photos[index].m_projection[0][0][2]);
     m_yaxes[index] = cross(m_zaxes[index], m_xaxes[index]);
@@ -60,8 +60,8 @@ void Coptim::setAxesScales(void) {
 
   m_ipscales.resize(m_fm.m_num);
   for (int index = 0; index < m_fm.m_num; ++index) {
-    const Vec4f xaxe(m_xaxes[index][0], m_xaxes[index][1], m_xaxes[index][2], 0.0);
-    const Vec4f yaxe(m_yaxes[index][0], m_yaxes[index][1], m_yaxes[index][2], 0.0);
+    const pmvsVec4f xaxe(m_xaxes[index][0], m_xaxes[index][1], m_xaxes[index][2], 0.0);
+    const pmvsVec4f yaxe(m_yaxes[index][0], m_yaxes[index][1], m_yaxes[index][2], 0.0);
 
     const float fx = xaxe * m_fm.m_pss.m_photos[index].m_projection[0][0];
     const float fy = yaxe * m_fm.m_pss.m_photos[index].m_projection[0][1];
@@ -74,10 +74,10 @@ void Coptim::collectImages(const int index, std::vector<int>& indexes) const{
   // m_sequenceThreshold, m_targets. Results are sorted by
   // CphotoSet::m_distances.
   indexes.clear();
-  Vec4f ray0 = m_fm.m_pss.m_photos[index].m_oaxis;
+  pmvsVec4f ray0 = m_fm.m_pss.m_photos[index].m_oaxis;
   ray0[3] = 0.0f;
 
-  vector<Vec2f> candidates;
+  vector<pmvsVec2f> candidates;
   // Search for only related images
   for (int i = 0; i < (int)m_fm.m_visdata2[index].size(); ++i) {
     const int indextmp = m_fm.m_visdata2[index][i];
@@ -88,13 +88,13 @@ void Coptim::collectImages(const int index, std::vector<int>& indexes) const{
         m_fm.m_sequenceThreshold < abs(index - indextmp))
       continue;
 
-    Vec4f ray1 = m_fm.m_pss.m_photos[indextmp].m_oaxis;
+    pmvsVec4f ray1 = m_fm.m_pss.m_photos[indextmp].m_oaxis;
     ray1[3] = 0.0f;
 
     if (ray0 * ray1 < cos(m_fm.m_angleThreshold0))
       continue;
 
-    candidates.push_back(Vec2f(m_fm.m_pss.m_distances[index][indextmp], indextmp));
+    candidates.push_back(pmvsVec2f(m_fm.m_pss.m_distances[index][indextmp], indextmp));
   }
 
   sort(candidates.begin(), candidates.end(), Svec2cmp<float>());
@@ -141,7 +141,7 @@ void Coptim::filterImagesByAngle(Cpatch& patch) {
 
   while (bimage != eimage) {
     const int index = *bimage;
-    Vec4f ray = m_fm.m_pss.m_photos[index].m_center - patch.m_coord;
+    pmvsVec4f ray = m_fm.m_pss.m_photos[index].m_center - patch.m_coord;
     unitize(ray);
     if (ray * patch.m_normal < cos(m_fm.m_angleThreshold1)) {
       // if reference image is deleted, over
@@ -302,7 +302,7 @@ void Coptim::sortImages(Cpatch& patch) const{
     const float threshold = 1.0f - cos(10.0 * M_PI / 180.0);
     vector<int> indexes, indexes2;
     vector<float> units, units2;
-    vector<Vec4f> rays, rays2;
+    vector<pmvsVec4f> rays, rays2;
 
     computeUnits(patch, indexes, units, rays);
 
@@ -345,7 +345,7 @@ void Coptim::sortImages(Cpatch& patch) const{
     const float threshold = cos(5.0 * M_PI / 180.0);
     vector<int> indexes, indexes2;
     vector<float> units, units2;
-    vector<Vec4f> rays, rays2;
+    vector<pmvsVec4f> rays, rays2;
 
     computeUnits(patch, indexes, units, rays);
 
@@ -439,7 +439,7 @@ void Coptim::addImages(Patch::Cpatch& patch) const{
       continue;
     }
 
-    const Vec3f icoord = m_fm.m_pss.project(*bimage, patch.m_coord, m_fm.m_level);
+    const pmvsVec3f icoord = m_fm.m_pss.project(*bimage, patch.m_coord, m_fm.m_level);
     if (icoord[0] < 0.0f || m_fm.m_pss.getWidth(*bimage, m_fm.m_level) - 1 <= icoord[0] ||
         icoord[1] < 0.0f || m_fm.m_pss.getHeight(*bimage, m_fm.m_level) - 1 <= icoord[1]) {
       ++bimage;
@@ -451,7 +451,7 @@ void Coptim::addImages(Patch::Cpatch& patch) const{
       continue;
     }
 
-    Vec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
+    pmvsVec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
     unitize(ray);
     const float ftmp = ray * patch.m_normal;
 
@@ -476,7 +476,7 @@ void Coptim::computeUnits(const Patch::Cpatch& patch,
     *bfine = INT_MAX/2;
 
     *bfine = getUnit(*bimage, patch.m_coord);
-    Vec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
+    pmvsVec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
     unitize(ray);
     const float denom = ray * patch.m_normal;
     if (0.0 < denom)
@@ -492,12 +492,12 @@ void Coptim::computeUnits(const Patch::Cpatch& patch,
 void Coptim::computeUnits(const Patch::Cpatch& patch,
                           std::vector<int>& indexes,
                           std::vector<float>& units,
-                          std::vector<Vec4f>& rays) const{
+                          std::vector<pmvsVec4f>& rays) const{
   vector<int>::const_iterator bimage = patch.m_images.begin();
   vector<int>::const_iterator eimage = patch.m_images.end();
 
   while (bimage != eimage) {
-    Vec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
+    pmvsVec4f ray = m_fm.m_pss.m_photos[*bimage].m_center - patch.m_coord;
     unitize(ray);
     const float dot = ray * patch.m_normal;
     if (dot <= 0.0f) {
@@ -565,11 +565,11 @@ void Coptim::my_f_lm(const double *par, int m_dat, const void *data, double *fve
   //?????
   const double bias = 0.0f;//2.0 - exp(- angle1 * angle1 / sigma2) - exp(- angle2 * angle2 / sigma2);
 
-  Vec4f coord, normal;
+  pmvsVec4f coord, normal;
   m_one->decode(coord, normal, xs, id);
 
   const int index = m_one->m_indexesT[id][0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   m_one->getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   const int size = min(m_one->m_fm.m_tau, (int)m_one->m_indexesT[id].size());
@@ -648,11 +648,11 @@ double Coptim::my_f(const gsl_vector *v, void *params) {
   //?????
   const double bias = 0.0f;//2.0 - exp(- angle1 * angle1 / sigma2) - exp(- angle2 * angle2 / sigma2);
 
-  Vec4f coord, normal;
+  pmvsVec4f coord, normal;
   m_one->decode(coord, normal, xs, id);
 
   const int index = m_one->m_indexesT[id][0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   m_one->getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   const int size = min(m_one->m_fm.m_tau, (int)m_one->m_indexesT[id].size());
@@ -854,11 +854,11 @@ double Coptim::my_f_ssd(const gsl_vector *v, void *params) {
 
   const double bias = 0.0f;//2.0 - exp(- angle1 * angle1 / sigma2) - exp(- angle2 * angle2 / sigma2);
 
-  Vec4f coord, normal;
+  pmvsVec4f coord, normal;
   m_one->decode(coord, normal, xs, id);
 
   const int index = m_one->m_indexesT[id][0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   m_one->getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   const int size = min(m_one->m_fm.m_tau, (int)m_one->m_indexesT[id].size());
@@ -998,11 +998,11 @@ double Coptim::my_f_depth(const gsl_vector *v, void *params) {
                   m_one->m_paramsT[id][2]};
   xs[0] = gsl_vector_get(v, 0);
 
-  Vec4f coord, normal;
+  pmvsVec4f coord, normal;
   m_one->decode(coord, normal, xs, id);
 
   const int index = m_one->m_indexesT[id][0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   m_one->getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   const int size = min(m_one->m_fm.m_tau, (int)m_one->m_indexesT[id].size());
@@ -1261,12 +1261,12 @@ const char *lm_infmsg[] = {
   return true;
 }
 
-void Coptim::encode(const Vec4f& coord,
+void Coptim::encode(const pmvsVec4f& coord,
 		    double* const vect, const int id) const {
   vect[0] = (coord - m_centersT[id]) * m_raysT[id] / m_dscalesT[id];
 }
 
-void Coptim::encode(const Vec4f& coord, const Vec4f& normal,
+void Coptim::encode(const pmvsVec4f& coord, const pmvsVec4f& normal,
 		    double* const vect, const int id) const {
   encode(coord, vect, id);
 
@@ -1292,7 +1292,7 @@ void Coptim::encode(const Vec4f& coord, const Vec4f& normal,
   vect[2] = vect[2] / m_ascalesT[id];
 }
 
-void Coptim::decode(Vec4f& coord, Vec4f& normal,
+void Coptim::decode(pmvsVec4f& coord, pmvsVec4f& normal,
 		    const double* const vect, const int id) const {
   decode(coord, vect, id);
   const int image = m_indexesT[id][0];
@@ -1304,11 +1304,11 @@ void Coptim::decode(Vec4f& coord, Vec4f& normal,
   const float fy = sin(angle2);
   const float fz = - cos(angle1) * cos(angle2);
 
-  Vec3f ftmp = m_xaxes[image] * fx + m_yaxes[image] * fy + m_zaxes[image] * fz;
-  normal = Vec4f(ftmp[0], ftmp[1], ftmp[2], 0.0f);
+  pmvsVec3f ftmp = m_xaxes[image] * fx + m_yaxes[image] * fy + m_zaxes[image] * fz;
+  normal = pmvsVec4f(ftmp[0], ftmp[1], ftmp[2], 0.0f);
 }
 
-void Coptim::decode(Vec4f& coord, const double* const vect, const int id) const {
+void Coptim::decode(pmvsVec4f& coord, const double* const vect, const int id) const {
   coord = m_centersT[id] + m_dscalesT[id] * vect[0] * m_raysT[id];
 }
 
@@ -1317,7 +1317,7 @@ void Coptim::setINCCs(const Patch::Cpatch& patch,
                       const std::vector<int>& indexes,
                       const int id, const int robust) {
   const int index = indexes[0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   getPAxes(index, patch.m_coord, patch.m_normal, pxaxis, pyaxis);
 
   vector<vector<float> >& texs = m_texsT[id];
@@ -1356,7 +1356,7 @@ void Coptim::setINCCs(const Patch::Cpatch& patch,
                       const std::vector<int>& indexes,
                       const int id, const int robust) {
   const int index = indexes[0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   getPAxes(index, patch.m_coord, patch.m_normal, pxaxis, pyaxis);
 
   vector<vector<float> >& texs = m_texsT[id];
@@ -1389,15 +1389,15 @@ void Coptim::setINCCs(const Patch::Cpatch& patch,
   }
 }
 
-int Coptim::grabSafe(const int index, const int size, const Vec3f& center,
-                     const Vec3f& dx, const Vec3f& dy, const int level) const {
+int Coptim::grabSafe(const int index, const int size, const pmvsVec3f& center,
+                     const pmvsVec3f& dx, const pmvsVec3f& dy, const int level) const {
   const int margin = size / 2;
 
-  const Vec3f tl = center - dx * margin - dy * margin;
-  const Vec3f tr = center + dx * margin - dy * margin;
+  const pmvsVec3f tl = center - dx * margin - dy * margin;
+  const pmvsVec3f tr = center + dx * margin - dy * margin;
 
-  const Vec3f bl = center - dx * margin + dy * margin;
-  const Vec3f br = center + dx * margin + dy * margin;
+  const pmvsVec3f bl = center - dx * margin + dy * margin;
+  const pmvsVec3f br = center + dx * margin + dy * margin;
 
   const float minx = min(tl[0], min(tr[0], min(bl[0], br[0])));
   const float maxx = max(tl[0], max(tr[0], max(bl[0], br[0])));
@@ -1425,12 +1425,12 @@ float MyPow2(int x)
 
 static float Log2 = log(2.0f);
 
-int Coptim::grabTex(const Vec4f& coord, const Vec4f& pxaxis, const Vec4f& pyaxis,
-		    const Vec4f& pzaxis, const int index, const int size,
+int Coptim::grabTex(const pmvsVec4f& coord, const pmvsVec4f& pxaxis, const pmvsVec4f& pyaxis,
+		    const pmvsVec4f& pzaxis, const int index, const int size,
                     std::vector<float>& tex) const {
   tex.clear();
 
-  Vec4f ray = m_fm.m_pss.m_photos[index].m_center - coord;
+  pmvsVec4f ray = m_fm.m_pss.m_photos[index].m_center - coord;
   unitize(ray);
   const float weight = max(0.0f, ray * pzaxis);
 
@@ -1442,9 +1442,9 @@ int Coptim::grabTex(const Vec4f& coord, const Vec4f& pxaxis, const Vec4f& pyaxis
 
   const int margin = size / 2;
 
-  Vec3f center = m_fm.m_pss.project(index, coord, m_fm.m_level);
-  Vec3f dx = m_fm.m_pss.project(index, coord + pxaxis, m_fm.m_level) - center;
-  Vec3f dy = m_fm.m_pss.project(index, coord + pyaxis, m_fm.m_level) - center;
+  pmvsVec3f center = m_fm.m_pss.project(index, coord, m_fm.m_level);
+  pmvsVec3f dx = m_fm.m_pss.project(index, coord + pxaxis, m_fm.m_level) - center;
+  pmvsVec3f dy = m_fm.m_pss.project(index, coord + pyaxis, m_fm.m_level) - center;
 
   const float ratio = (norm(dx) + norm(dy)) / 2.0f;
   //int leveldif = (int)floor(log(ratio) / log(2.0f) + 0.5f);
@@ -1463,15 +1463,15 @@ int Coptim::grabTex(const Vec4f& coord, const Vec4f& pxaxis, const Vec4f& pyaxis
   if (grabSafe(index, size, center, dx, dy, newlevel) == 0)
     return 1;
 
-  Vec3f left = center - dx * margin - dy * margin;
+  pmvsVec3f left = center - dx * margin - dy * margin;
 
   tex.resize(3 * size * size);
   float* texp = &tex[0] - 1;
   for (int y = 0; y < size; ++y) {
-    Vec3f vftmp = left;
+    pmvsVec3f vftmp = left;
     left += dy;
     for (int x = 0; x < size; ++x) {
-      Vec3f color = m_fm.m_pss.getColor(index, vftmp[0], vftmp[1], newlevel);
+      pmvsVec3f color = m_fm.m_pss.getColor(index, vftmp[0], vftmp[1], newlevel);
       *(++texp) = color[0];
       *(++texp) = color[1];
       *(++texp) = color[2];
@@ -1482,22 +1482,22 @@ int Coptim::grabTex(const Vec4f& coord, const Vec4f& pxaxis, const Vec4f& pyaxis
   return 0;
 }
 
-double Coptim::computeINCC(const Vec4f& coord, const Vec4f& normal,
+double Coptim::computeINCC(const pmvsVec4f& coord, const pmvsVec4f& normal,
 			   const std::vector<int>& indexes, const int id,
                            const int robust) {
   if ((int)indexes.size() < 2)
     return 2.0;
 
   const int index = indexes[0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   return computeINCC(coord, normal, indexes, pxaxis, pyaxis, id, robust);
 }
 
-double Coptim::computeINCC(const Vec4f& coord, const Vec4f& normal,
-			   const std::vector<int>& indexes, const Vec4f& pxaxis,
-			   const Vec4f& pyaxis, const int id,
+double Coptim::computeINCC(const pmvsVec4f& coord, const pmvsVec4f& normal,
+			   const std::vector<int>& indexes, const pmvsVec4f& pxaxis,
+			   const pmvsVec4f& pyaxis, const int id,
                            const int robust) {
   if ((int)indexes.size() < 2)
     return 2.0;
@@ -1571,11 +1571,11 @@ void Coptim::func(int m, int n, double* x, double* fvec, int* iflag, void* arg) 
   for (int i = 0; i < m; ++i)
     fvec[i] = 2.0;
 
-  Vec4f coord, normal;
+  pmvsVec4f coord, normal;
   decode(coord, normal, xs, id);
 
   const int index = m_indexesT[id][0];
-  Vec4f pxaxis, pyaxis;
+  pmvsVec4f pxaxis, pyaxis;
   getPAxes(index, coord, normal, pxaxis, pyaxis);
 
   const int size = min(m_fm.m_tau, (int)m_indexesT[id].size());
@@ -1605,10 +1605,10 @@ void Coptim::func(int m, int n, double* x, double* fvec, int* iflag, void* arg) 
 void Coptim::normalize(std::vector<std::vector<float> >& texs,
                        const int size) {
   // compute average rgb
-  Vec3f ave;
+  pmvsVec3f ave;
   int denom = 0;
 
-  vector<Vec3f> rgbs;
+  vector<pmvsVec3f> rgbs;
   rgbs.resize(size);
   for (int i = 0; i < size; ++i) {
     if (texs[i].empty())
@@ -1638,7 +1638,7 @@ void Coptim::normalize(std::vector<std::vector<float> >& texs,
       continue;
     int count = 0;
     // compute scale
-    Vec3f scale;
+    pmvsVec3f scale;
     for (int j = 0; j < 3; ++j)
       if (rgbs[i][j] != 0.0f)
         scale[j] = ave[j] / rgbs[i][j];
@@ -1654,7 +1654,7 @@ void Coptim::normalize(std::vector<std::vector<float> >& texs,
 void Coptim::normalize(std::vector<float>& tex) {
   const int size = (int)tex.size();
   const int size3 = size / 3;
-  Vec3f ave;
+  pmvsVec3f ave;
 
   float* texp = &tex[0] - 1;
   for (int i = 0; i < size3; ++i) {
@@ -1744,7 +1744,7 @@ float Coptim::ssd(const std::vector<float>& tex0,
 #endif
 }
 
-float Coptim::getUnit(const int index, const Vec4f& coord) const {
+float Coptim::getUnit(const int index, const pmvsVec4f& coord) const {
   const float fz = norm(coord - m_fm.m_pss.m_photos[index].m_center);
   const float ftmp = m_ipscales[index];
   if (ftmp == 0.0)
@@ -1754,15 +1754,15 @@ float Coptim::getUnit(const int index, const Vec4f& coord) const {
 }
 
 // get x and y axis to collect textures given reference image and normal
-void Coptim::getPAxes(const int index, const Vec4f& coord, const Vec4f& normal,
-		      Vec4f& pxaxis, Vec4f& pyaxis) const{
+void Coptim::getPAxes(const int index, const pmvsVec4f& coord, const pmvsVec4f& normal,
+		      pmvsVec4f& pxaxis, pmvsVec4f& pyaxis) const{
   // yasu changed here for fpmvs
   const float pscale = getUnit(index, coord);
 
-  Vec3f normal3(normal[0], normal[1], normal[2]);
-  Vec3f yaxis3 = cross(normal3, m_xaxes[index]);
+  pmvsVec3f normal3(normal[0], normal[1], normal[2]);
+  pmvsVec3f yaxis3 = cross(normal3, m_xaxes[index]);
   unitize(yaxis3);
-  Vec3f xaxis3 = cross(yaxis3, normal3);
+  pmvsVec3f xaxis3 = cross(yaxis3, normal3);
   pxaxis[0] = xaxis3[0];  pxaxis[1] = xaxis3[1];  pxaxis[2] = xaxis3[2];  pxaxis[3] = 0.0;
   pyaxis[0] = yaxis3[0];  pyaxis[1] = yaxis3[1];  pyaxis[2] = yaxis3[2];  pyaxis[3] = 0.0;
 

@@ -11,7 +11,7 @@ std::istream& Patch::operator >>(std::istream& istr, Cpatch& rhs) {
        >> rhs.m_dscale >> rhs.m_ascale;
 
   if (header == "PATCHA") {
-    int type;    Vec4f dir;
+    int type;    pmvsVec4f dir;
     istr >> type >> dir;
   }
   

@@ -21,14 +21,14 @@ class Cexpand {
   
  protected:
   int expandSub(const Patch::Ppatch& orgppatch, const int id,
-                const Vec4f& canCoord);
+                const pmvsVec4f& canCoord);
   
   int updateCounts(const Patch::Cpatch& patch);
   
   int checkCounts(Patch::Cpatch& patch);
   
   void findEmptyBlocks(const Patch::Ppatch& ppatch,
-                       std::vector<std::vector<Vec4f> >& canCoords);
+                       std::vector<std::vector<pmvsVec4f> >& canCoords);
  protected:
 
   std::priority_queue<Patch::Ppatch, std::vector<Patch::Ppatch>, P_compare>
@@ -53,6 +53,6 @@ class Cexpand {
   // Number passes
   std::vector<int> m_pcounts;
 };
-};
+}
 
 #endif // PMVS3_EXPAND_H
