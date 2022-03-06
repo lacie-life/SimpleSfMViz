@@ -36,3 +36,5 @@ cmake-build-debug/
 CMakeLists.txt.user.f240c2f
 
 *.user
+
+thirdparty/pmvs2/.idea/

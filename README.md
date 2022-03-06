@@ -10,5 +10,11 @@
 - [ ] Open file and load 3D plant model 
 - [ ] Add text in view widget
 - [ ] Camera capture and viewer interface
-- [x] 3D reconstruction plugin (GTSAM SfM)
+- [x] 3D reconstruction plugin (GTSAM SfM) 
+
+## Dataset
+
+![Link](https://www.maths.lth.se/matematiklth/personal/calle/dataset/dataset.html)
+
+
 
