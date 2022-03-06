@@ -123,6 +123,8 @@ void QSfM::featureExtract()
 
             cv::Mat img = cv::imread(f.toStdString(), 1);
 
+            CONSOLE << img.cols << " " << img.rows;
+
             std::vector<cv::KeyPoint> kp;
 
             assert(!img.empty());
