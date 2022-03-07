@@ -5,7 +5,7 @@
 #include <setjmp.h>
 
 extern "C" {
-#include "jpeg/jpeglib.h"
+#include <jpeglib.h>
 };
 
 using namespace std;

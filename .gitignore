@@ -42,3 +42,5 @@ thirdparty/pmvs2/.idea/
 bin/
 
 .idea/
+
+thirdparty/pmvs2/build/

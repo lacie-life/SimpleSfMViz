@@ -65,7 +65,7 @@ void AppEngine::slotReceiveEvent(int event)
         break;
     case static_cast<int>(AppEnums::EVT_CLICK_RUN_SfM):
         CONSOLE << "Run SfM Event";
-        MODEL->runSfM("/home/lacie/Github/GreenHouseAR/assest/data/desk");
+        MODEL->runSfM("assest/data/crazyhorse");
         break;
     default:
         break;
