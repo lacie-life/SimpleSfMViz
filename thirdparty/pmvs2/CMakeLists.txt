@@ -20,9 +20,11 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/numeric/clapack/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/numeric/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/pmvs/*.h)
 
+add_subdirectory(image/jpeg)
+
 add_library(PMVS2 SHARED ${HEADERS} ${SOURCES})
 
-target_link_libraries(PMVS2 GSL::gsl GSL::gslcblas -lpthread -llapack)
+target_link_libraries(PMVS2 GSL::gsl GSL::gslcblas -lpthread -llapack jpeg)
 
 add_executable(pmvs2_demo main.cpp)
 

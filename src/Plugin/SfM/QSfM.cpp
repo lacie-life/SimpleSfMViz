@@ -33,7 +33,6 @@ QSfM::QSfM(QObject *parent)
     CONSOLE << "QSfM init ... ";
     m_image_names.reserve(1);
 
-
     CONSOLE << "Fucking crash";
 }
 
@@ -50,7 +49,7 @@ void QSfM::init(QString imgFolder)
 
     QDir directory(imgFolder);
 
-    QStringList images = directory.entryList(QStringList() << "*.jpg" << "*.JPG",QDir::Files);
+    QStringList images = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.png",QDir::Files);
 
     CONSOLE << images.size();
 
@@ -121,7 +120,15 @@ void QSfM::featureExtract()
 
             CONSOLE << "Image path: " << f;
 
-            cv::Mat img = cv::imread(f.toStdString(), 1);
+            cv::Mat img = cv::imread(f.toStdString().c_str());
+
+            // Check for failure
+            if (img.empty())
+            {
+                CONSOLE << "Could not open or find the image";
+                cin.get(); //wait for any key press
+                exit(-1);
+            }
 
             CONSOLE << img.cols << " " << img.rows;
 

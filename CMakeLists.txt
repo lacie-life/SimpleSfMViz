@@ -74,11 +74,6 @@ find_package(Qt5Qml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Gui REQUIRED)
 
-find_package(Qt53DInput REQUIRED)
-find_package(Qt53DQuick REQUIRED)
-find_package(Qt53DRender REQUIRED)
-find_package(Qt53DQuickRender REQUIRED)
-
 include_directories(${Qt5Widgets_INCLUDE_DIRS} ${QtQml_INCLUDE_DIRS})
 add_definitions(${Qt5Widgets_DEFINITIONS} ${QtQml_DEFINITIONS} ${${Qt5Quick_DEFINITIONS}})
 
