@@ -12,6 +12,11 @@
 - [ ] Camera capture and viewer interface
 - [x] SfM plugin (GTSAM SfM)
 
+## Use case
+
+- Record bag file screen
+- Load bag file and process screen (with some config input)
+
 ## App demo
 
 ![Demo](/assets/test/hand.gif)
