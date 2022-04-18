@@ -12,3 +12,7 @@
 - [ ] Camera capture and viewer interface
 - [x] SfM plugin (GTSAM SfM)
 
+## App demo
+
+![Demo](/assets/test/hand.gif)
+
