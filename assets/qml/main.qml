@@ -18,6 +18,6 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
-        source: QmlConst.QML_MAIN_SCREEN_URL
+        source: QmlScreen.QML_TEST
     }
 }

@@ -14,6 +14,7 @@
 
 #include "AppEnums.h"
 #include "SfM/QSfM.h"
+#include "DataVisualize/QProgressBarDialog.h"
 
 #define MODEL AppModel::instance()
 
@@ -50,6 +51,9 @@ private:
 
     static AppEnums::APP_STATE m_state;
     int m_currentScreenID;
+
+public:
+    QProgressBarDialog m_progressDialog;
 };
 
 #endif // APPMODEL_H

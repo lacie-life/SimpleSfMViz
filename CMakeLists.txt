@@ -71,6 +71,7 @@ find_package(Qt5Quick REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Gui REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
 
 find_package(Qt53DInput REQUIRED)
 find_package(Qt53DQuick REQUIRED)
@@ -98,7 +99,7 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/OpenGL/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/SfM/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/Camera/*.h
-                      #${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/pcl/*.h
+                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/DataVisualize/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Common/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
 
@@ -108,7 +109,7 @@ file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/OpenGL/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/SfM/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/Camera/*.cpp
-                      #${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/pcl/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/DataVisualize/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Common/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -134,6 +135,7 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
     Qt5::Quick
     Qt5::Qml
     Qt5::Widgets
+    Qt5::Concurrent
     ${PCL_LIBRARIES}
     stdc++
     ${Boost_LIBRARIES}
@@ -142,7 +144,6 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
     -ltbb)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
-#target_compile_definitions(${PROJECT_NAME} PRIVATE ${PCL_DEFINITIONS}) causes command-line error in cmake from ubuntu 16.04
 target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
 
 qt5_use_modules(${PROJECT_NAME} Qml Widgets Quick 3DCore 3DQuick 3DRender 3DQuickRender)

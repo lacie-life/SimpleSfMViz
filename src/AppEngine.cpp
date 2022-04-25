@@ -33,12 +33,11 @@ void AppEngine::initEngine(){
 
     // set context properties
     m_rootContext->setContextProperty("QmlConst", DEFS);
-
     m_rootContext->setContextProperty("QmlHandler", QML_HANDLER);
-
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
-
     m_rootContext->setContextProperty("QmlModel", MODEL);
+
+    m_rootContext->setContextProperty("progressDialog", &MODEL->m_progressDialog);
 }
 
 void AppEngine::startEngine(){
