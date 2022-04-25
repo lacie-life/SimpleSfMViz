@@ -42,9 +42,9 @@ void AppEngine::initEngine(){
 }
 
 void AppEngine::startEngine(){
-    this->load(SCR_DEF->QML_APP());
+//    this->load(SCR_DEF->QML_APP());
 
-    // this->pointCloudRenderScreenRun(this);
+    this->pointCloudRenderScreenRun(this);
 }
 
 void AppEngine::pointCloudRenderScreenRun(AppEngine *engine)

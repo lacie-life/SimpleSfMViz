@@ -38,7 +38,7 @@ QPointCloudViewer::QPointCloudViewer(AppEngine *engine, QWindow *parent)
     setFormat(format);
     create();
 
-    QString plyPath = "/home/lacie/Github/GreenHouseAR/assest/data/hand_gestures/hand_0/image_0000.pcd";
+    QString plyPath = "/home/jun/Github/GreenHouseAR/assets/data/hand_gestures/hand_0/image_0000.pcd";
 
     // create the GL context
 

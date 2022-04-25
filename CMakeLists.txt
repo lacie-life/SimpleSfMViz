@@ -110,6 +110,7 @@ file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/Camera/*.cpp
                       #${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/pcl/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Common/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})
@@ -146,9 +147,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
 
 qt5_use_modules(${PROJECT_NAME} Qml Widgets Quick 3DCore 3DQuick 3DRender 3DQuickRender)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assest
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 execute_process(
-     COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" ${CMAKE_CURRENT_SOURCE_DIR}/assest/data ${CMAKE_CURRENT_BINARY_DIR}/assest/data
+     COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" ${CMAKE_CURRENT_SOURCE_DIR}/assets/data ${CMAKE_CURRENT_BINARY_DIR}/assets/data
 )

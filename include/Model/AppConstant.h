@@ -76,9 +76,21 @@ private:
 
     /********************************************** Point Cloud Resource ********************************/
 
-    DEF_CONST(QString, POINT_CLOUD_EXAMPLE   , BUILD_DIR + "/assest/bunny.ply")
-    DEF_CONST(QString, POINT_CLOUD_VERTEX    , BUILD_DIR + "/assest/shader/pointcloud.vert")
-    DEF_CONST(QString, POINT_CLOUD_FRAGMENT  , BUILD_DIR + "/assest/shader/pointcloud.frag")
+    DEF_CONST(QString, POINT_CLOUD_EXAMPLE   , BUILD_DIR + "/assets/bunny.ply")
+    DEF_CONST(QString, POINT_CLOUD_VERTEX    , BUILD_DIR + "/assets/shader/pointcloud.vert")
+    DEF_CONST(QString, POINT_CLOUD_FRAGMENT  , BUILD_DIR + "/assets/shader/pointcloud.frag")
+
+
+    /*********************************************** Image/Icon *****************************************/
+
+    // IMAGES
+    DEF_CONST(QString, IMAGE_FOLDER , "file:" + BUILD_DIR + "/assets/res/")
+    DEF_CONST(QString, SEARCH_IMG   , "search.svg"  )
+    DEF_CONST(QString, HOME_IMG     , "home.svg"    )
+    DEF_CONST(QString, CONTROL_IMG  , "control.svg" )
+    DEF_CONST(QString, MAP_IMG      , "map.svg"     )
+    DEF_CONST(QString, USER_IMG     , "user.svg"    )
+    DEF_CONST(QString, MAP_MARKER   , IMAGE_FOLDER() + "mapmarker.png")
 
     /********************************************** GENERAL **********************************************/
     DEF_CONST(int, MAX_WIDTH        , 1280  )
