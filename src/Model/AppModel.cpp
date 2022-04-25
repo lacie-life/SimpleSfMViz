@@ -10,7 +10,7 @@ AppEnums::APP_STATE AppModel::m_state = AppEnums::APP_STATE::STATE_NONE;
 
 AppModel::AppModel(QObject *parent)
     : QObject{parent}
-    , m_currentScreenID{static_cast<int>(AppEnums::HOME)}
+    , m_currentScreenID{static_cast<int>(AppEnums::HOME_SCREEN)}
 {
     CONSOLE << "Init instance";
 }

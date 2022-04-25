@@ -13,7 +13,7 @@ class AppEnums : public QObject
 public:
     enum EVENT_t{
         EVT_NONE = 0,   // do not add enum above this
-        EVT_CLICK_IMAGE_SCREEN,
+        EVT_CLICK_HOME_SCREEN,
         EVT_CLICK_PROCESS_SCREEN,
         EVT_CLICK_RUN,
         EVT_CLICK_STOP,
@@ -24,7 +24,7 @@ public:
     };
 
     enum VIEW_SCREEN{
-            HOME = 0,
+            HOME_SCREEN = 0,
             PROCESS_SCREEN,
         };
 

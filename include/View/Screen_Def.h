@@ -55,8 +55,14 @@ private:
     ScreenDef(const ScreenDef&) = delete;
     void operator =(const ScreenDef&) = delete;
 
-    DEF_SCREEN(QML_FOLDER       , "file:/home/jun/Github/GreenHouseAR/assest/qml/")
+    DEF_SCREEN(QML_FOLDER       , "file:/home/jun/Github/GreenHouseAR/assets/qml/")
     DEF_SCREEN(QML_APP     , QML_FOLDER() + "main.qml")
+    DEF_SCREEN(QML_MAIN_SCREEN  , QML_FOLDER() + "MainScreen.qml")
+    DEF_SCREEN(QML_TEST         , QML_FOLDER() + "TestScreen.qml")
+
+    // detail screen
+    DEF_SCREEN(QML_HOME         , QML_FOLDER() + "Screen/Home/HomeScreen.qml")
+    DEF_SCREEN(QML_PROCESS      , QML_FOLDER() + "Screen/Process/ProcessScreen.qml")
 
 signals:
 

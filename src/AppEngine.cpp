@@ -42,9 +42,9 @@ void AppEngine::initEngine(){
 }
 
 void AppEngine::startEngine(){
-//    this->load(SCR_DEF->QML_APP());
+    this->load(SCR_DEF->QML_APP());
 
-    this->pointCloudRenderScreenRun(this);
+//    this->pointCloudRenderScreenRun(this);
 }
 
 void AppEngine::pointCloudRenderScreenRun(AppEngine *engine)
@@ -60,12 +60,14 @@ void AppEngine::slotReceiveEvent(int event)
     switch (event) {
     case static_cast<int>(AppEnums::EVT_NONE):
         CONSOLE << "Invalid event";
-        // do sth here, maybe call a function to process images
-        // then use MODEL->setCurrentPath to re-set path
         break;
-    case static_cast<int>(AppEnums::EVT_CLICK_RUN_SfM):
-        CONSOLE << "Run SfM Event";
-        MODEL->runSfM("/home/jun/Github/GreenHouseAR/assest/data/crazyhorse");
+    case static_cast<int>(AppEnums::EVT_CLICK_HOME_SCREEN):
+        CONSOLE << "Change screen";
+        MODEL->setCurrentScreenID(AppEnums::HOME_SCREEN);
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_PROCESS_SCREEN):
+        CONSOLE << "Change screen";
+        MODEL->setCurrentScreenID(AppEnums::PROCESS_SCREEN);
         break;
     default:
         break;

@@ -21,6 +21,8 @@
         <file>qml/Component/Common/QTimer.qml</file>
         <file>qml/Component/QButton.qml</file>
         <file>qml/Component/QMenuBar.qml</file>
+        <file>qml/Screen/Home/HomeScreen.qml</file>
+        <file>qml/Screen/Process/ProcessScreen.qml</file>
     </qresource>
     <qresource prefix="/data">
         <file>data/bunny.pcd</file>

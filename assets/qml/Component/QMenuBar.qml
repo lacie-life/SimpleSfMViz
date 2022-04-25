@@ -4,7 +4,7 @@ import "Common"
 
 QRec{
     id: root
-    color: CONST.COLOR_MENU_BAR
+    color: QmlConst.COLOR_MENU_BAR
     width: 80
     height: 680
 
@@ -15,7 +15,7 @@ QRec{
         width: root.width
         height: root.height
 
-        currentIndex: AppModel.currentScreenID
+        currentIndex: QmlModel.currentScreenID
         interactive: contentHeight > height
 
         delegate: Item {
@@ -28,7 +28,7 @@ QRec{
 
                 allowImage: true
                 anchors.fill: parent
-                color: listScreen.currentIndex === index ? CONST.COLOR_MENU_BAR_FOCUS : CONST.COLOR_INVISIBLE
+                color: listScreen.currentIndex === index ? QmlConst.COLOR_MENU_BAR_FOCUS : QmlConst.COLOR_INVISIBLE
 
                 sizeImage: width * 0.5
                 sourceImage: getIcon(index, listScreen.currentIndex === index)
@@ -51,15 +51,9 @@ QRec{
 
         switch(index) {
         case 0:
-            return colorFolder + CONST.SEARCH_IMG
+            return colorFolder + QmlConst.HOME_IMG
         case 1:
-            return colorFolder + CONST.HOME_IMG
-        case 2:
-            return colorFolder + CONST.CONTROL_IMG
-        case 3:
-            return colorFolder + CONST.MAP_IMG
-        case 4:
-            return colorFolder + CONST.USER_IMG
+            return colorFolder + QmlConst.CONTROL_IMG
         default:
             return ""
         }
@@ -68,15 +62,9 @@ QRec{
     function getEventID(index) {
         switch(index) {
         case 0:
-            return ENUMS.UserClickSearch
+            return ENUMS.EVT_CLICK_HOME_SCREEN
         case 1:
-            return ENUMS.UserClickHome
-        case 2:
-            return ENUMS.UserClickControl
-        case 3:
-            return ENUMS.UserClickMap
-        case 4:
-            return ENUMS.UserClickAccount
+            return ENUMS.EVT_CLICK_PROCESS_SCREEN
         default:
             return ""
         }
