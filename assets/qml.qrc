@@ -25,6 +25,8 @@
         <file>qml/Screen/Process/ProcessScreen.qml</file>
         <file>qml/Component/QProgressBar.qml</file>
         <file>qml/TestScreen.qml</file>
+        <file>qml/Screen/Home/ImageView.qml</file>
+        <file>qml/Screen/Home/ConfigBox.qml</file>
     </qresource>
     <qresource prefix="/data">
         <file>data/bunny.pcd</file>

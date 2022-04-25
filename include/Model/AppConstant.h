@@ -96,6 +96,7 @@ private:
     DEF_CONST(int, MAX_WIDTH        , 1280  )
     DEF_CONST(int, MAX_HEIGHT       , 680   )
     DEF_CONST(int, MENU_BAR_WIDTH   , 80    )
+    DEF_CONST(int, OFFSET           , 20)
 
     DEF_CONST(QString   , EMPTY_STRING , ""    )
 

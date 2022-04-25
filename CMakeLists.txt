@@ -60,9 +60,9 @@ find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${GTSAM_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR})
+include_directories(${GTSAM_INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR})
 
 
 find_package(Qt5Core REQUIRED)
@@ -129,19 +129,19 @@ target_compile_definitions(${PROJECT_NAME}
 
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
-    glfw
-    GLEW::GLEW
-    Qt5::Core
-    Qt5::Quick
-    Qt5::Qml
-    Qt5::Widgets
-    Qt5::Concurrent
-    ${PCL_LIBRARIES}
-    stdc++
-    ${Boost_LIBRARIES}
-    ${OpenCV_LIBS}
-    -lgtsam
-    -ltbb)
+                                        glfw
+                                        GLEW::GLEW
+                                        Qt5::Core
+                                        Qt5::Quick
+                                        Qt5::Qml
+                                        Qt5::Widgets
+                                        Qt5::Concurrent
+                                        ${PCL_LIBRARIES}
+                                        stdc++
+                                        ${Boost_LIBRARIES}
+                                        ${OpenCV_LIBS}
+                                        -lgtsam
+                                        -ltbb)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
