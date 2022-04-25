@@ -116,7 +116,7 @@ file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
 
-qt5_add_resources(QT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assest/qml.qrc)
+qt5_add_resources(QT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets/qml.qrc)
 
 add_executable(${PROJECT_NAME}
                 ${HEADERS}
