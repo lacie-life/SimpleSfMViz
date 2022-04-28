@@ -34,6 +34,11 @@ int AppModel::currentScreenID() const
     return m_currentScreenID;
 }
 
+QString AppModel::rosBagPath() const
+{
+    return m_rosBag;
+}
+
 void AppModel::runSfM(QString path)
 {
     QSfM *sfm = new QSfM(this);
@@ -57,6 +62,13 @@ void AppModel::setCurrentScreenID(int currentScreenID)
 
     m_currentScreenID = currentScreenID;
     emit currentScreenIDChanged(m_currentScreenID);
+}
+
+void AppModel::setRosBagPath(QString path)
+{
+    m_rosBag = path;
+
+    emit rosBagPathChanged(m_rosBag);
 }
 
 
