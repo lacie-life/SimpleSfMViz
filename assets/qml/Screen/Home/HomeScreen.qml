@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
+import QtQuick.Dialogs 1.3
 
 import QmlCustomItem 1.0
 
@@ -7,7 +8,6 @@ import "../../Component/Common"
 import "../../Component"
 
 QRec {
-
     id: homeScreen
 
     Button {
@@ -60,9 +60,26 @@ QRec {
         anchors.bottomMargin: QmlConst.OFFSET
 
         border.color: "red"
-
-
     }
 
 
+    FileDialog {
+        id: chooseRosBag
+
+        title: "Please choose a file"
+
+        folder: shortcuts.home
+
+        onAccepted: {
+            QmlHandler.qmlMessage("Path: " + chooseRosBag.fileUrl)
+            chooseRosBag.close()
+        }
+    }
+
+    Connections {
+        target: rosPath
+        function onClicked(mouse) {
+            chooseRosBag.open()
+        }
+    }
 }
