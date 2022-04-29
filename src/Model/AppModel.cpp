@@ -39,6 +39,11 @@ QString AppModel::rosBagPath() const
     return m_rosBag;
 }
 
+AppEnums::DETECT_MODEL AppModel::model() const
+{
+    return m_config->modelType();
+}
+
 void AppModel::runSfM(QString path)
 {
     QSfM *sfm = new QSfM(this);
@@ -69,6 +74,13 @@ void AppModel::setRosBagPath(QString path)
     m_rosBag = path;
 
     emit rosBagPathChanged(m_rosBag);
+}
+
+void AppModel::setsetDetectModel(AppEnums::DETECT_MODEL model)
+{
+    m_config->setModelType(model);
+
+    emit detectModelChanged(m_config->modelType());
 }
 
 

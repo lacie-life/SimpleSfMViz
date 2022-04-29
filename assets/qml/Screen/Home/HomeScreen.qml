@@ -22,13 +22,13 @@ QRec {
         anchors.topMargin: QmlConst.OFFSET
 
         anchors.right: homeScreen.right
-        anchors.rightMargin: QmlConst.OFFSET + configWindow.width - rosPath.width
+        anchors.rightMargin: QmlConst.OFFSET + configBox.width - rosPath.width
 
-        anchors.bottom: configWindow.top
+        anchors.bottom: configBox.top
         anchors.bottomMargin: QmlConst.OFFSET
     }
 
-    QRec {
+    ImageView {
         id: imageView
         anchors.left: homeScreen.left
         anchors.leftMargin: QmlConst.OFFSET
@@ -39,14 +39,12 @@ QRec {
         anchors.top: homeScreen.top
         anchors.topMargin: QmlConst.OFFSET * 5
 
-        anchors.right: configWindow.left
+        anchors.right: configBox.left
         anchors.rightMargin: QmlConst.OFFSET
-
-        border.color: "red"
     }
 
-    QRec {
-        id: configWindow
+    ConfigBox {
+        id: configBox
 
         width: 200
 
@@ -58,8 +56,6 @@ QRec {
 
         anchors.bottom: homeScreen.bottom
         anchors.bottomMargin: QmlConst.OFFSET
-
-        border.color: "red"
     }
 
 

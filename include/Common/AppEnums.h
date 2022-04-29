@@ -2,6 +2,7 @@
 #define APPENUMS_H
 
 #include <QObject>
+#include <QMap>
 
 class AppEnums : public QObject
 {
@@ -9,6 +10,8 @@ class AppEnums : public QObject
     Q_ENUMS(APP_STATE)
     Q_ENUMS(EVENT_t)
     Q_ENUMS(VIEW_SCREEN)
+
+    Q_ENUMS(DETECT_MODEL)
 
 public:
     enum EVENT_t{
@@ -24,17 +27,28 @@ public:
     };
 
     enum VIEW_SCREEN{
-            HOME_SCREEN = 0,
-            PROCESS_SCREEN,
-        };
+        HOME_SCREEN = 0,
+        PROCESS_SCREEN,
+        MAX_SCREEN,
+    };
 
     enum APP_STATE{
         STATE_NONE = 0,
         STATE_RUNNING ,
         STATE_STOP,
         STATE_RESET,
+        STATE_MAX,
     };
 
+    enum DETECT_MODEL {
+        YOLO = 0,
+        SSD,
+        MODEL_MAX,
+    };
+
+    QMap<int, QString> MODEL_ZOO {{0, "YoLo"},
+                                  {1, "SSD"},
+                                  {2, "MAX"}};
 
 private:
     AppEnums(const AppEnums& _other) = delete;

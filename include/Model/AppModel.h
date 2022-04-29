@@ -13,6 +13,7 @@
 #include <QQmlApplicationEngine>
 
 #include "AppEnums.h"
+#include "QConfig.h"
 #include "SfM/QSfM.h"
 #include "DataVisualize/QProgressBarDialog.h"
 
@@ -24,6 +25,7 @@ class AppModel : public QObject
     Q_PROPERTY(int currentScreenID READ currentScreenID WRITE setCurrentScreenID NOTIFY currentScreenIDChanged)
     Q_PROPERTY(AppEnums::APP_STATE state READ state WRITE setState NOTIFY stateChanged)
     Q_PROPERTY(QString rosBagPath READ rosBagPath WRITE setRosBagPath NOTIFY rosBagPathChanged)
+    Q_PROPERTY(AppEnums::DETECT_MODEL detectModel READ detectModel WRITE setDetectModel NOTIFY detectModelChanged)
 
 public:
 
@@ -31,6 +33,7 @@ public:
     AppEnums::APP_STATE state() const;
     int currentScreenID() const;
     QString rosBagPath() const;
+    AppEnums::DETECT_MODEL model() const;
 
     void runSfM(QString path);
 
@@ -38,11 +41,13 @@ public slots:
     void setState(AppEnums::APP_STATE state);
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
+    void setsetDetectModel(AppEnums::DETECT_MODEL model);
 
 signals:
     void stateChanged();
     void currentScreenIDChanged(int currentScreenID);
     void rosBagPathChanged(QString path);
+    void detectModelChanged(AppEnums::DETECT_MODEL model);
 
 private:
     AppModel(QObject* parent = nullptr);
@@ -57,6 +62,8 @@ private:
     int m_currentScreenID;
 
     QString m_rosBag;
+
+    QConfig* m_config;
 
 public:
     QProgressBarDialog m_progressDialog;

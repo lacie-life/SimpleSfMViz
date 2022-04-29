@@ -1,5 +1,10 @@
 import QtQuick 2.0
 
-Item {
+import "../../Component/Common"
+import "../../Component"
+
+QRec {
+    id: root
+    border.color: "red"
 
 }
