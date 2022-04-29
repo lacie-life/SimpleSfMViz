@@ -14,7 +14,7 @@ class AppEnums : public QObject
     Q_ENUMS(DETECT_MODEL)
 
 public:
-    enum EVENT_t{
+    enum EVENT_t {
         EVT_NONE = 0,   // do not add enum above this
         EVT_CLICK_HOME_SCREEN,
         EVT_CLICK_PROCESS_SCREEN,
@@ -26,13 +26,13 @@ public:
         EVT_MAX, // do not add enum under this
     };
 
-    enum VIEW_SCREEN{
+    enum VIEW_SCREEN {
         HOME_SCREEN = 0,
         PROCESS_SCREEN,
         MAX_SCREEN,
     };
 
-    enum APP_STATE{
+    enum APP_STATE {
         STATE_NONE = 0,
         STATE_RUNNING ,
         STATE_STOP,
@@ -46,9 +46,7 @@ public:
         MODEL_MAX,
     };
 
-    QMap<int, QString> MODEL_ZOO {{0, "YoLo"},
-                                  {1, "SSD"},
-                                  {2, "MAX"}};
+    static QMap<int, QString> MODEL_ZOO;
 
 private:
     AppEnums(const AppEnums& _other) = delete;

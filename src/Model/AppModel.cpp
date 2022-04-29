@@ -13,6 +13,8 @@ AppModel::AppModel(QObject *parent)
     , m_currentScreenID{static_cast<int>(AppEnums::HOME_SCREEN)}
 {
     CONSOLE << "Init instance";
+
+    setDefaultConfig();
 }
 
 AppModel *AppModel::instance(){
@@ -39,9 +41,20 @@ QString AppModel::rosBagPath() const
     return m_rosBag;
 }
 
-AppEnums::DETECT_MODEL AppModel::model() const
+AppEnums::DETECT_MODEL AppModel::detectModel() const
 {
     return m_config->modelType();
+}
+
+void AppModel::setDefaultConfig()
+{
+    // Combobox Model
+    QStringList modelList;
+    for(int i = 0; i < AppEnums::MODEL_ZOO.size() - 1; i++)
+    {
+        modelList << AppEnums::MODEL_ZOO[i];
+    }
+    comboboxModel.setStringList(modelList);
 }
 
 void AppModel::runSfM(QString path)
@@ -76,7 +89,7 @@ void AppModel::setRosBagPath(QString path)
     emit rosBagPathChanged(m_rosBag);
 }
 
-void AppModel::setsetDetectModel(AppEnums::DETECT_MODEL model)
+void AppModel::setDetectModel(AppEnums::DETECT_MODEL model)
 {
     m_config->setModelType(model);
 

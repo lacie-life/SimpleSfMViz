@@ -37,6 +37,7 @@ void AppEngine::initEngine(){
     m_rootContext->setContextProperty("QmlScreen", SCR_DEF);
     m_rootContext->setContextProperty("QmlModel", MODEL);
 
+    m_rootContext->setContextProperty("comboboxModel", &MODEL->comboboxModel);
     m_rootContext->setContextProperty("progressDialog", &MODEL->m_progressDialog);
 }
 

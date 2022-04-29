@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QImage>
 #include <QQmlApplicationEngine>
+#include <QStringListModel>
 
 #include "AppEnums.h"
 #include "QConfig.h"
@@ -33,7 +34,9 @@ public:
     AppEnums::APP_STATE state() const;
     int currentScreenID() const;
     QString rosBagPath() const;
-    AppEnums::DETECT_MODEL model() const;
+    AppEnums::DETECT_MODEL detectModel() const;
+
+    void setDefaultConfig();
 
     void runSfM(QString path);
 
@@ -41,7 +44,7 @@ public slots:
     void setState(AppEnums::APP_STATE state);
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
-    void setsetDetectModel(AppEnums::DETECT_MODEL model);
+    void setDetectModel(AppEnums::DETECT_MODEL model);
 
 signals:
     void stateChanged();
@@ -62,11 +65,11 @@ private:
     int m_currentScreenID;
 
     QString m_rosBag;
-
     QConfig* m_config;
 
 public:
     QProgressBarDialog m_progressDialog;
+    QStringListModel comboboxModel;
 };
 
 #endif // APPMODEL_H
