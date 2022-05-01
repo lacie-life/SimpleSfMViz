@@ -24,6 +24,11 @@ set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
 
 list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
+# ROS package
+## Add include directories
+include_directories(/opt/ros/melodic/include /opt/ros/melodic/lib)
+
+
 set(GLEW_USE_STATIC_LIBS OFF)
 add_definitions( -DGLEW_STATIC )
 
@@ -141,7 +146,9 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
                                         ${Boost_LIBRARIES}
                                         ${OpenCV_LIBS}
                                         -lgtsam
-                                        -ltbb)
+                                        -ltbb
+                                        -I/opt/ros/melodic/include
+                                        -L/opt/ros/melodic/lib)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
