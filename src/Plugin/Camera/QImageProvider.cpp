@@ -4,7 +4,8 @@
 #include <QDebug>
 
 QImageProvider::QImageProvider(QObject *parent)
-    : QQuickImageProvider(QQuickImageProvider::Pixmap)
+    : QObject(parent),
+      QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
 
 }
@@ -27,7 +28,6 @@ QPixmap QImageProvider::requestPixmap(const QString &id, QSize *size, const QSiz
 void QImageProvider::updateImage(const QImage &image)
 {
     if(!image.isNull()) {
-        // CONSOLE << "Bug";
         this->m_image = QPixmap::fromImage(image);
         emit imageChanged();
     }

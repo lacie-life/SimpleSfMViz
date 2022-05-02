@@ -2,8 +2,6 @@
 #define APPMODEL_H
 
 #include <QObject>
-
-#include <QObject>
 #include <QString>
 #include <QMutex>
 #include <QStringList>
@@ -13,12 +11,17 @@
 #include <QQmlApplicationEngine>
 #include <QStringListModel>
 
+#include <opencv2/opencv.hpp>
+
 #include "AppEnums.h"
 #include "QConfig.h"
 #include "SfM/QSfM.h"
 #include "DataVisualize/QProgressBarDialog.h"
+#include "Camera/QCameraCapture.h"
 
 #define MODEL AppModel::instance()
+
+// TODO: Still test with video path with variable rosBagPath
 
 class AppModel : public QObject
 {
@@ -45,12 +48,14 @@ public slots:
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
     void setDetectModel(AppEnums::DETECT_MODEL model);
+    void setCurrentFrame(cv::Mat *frame);
 
 signals:
     void stateChanged();
     void currentScreenIDChanged(int currentScreenID);
     void rosBagPathChanged(QString path);
     void detectModelChanged(AppEnums::DETECT_MODEL model);
+    void currentFrameChanged(QImage &image);
 
 private:
     AppModel(QObject* parent = nullptr);
@@ -66,6 +71,8 @@ private:
 
     QString m_rosBag;
     QConfig* m_config;
+    QCameraCapture* m_camera;
+    QImage m_currentFrame;
 
 public:
     QProgressBarDialog m_progressDialog;

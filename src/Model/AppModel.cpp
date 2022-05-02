@@ -15,6 +15,8 @@ AppModel::AppModel(QObject *parent)
     CONSOLE << "Init instance";
 
     setDefaultConfig();
+
+    connect(m_camera, &QCameraCapture::frameCaptured, this, &AppModel::setCurrentFrame);
 }
 
 AppModel *AppModel::instance(){
@@ -55,6 +57,9 @@ void AppModel::setDefaultConfig()
         modelList << AppEnums::MODEL_ZOO[i];
     }
     comboboxModel.setStringList(modelList);
+
+    // QCameraCapture
+    m_camera = new QCameraCapture(nullptr);
 }
 
 void AppModel::runSfM(QString path)
@@ -86,6 +91,8 @@ void AppModel::setRosBagPath(QString path)
 {
     m_rosBag = path;
 
+    CONSOLE << m_rosBag;
+
     emit rosBagPathChanged(m_rosBag);
 }
 
@@ -94,6 +101,14 @@ void AppModel::setDetectModel(AppEnums::DETECT_MODEL model)
     m_config->setModelType(model);
 
     emit detectModelChanged(m_config->modelType());
+}
+
+void AppModel::setCurrentFrame(Mat *frame)
+{
+    QImage img = QImage(frame->data,frame->cols,frame->rows,QImage::Format_RGB888).rgbSwapped();
+    m_currentFrame = img;
+
+    emit currentFrameChanged(m_currentFrame);
 }
 
 

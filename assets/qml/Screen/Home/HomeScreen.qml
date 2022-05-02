@@ -66,8 +66,12 @@ QRec {
 
         folder: shortcuts.home
 
+        width: 600
+        height: 400
+
         onAccepted: {
             QmlHandler.qmlMessage("Path: " + chooseRosBag.fileUrl)
+            QmlModel.setRosBagPath(chooseRosBag.fileUrl)
             chooseRosBag.close()
         }
     }

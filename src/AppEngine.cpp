@@ -5,6 +5,7 @@
 #include "AppModel.h"
 #include "QmlHandler.h"
 #include "QPointCloudViewer.h"
+#include "Camera/QImageProvider.h"
 
 #include <QVariant>
 
@@ -31,6 +32,8 @@ void AppEngine::initEngine(){
     // connect signal slots
     connect(QML_HANDLER, &QmlHandler::notifyQMLEvent, this, &AppEngine::slotReceiveEvent);
 
+    QImageProvider *liveImageProvider(new QImageProvider);
+
     // set context properties
     m_rootContext->setContextProperty("QmlConst", DEFS);
     m_rootContext->setContextProperty("QmlHandler", QML_HANDLER);
@@ -39,6 +42,11 @@ void AppEngine::initEngine(){
 
     m_rootContext->setContextProperty("comboboxModel", &MODEL->comboboxModel);
     m_rootContext->setContextProperty("progressDialog", &MODEL->m_progressDialog);
+
+    m_rootContext->setContextProperty("liveImageProvider", liveImageProvider);
+    this->addImageProvider("live", liveImageProvider);
+    connect(MODEL, &AppModel::currentFrameChanged, liveImageProvider, &QImageProvider::updateImage);
+
 }
 
 void AppEngine::startEngine(){
@@ -68,6 +76,9 @@ void AppEngine::slotReceiveEvent(int event)
     case static_cast<int>(AppEnums::EVT_CLICK_PROCESS_SCREEN):
         CONSOLE << "Change screen";
         MODEL->setCurrentScreenID(AppEnums::PROCESS_SCREEN);
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_CHOOSE_ROSBAG):
+        CONSOLE << MODEL->rosBagPath();
         break;
     default:
         break;

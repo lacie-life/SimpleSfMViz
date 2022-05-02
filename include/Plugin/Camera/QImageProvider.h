@@ -5,7 +5,7 @@
 #include <QQuickImageProvider>
 #include <QCache>
 
-class QImageProvider : public QQuickImageProvider
+class QImageProvider : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 public:

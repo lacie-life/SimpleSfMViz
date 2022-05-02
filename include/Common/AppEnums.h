@@ -18,6 +18,7 @@ public:
         EVT_NONE = 0,   // do not add enum above this
         EVT_CLICK_HOME_SCREEN,
         EVT_CLICK_PROCESS_SCREEN,
+        EVT_CLICK_CHOOSE_ROSBAG,
         EVT_CLICK_RUN,
         EVT_CLICK_STOP,
         EVT_CLICK_OPENGL_RENDER,
