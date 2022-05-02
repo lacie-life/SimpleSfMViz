@@ -42,6 +42,7 @@ public:
     void setDefaultConfig();
 
     void runSfM(QString path);
+    void cameraRun();
 
 public slots:
     void setState(AppEnums::APP_STATE state);

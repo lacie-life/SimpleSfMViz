@@ -73,6 +73,12 @@ void AppModel::runSfM(QString path)
     sfm->run();
 }
 
+void AppModel::cameraRun()
+{
+    m_camera->initCamera(m_rosBag, &m_lock);
+    m_camera->start();
+}
+
 void AppModel::setState(AppEnums::APP_STATE state)
 {
     m_state = state;

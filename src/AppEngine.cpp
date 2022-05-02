@@ -82,6 +82,7 @@ void AppEngine::slotReceiveEvent(int event)
         break;
     case static_cast<int>(AppEnums::EVT_CLICK_RUN):
         CONSOLE << "RUN ?";
+        MODEL->cameraRun();
         break;
     default:
         break;
