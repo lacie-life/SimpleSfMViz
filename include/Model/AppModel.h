@@ -21,7 +21,7 @@
 
 #define MODEL AppModel::instance()
 
-// TODO: Still test with video path with variable rosBagPath
+// TODO: Still test with video path with variable rosBag
 
 class AppModel : public QObject
 {
@@ -29,7 +29,7 @@ class AppModel : public QObject
     Q_PROPERTY(int currentScreenID READ currentScreenID WRITE setCurrentScreenID NOTIFY currentScreenIDChanged)
     Q_PROPERTY(AppEnums::APP_STATE state READ state WRITE setState NOTIFY stateChanged)
     Q_PROPERTY(QString rosBagPath READ rosBagPath WRITE setRosBagPath NOTIFY rosBagPathChanged)
-    Q_PROPERTY(AppEnums::DETECT_MODEL detectModel READ detectModel WRITE setDetectModel NOTIFY detectModelChanged)
+    Q_PROPERTY(int detectModel READ detectModel WRITE setDetectModel NOTIFY detectModelChanged)
 
 public:
 
@@ -37,7 +37,7 @@ public:
     AppEnums::APP_STATE state() const;
     int currentScreenID() const;
     QString rosBagPath() const;
-    AppEnums::DETECT_MODEL detectModel() const;
+    int detectModel() const;
 
     void setDefaultConfig();
 
@@ -47,14 +47,14 @@ public slots:
     void setState(AppEnums::APP_STATE state);
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
-    void setDetectModel(AppEnums::DETECT_MODEL model);
+    void setDetectModel(int model);
     void setCurrentFrame(cv::Mat *frame);
 
 signals:
     void stateChanged();
     void currentScreenIDChanged(int currentScreenID);
     void rosBagPathChanged(QString path);
-    void detectModelChanged(AppEnums::DETECT_MODEL model);
+    void detectModelChanged(int model);
     void currentFrameChanged(QImage &image);
 
 private:

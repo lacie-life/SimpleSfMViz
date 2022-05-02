@@ -72,6 +72,7 @@ QRec {
         onAccepted: {
             QmlHandler.qmlMessage("Path: " + chooseRosBag.fileUrl)
             QmlModel.setRosBagPath(chooseRosBag.fileUrl)
+            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_CHOOSE_ROSBAG)
             chooseRosBag.close()
         }
     }

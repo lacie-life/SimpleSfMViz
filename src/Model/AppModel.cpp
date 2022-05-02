@@ -43,7 +43,7 @@ QString AppModel::rosBagPath() const
     return m_rosBag;
 }
 
-AppEnums::DETECT_MODEL AppModel::detectModel() const
+int AppModel::detectModel() const
 {
     return m_config->modelType();
 }
@@ -60,6 +60,9 @@ void AppModel::setDefaultConfig()
 
     // QCameraCapture
     m_camera = new QCameraCapture(nullptr);
+
+    //QConfig
+    m_config = new QConfig(nullptr);
 }
 
 void AppModel::runSfM(QString path)
@@ -96,9 +99,11 @@ void AppModel::setRosBagPath(QString path)
     emit rosBagPathChanged(m_rosBag);
 }
 
-void AppModel::setDetectModel(AppEnums::DETECT_MODEL model)
+void AppModel::setDetectModel(int model)
 {
-    m_config->setModelType(model);
+    m_config->setModelType((AppEnums::DETECT_MODEL)model);
+
+    CONSOLE << "Model: " << AppEnums::MODEL_ZOO[model];
 
     emit detectModelChanged(m_config->modelType());
 }

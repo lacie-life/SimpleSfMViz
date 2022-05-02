@@ -80,6 +80,9 @@ void AppEngine::slotReceiveEvent(int event)
     case static_cast<int>(AppEnums::EVT_CLICK_CHOOSE_ROSBAG):
         CONSOLE << MODEL->rosBagPath();
         break;
+    case static_cast<int>(AppEnums::EVT_CLICK_RUN):
+        CONSOLE << "RUN ?";
+        break;
     default:
         break;
     }
