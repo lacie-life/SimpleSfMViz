@@ -45,5 +45,6 @@
         <file>res/light/search.svg</file>
         <file>res/light/user.svg</file>
         <file>res/mapmarker.png</file>
+        <file>res/icon.svg</file>
     </qresource>
 </RCC>

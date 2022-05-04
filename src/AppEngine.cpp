@@ -6,6 +6,7 @@
 #include "QmlHandler.h"
 #include "QPointCloudViewer.h"
 #include "Camera/QImageProvider.h"
+#include "Camera/QCameraCapture.h"
 
 #include <QVariant>
 
@@ -33,6 +34,8 @@ void AppEngine::initEngine(){
     connect(QML_HANDLER, &QmlHandler::notifyQMLEvent, this, &AppEngine::slotReceiveEvent);
 
     QImageProvider *liveImageProvider(new QImageProvider);
+
+    qRegisterMetaType<cv::Mat>("cv::Mat");
 
     // set context properties
     m_rootContext->setContextProperty("QmlConst", DEFS);

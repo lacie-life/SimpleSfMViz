@@ -23,7 +23,7 @@ QRec {
         anchors.leftMargin: QmlConst.OFFSET
         anchors.rightMargin: QmlConst.OFFSET
 
-        source: "image://live/image"
+        source: "qrc:/res/res/icon.svg"
         fillMode: Image.PreserveAspectFit
 
         property bool counter: false
@@ -33,10 +33,10 @@ QRec {
 
         function reload()
         {
-            console.log("Update counter")
+//            console.log("Update counter")
             counter = !counter
             source = "image://live/image?id=" + counter
-            console.log(source)
+//            console.log(source)
         }
     }
 

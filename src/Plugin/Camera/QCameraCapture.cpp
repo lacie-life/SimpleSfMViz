@@ -11,67 +11,24 @@ QCameraCapture::QCameraCapture(QObject *parent)
     fps = 0.0;
 
     frame_width = frame_height = 0;
+
+    connect(&tUpdate, &QTimer::timeout, this, &QCameraCapture::stream);
 }
 
-QCameraCapture::QCameraCapture(int camera, QMutex *lock)
-    : running(false), cameraID(camera), data_lock(lock)
-{
-    fps_calculating = false;
-    fps = 0.0;
-
-    frame_width = frame_height = 0;
-}
-
-QCameraCapture::QCameraCapture(QString videoPath, QMutex *lock)
-    : running(false), cameraID(-1), videoPath(videoPath), data_lock(lock)
-{
-    fps_calculating = false;
-    fps = 0.0;
-
-    frame_width = frame_height = 0;
-}
 
 QCameraCapture::~QCameraCapture()
 {
-
+    cap.release();
+    tUpdate.stop();
+    threadStreamer->requestInterruption();
 }
 
-void QCameraCapture::initCamera(QString _videoPath, QMutex *lock)
+void QCameraCapture::initCamera(QString _videoPath)
 {
     CONSOLE << _videoPath;
     cameraID = -1;
     videoPath = _videoPath;
-    data_lock = lock;
-}
 
-void QCameraCapture::setRunning(bool run) {
-    running = run;
-}
-
-void QCameraCapture::startCalcFPS() {
-    fps_calculating = true;
-}
-
-void QCameraCapture::calculateFPS(cv::VideoCapture &cap)
-{
-    const int count_to_read = 100;
-    cv::Mat tmp_frame;
-    QTime timer;
-    timer.start();
-    for(int i = 0; i < count_to_read; i++) {
-            cap >> tmp_frame;
-    }
-    int elapsed_ms = timer.elapsed();
-    fps = count_to_read / (elapsed_ms / 1000.0);
-    fps_calculating = false;
-    emit fpsChanged(fps);
-}
-
-void QCameraCapture::run()
-{
-    running = true;
-
-    cv::VideoCapture cap;
 
     if (cameraID == -1){
         CONSOLE << "Streamming mode";
@@ -84,33 +41,50 @@ void QCameraCapture::run()
         cap = cv::VideoCapture(cameraID);
     }
 
-    cv::Mat tmp_frame;
+    QCameraCapture* worker = new QCameraCapture();
 
-    frame_width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
-    frame_height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+    worker->moveToThread(threadStreamer);
+    QObject::connect(threadStreamer,&QThread::started,worker,&QCameraCapture::streamerThreadSlot);
+    QObject::connect(worker,&QCameraCapture::emitThreadImage,this,&QCameraCapture::catchFrame);
+    threadStreamer->start();
 
-    while (running) {
-        cap >> tmp_frame;
+    double fps = cap.get(cv::CAP_PROP_FPS);
+    tUpdate.start(1000/fps);
+}
 
-        if(tmp_frame.empty())
+void QCameraCapture::streamerThreadSlot()
+{
+    cv::Mat tempFrame;
+
+    while(1)
+    {
+        cap >> tempFrame;
+
+        if(tempFrame.data)
         {
-            break;
+            emit emitThreadImage(tempFrame);
         }
 
-        cv::cvtColor(tmp_frame, tmp_frame, cv::COLOR_BGR2RGB);
-
-        data_lock->lock();
-        frame = tmp_frame;
-        data_lock->unlock();
-        // cv::imshow("Video", frame);
-        emit frameCaptured(&frame);
-        if(fps_calculating) {
-            calculateFPS(cap);
+        if(QThread::currentThread()->isInterruptionRequested())
+        {
+            cap.release();
+            return;
         }
+    }
+}
 
+
+void QCameraCapture::stream()
+{
+    if(frame.data)
+    {
+        QImage img = QImage(frame.data,frame.cols,frame.rows,QImage::Format_RGB888).rgbSwapped();
+        emit newImage(img);
     }
 
-    cap.release();
-    running = false;
+}
 
+void QCameraCapture::catchFrame(cv::Mat emittedFrame)
+{
+    frame = emittedFrame;
 }

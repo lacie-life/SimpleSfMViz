@@ -49,7 +49,7 @@ public slots:
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
     void setDetectModel(int model);
-    void setCurrentFrame(cv::Mat *frame);
+    void setCurrentFrame(QImage img);
 
 signals:
     void stateChanged();

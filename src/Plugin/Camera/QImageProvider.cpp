@@ -5,12 +5,13 @@
 
 QImageProvider::QImageProvider(QObject *parent)
     : QObject(parent),
-      QQuickImageProvider(QQuickImageProvider::Pixmap)
+      QQuickImageProvider(QQuickImageProvider::Image)
 {
-
+    m_image = QImage(200,200,QImage::Format_RGB32);
+    m_image.fill(QColor("black"));
 }
 
-QPixmap QImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+QImage QImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     Q_UNUSED(id);
 
@@ -28,7 +29,7 @@ QPixmap QImageProvider::requestPixmap(const QString &id, QSize *size, const QSiz
 void QImageProvider::updateImage(const QImage &image)
 {
     if(!image.isNull()) {
-        this->m_image = QPixmap::fromImage(image);
+        this->m_image = image;
         emit imageChanged();
     }
 }

@@ -16,7 +16,7 @@ AppModel::AppModel(QObject *parent)
 
     setDefaultConfig();
 
-    connect(m_camera, &QCameraCapture::frameCaptured, this, &AppModel::setCurrentFrame);
+    connect(m_camera, &QCameraCapture::newImage, this, &AppModel::setCurrentFrame);
 }
 
 AppModel *AppModel::instance(){
@@ -75,8 +75,7 @@ void AppModel::runSfM(QString path)
 
 void AppModel::cameraRun()
 {
-    m_camera->initCamera(m_rosBag, &m_lock);
-    m_camera->start();
+    m_camera->initCamera(m_rosBag);
 }
 
 void AppModel::setState(AppEnums::APP_STATE state)
@@ -114,9 +113,8 @@ void AppModel::setDetectModel(int model)
     emit detectModelChanged(m_config->modelType());
 }
 
-void AppModel::setCurrentFrame(Mat *frame)
+void AppModel::setCurrentFrame(QImage img)
 {
-    QImage img = QImage(frame->data,frame->cols,frame->rows,QImage::Format_RGB888).rgbSwapped();
     m_currentFrame = img;
 
     emit currentFrameChanged(m_currentFrame);

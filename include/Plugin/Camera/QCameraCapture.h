@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QThread>
 #include <QMutex>
+#include <QImage>
+#include <QTimer>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
@@ -12,27 +14,27 @@
 
 using namespace std;
 
-class QCameraCapture : public QThread
+static cv::VideoCapture cap;
+
+class QCameraCapture : public QObject
 {
     Q_OBJECT
 public:
     QCameraCapture(QObject *parent = nullptr);
-    QCameraCapture(int camera, QMutex *lock);
-    QCameraCapture(QString videoPath, QMutex *lock);
     ~QCameraCapture();
-    void initCamera(QString videoPath, QMutex *lock);
-    void setRunning(bool run);
-    void startCalcFPS();
+
+public:
+    void stream();
+    QThread* threadStreamer = new QThread();
+    void catchFrame(cv::Mat emittedFrame);
+
+public slots:
+    void initCamera(QString videoPath);
+    void streamerThreadSlot();
 
 signals:
-    void frameCaptured(cv::Mat *data);
-    void fpsChanged(float fps);
-
-private:
-    void calculateFPS(cv::VideoCapture &cap);
-
-protected:
-    void run() override;
+    void newImage(QImage &);
+    void emitThreadImage(cv::Mat frameThread);
 
 private:
     bool running;
@@ -40,6 +42,8 @@ private:
     QString videoPath;
     QMutex *data_lock;
     cv::Mat frame;
+
+    QTimer tUpdate;
 
     // FPS calculating
     bool fps_calculating;
