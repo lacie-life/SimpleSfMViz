@@ -49,6 +49,9 @@ void QCameraCapture::initCamera(QString _videoPath)
     threadStreamer->start();
 
     double fps = cap.get(cv::CAP_PROP_FPS);
+
+    CONSOLE << "FPS: " << fps;
+
     tUpdate.start(1000/fps);
 }
 
@@ -62,6 +65,8 @@ void QCameraCapture::streamerThreadSlot()
 
         if(tempFrame.data)
         {
+            cv::cvtColor(tempFrame, tempFrame, cv::COLOR_BGR2RGB);
+
             emit emitThreadImage(tempFrame);
         }
 
