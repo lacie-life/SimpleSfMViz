@@ -1,0 +1,16 @@
+(qrgbd:23375): Gtk-ERROR **: 18:03:02.557: GTK+ 2.x symbols detected. Using GTK+ 2.x and GTK+ 3 in the same process is not supported
+
+- libopencv_highgui.so.4.5 => /usr/local/lib/libopencv_highgui.so.4.5 (0x00007fd75e1f8000)
+  -- libgtk-x11-2.0.so.0 => /lib/x86_64-linux-gnu/libgtk-x11-2.0.so.0 (0x00007fe31e218000)
+  -- libgdk-x11-2.0.so.0 => /lib/x86_64-linux-gnu/libgdk-x11-2.0.so.0 (0x00007fe31e15d000)
+
+	
+- libopencv_highgui.so.4.2 => /lib/x86_64-linux-gnu/libopencv_highgui.so.4.2 (0x00007fd759f4a000)
+  -- libgtk-3.so.0 => /lib/x86_64-linux-gnu/libgtk-3.so.0 (0x00007f50db94f000)
+  -- libgdk-3.so.0 => /lib/x86_64-linux-gnu/libgdk-3.so.0 (0x00007f50db84a000)
+
+
+- ldd libdarknet.so 
+  -- libopencv_highgui.so.4.2 => /lib/x86_64-linux-gnu/libopencv_highgui.so.4.2 (0x00007f53a4f83000)
+
+

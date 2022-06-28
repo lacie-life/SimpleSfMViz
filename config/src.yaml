@@ -1,0 +1,49 @@
+%YAML:1.0
+Camera.w: 2048
+Camera.h: 1536
+Camera.fx: 975.405
+Camera.fy: 975.177
+Camera.cx: 1019.06
+Camera.cy: 784.468
+Camera.k1: 0
+Camera.k2: 0
+Camera.p1: 0
+Camera.p2: 0
+
+
+# Close/Far threshold. Baseline times.
+ThDepth: 40.0
+
+# Deptmap values factor 
+DepthMapFactor: 1000.0 #
+
+Camera.fps: 30.0
+Camera.RGB: 1
+Camera.type: "PinHole"
+ORBextractor.nFeatures: 2000
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+
+
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize:2
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3
+Viewer.ViewpointX: 0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -1.8
+Viewer.ViewpointF: 500
+
+
+Plane.quaternion.w: 1
+Plane.quaternion.x: 0
+Plane.quaternion.y: 0
+Plane.quaternion.z: 0
+Plane.translation.x: 0
+Plane.translation.y: 0
+Plane.translation.z: -0.235

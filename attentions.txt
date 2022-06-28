@@ -1,0 +1,1 @@
+in qrgbd[Qt project] header file: 'slam.h', line: '4-5', if there is cuda, just remove the #undef HAVE_CUDA, else add it.

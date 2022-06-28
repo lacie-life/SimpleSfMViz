@@ -1,38 +1,6 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-cmake-build-debug/
-
-CMakeLists.txt.user.f240c2f
-
-*.user
+/build-qrgbd-Desktop_Qt_6_1_3_GCC_64bit-Debug
+/build-qrgbd-Desktop_Qt_6_1_3_GCC_64bit-Release
+/test/build
+/yolov4-learn/yolo/yolov4.weights
+/ORB_SLAM3/Vocabulary/ORBvoc.txt
+/ic.png
