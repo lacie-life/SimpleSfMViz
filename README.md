@@ -17,6 +17,13 @@
 - Record bag file screen
 - Load bag file and process screen (with some config input)
 
+## Requirement
+
+```
+sudo apt-get install gtk+2.0
+sudo apt-get install build-essential libgtk2.0-dev
+```
+
 
 ## 1. Overview
 
@@ -54,7 +61,7 @@
 
 ​    *2) Data processing: that is, on Ubuntu, the qrgbd interface application developed based on QT is used to process and solve the collected data.*
 
-<img src="./img/qrgbd-system-small.png">
+<img src="./Resources/img/qrgbd-system-small.png">
 
 ​    **main interface thread**
 
@@ -82,5 +89,5 @@
 
 ## 3. RunTime
 
-<img src="./img/screen/2022-06-03_02-16.png" width=50%><img src="./img/screen/2022-06-03_02-20.png" width=50%><img src="./img/screen/2022-06-03_02-23.png" width=50%><img src="./img/screen/2022-06-03_02-24.png" width=50%><img src="./img/screen/2022-06-03_02-25.png" width=50%><img src="./img/screen/2022-06-03_02-30.png" width=50%><img src="./img/screen/2022-06-03_02-51.png" width=50%><img src="./img/screen/2022-06-03_02-52.png" width=50%><img src="./img/screen/2022-06-03_02-53.png" width=50%><img src="./img/screen/2022-06-03_02-56.png" width=50%><img src="./img/screen/2022-06-03_02-57.png" width=50%>
+<img src="./Resources/img/screen/2022-06-03_02-16.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-20.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-23.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-24.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-25.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-30.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-51.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-52.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-53.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-56.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-57.png" width=50%>
 
