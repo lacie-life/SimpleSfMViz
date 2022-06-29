@@ -2,5 +2,12 @@
 /build-qrgbd-Desktop_Qt_6_1_3_GCC_64bit-Release
 /test/build
 /yolov4-learn/yolo/yolov4.weights
+/yolov4-learn/build
+/darknet/build
+/darknet-gpu/build
 /ORB_SLAM3/Vocabulary/ORBvoc.txt
 /ic.png
+/qrgbd/build
+/ORB_SLAM3/build
+/ORB_SLAM3/Thirdparty/DBoW2/build
+/ORB_SLAM3/Thirdparty/g2o/build
