@@ -1,0 +1,5 @@
+/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/rebuild_cache.dir
+/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/edit_cache.dir
+/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/GreenHouseAR.dir
+/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/GreenHouseAR_autogen_timestamp_deps.dir
+/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug/CMakeFiles/GreenHouseAR_autogen.dir

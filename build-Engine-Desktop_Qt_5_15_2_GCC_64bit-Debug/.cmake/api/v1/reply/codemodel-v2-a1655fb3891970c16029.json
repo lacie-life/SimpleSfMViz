@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "GreenHouseAR",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "GreenHouseAR::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-GreenHouseAR-Debug-d7d6229cb52fd842e9d0.json",
+					"name" : "GreenHouseAR",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "GreenHouseAR_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-GreenHouseAR_autogen-Debug-fed0a075787d3be7264c.json",
+					"name" : "GreenHouseAR_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "GreenHouseAR_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-GreenHouseAR_autogen_timestamp_deps-Debug-29e59cdfee7a9736cdcf.json",
+					"name" : "GreenHouseAR_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/jun/Github/GreenHouseAR/build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug",
+		"source" : "/home/jun/Github/GreenHouseAR/Engine"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
