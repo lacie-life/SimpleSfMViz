@@ -20,11 +20,29 @@ find_package(Pangolin REQUIRED)
 find_package(PCL)
 
 include_directories(
-  include
-  ${PCL_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
-  ${Pangolin_INCLUDE_DIRS}
+    include
+    ${PCL_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${Pangolin_INCLUDE_DIRS}
+    /usr/local/include
+    /usr/include/gtk-2.0
+    /usr/lib/x86_64-linux-gnu/gtk-2.0/include
+    /usr/include/pango-1.0
+    /usr/include/atk-1.0
+    /usr/include/gdk-pixbuf-2.0
+    /usr/include/libmount
+    /usr/include/blkid
+    /usr/include/pango-1.0
+    /usr/include/fribidi
+    /usr/include/cairo
+    /usr/include/pixman-1
+    /usr/include/harfbuzz
+    /usr/include/glib-2.0
+    /usr/lib/x86_64-linux-gnu/glib-2.0/include
+    /usr/include/uuid
+    /usr/include/freetype2
+    /usr/include/libpng16
 )
 
 link_directories(${PCL_LIBRARY_DIRS})
@@ -54,7 +72,28 @@ add_executable(GreenHouseAR
     ${RCC_SOURCES}
 )
 
-target_link_libraries(GreenHouseAR PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(GreenHouseAR PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    ${PCL_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${EIGEN3_LIBS}
+    ${Pangolin_LIBRARIES}
+    pthread
+    gtk-x11-2.0
+    gdk-x11-2.0
+    pangocairo-1.0
+    atk-1.0
+    cairo
+    gdk_pixbuf-2.0
+    gio-2.0
+    pangoft2-1.0
+    pango-1.0
+    gobject-2.0
+    glib-2.0
+    harfbuzz
+    fontconfig
+    freetype
+)
 
 
 target_link_libraries(GreenHouseAR PRIVATE
