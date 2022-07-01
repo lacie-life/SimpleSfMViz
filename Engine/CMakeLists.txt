@@ -25,6 +25,13 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${Pangolin_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/../Slam
+    ${CMAKE_SOURCE_DIR}/../Slam/include
+    ${CMAKE_SOURCE_DIR}/../Slam/include/CameraModels
+    ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/g2o
+    ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/Sophus
+    ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/DBoW2
+
     /usr/local/include
     /usr/include/gtk-2.0
     /usr/lib/x86_64-linux-gnu/gtk-2.0/include
@@ -49,15 +56,15 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
-                  ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
 
 set(UI ${CMAKE_CURRENT_LIST_DIR}/ui/mainwindow.ui
-       ${CMAKE_CURRENT_LIST_DIR}/ui/qconfigdialog.ui
-       ${CMAKE_CURRENT_LIST_DIR}/ui/qhelpdialog.ui)
+    ${CMAKE_CURRENT_LIST_DIR}/ui/qconfigdialog.ui
+    ${CMAKE_CURRENT_LIST_DIR}/ui/qhelpdialog.ui)
 
 qt5_wrap_ui(UI_HEADERS ${UI})
 
@@ -78,6 +85,12 @@ target_link_libraries(GreenHouseAR PRIVATE
     ${OpenCV_LIBS}
     ${EIGEN3_LIBS}
     ${Pangolin_LIBRARIES}
+    ${CMAKE_SOURCE_DIR}/../Slam/lib/libORB_SLAM3.so
+    ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/DBoW2/lib/libDBoW2_New.so
+    ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/g2o/lib/libg2o.so
+    ${CMAKE_SOURCE_DIR}/../Model/yolov4-learn/lib/libdarknet.so
+    -lboost_serialization
+    -lcrypto
     pthread
     gtk-x11-2.0
     gdk-x11-2.0
@@ -97,10 +110,10 @@ target_link_libraries(GreenHouseAR PRIVATE
 
 
 target_link_libraries(GreenHouseAR PRIVATE
-  ${PCL_LIBRARIES}
-  ${OpenCV_LIBS}
-  ${EIGEN3_LIBS}
-  ${Pangolin_LIBRARIES}
+    ${PCL_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${EIGEN3_LIBS}
+    ${Pangolin_LIBRARIES}
 )
 
 
