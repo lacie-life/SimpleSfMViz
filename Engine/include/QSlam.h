@@ -33,9 +33,9 @@ public slots:
     void processNewFrame(cv::Mat colorImg, cv::Mat depthImg, double tframe);
 
 private:
-    QConfigDialog *_config;
+    QConfigDialog *m_config;
 
-    std::shared_ptr<ORB_SLAM3::System> _slamSystem;
+    std::shared_ptr<ORB_SLAM3::System> m_slamSystem;
 
 };
 

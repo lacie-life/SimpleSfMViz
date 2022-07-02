@@ -43,21 +43,21 @@ namespace ns_clp {
             val = min;
         if (val > max)
             val = max;
-        auto lower = color._min;
-        auto upper = color._max;
+        auto lower = color.m_min;
+        auto upper = color.m_max;
         if (isReversal)
             val = min + max - val;
         auto prj_val = (val - min) / (max - min) * (upper - lower) + lower;
         float h = 0.0, s = 0.0, v = 0.0;
-        switch (color._hsv) {
+        switch (color.m_hsv) {
         case Color::Elem::Hue: {
             if (classify > 1) {
                 auto step = (upper - lower) / (classify - 1);
                 h = int((prj_val - lower) / step + 0.5) * step + lower;
             } else
                 h = prj_val;
-            s = color._v1;
-            v = color._v2;
+            s = color.m_v1;
+            v = color.m_v2;
         } break;
         case Color::Elem::Saturation: {
             if (classify > 1) {
@@ -65,8 +65,8 @@ namespace ns_clp {
                 s = int((prj_val - lower) / step + 0.5) * step + lower;
             } else
                 s = prj_val;
-            h = color._v1;
-            v = color._v2;
+            h = color.m_v1;
+            v = color.m_v2;
         } break;
         case Color::Elem::Value: {
             if (classify > 1) {
@@ -74,8 +74,8 @@ namespace ns_clp {
                 v = int((prj_val - lower) / step + 0.5) * step + lower;
             } else
                 v = prj_val;
-            h = color._v1;
-            s = color._v2;
+            h = color.m_v1;
+            s = color.m_v2;
         } break;
         }
         return trans(hsv(h, s, v));

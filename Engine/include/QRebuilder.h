@@ -47,18 +47,18 @@ public:
 
     float fx, fy, cx, cy, depthScale;
 
-    std::shared_ptr<PCLVisual> _pcl_visual;
+    std::shared_ptr<QPCLVisual> m_pcl_visual;
 
-    QThread _thread;
+    QThread m_thread;
 
-    Sophus::SE3f _curTcw;
+    Sophus::SE3f m_curTcw;
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr _pts;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr m_pts;
 
-    bool _pcl_visual_need_data = true;
+    bool m_pcl_visual_need_data = true;
 
 public:
-    const std::string _cvWinName = "Rebuilder";
+    const std::string m_cvWinName = "Rebuilder";
 
 };
 

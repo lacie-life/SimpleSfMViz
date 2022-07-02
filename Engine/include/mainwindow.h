@@ -81,52 +81,52 @@ private:
     Ui::MainWindow *ui;
 
     // the help dialog
-    QHelpDialog _helpDig;
+    QHelpDialog m_helpDig;
     // the configure dialog
-    QConfigDialog _configDig;
+    QConfigDialog m_configDig;
 
     // the slam object
-    QSlam *_slam;
+    QSlam *m_slam;
     // thread to run orb-slam
-    QThread _slamThread;
+    QThread m_slamThread;
 
     // the  recongnizer
-    QRecognizer *_recognizer;
+    QRecognizer *m_recognizer;
     // thread to recongnize objects
-    QThread _recogThread;
+    QThread m_recogThread;
 
     // rebuilder
-    QRebuilder *_rebuilder;
+    QRebuilder *m_rebuilder;
     // thread to run rebulider
-    QThread _rebulidThread;
+    QThread m_rebulidThread;
 
     // timer used to send single shot [image] to slam object
-    QTimer _timer;
+    QTimer m_timer;
 
     // vectors [rgb, depth, timeStamp, timeTrack]
-    std::vector<std::string> _vstrImageFilenamesRGB;
-    std::vector<std::string> _vstrImageFilenamesD;
-    std::vector<double> _vTimestamps;
-    std::vector<float> _vTimesTrack;
+    std::vector<std::string> m_vstrImageFilenamesRGB;
+    std::vector<std::string> m_vstrImageFilenamesD;
+    std::vector<double> m_vTimestamps;
+    std::vector<float> m_vTimesTrack;
 
     // number of images, the scale of image
-    int _nImages;
-    float _imgScale;
+    int m_nImages;
+    float m_imgScale;
 
     // images [rgb, depth]
-    cv::Mat _imRGB;
-    cv::Mat _imD;
+    cv::Mat m_imRGB;
+    cv::Mat m_imD;
 
     // current frame index in the image sequence
-    int _curFrameIdx = -1;
+    int m_curFrameIdx = -1;
 
     // for timing
-    ns_timer::Timer<> _timing;
+    ns_timer::Timer<> m_timing;
 
     // time of the frame
-    double _tframe;
+    double m_tframe;
 
     // the slam thread is running
-    bool _isRunning = false;
+    bool m_isRunning = false;
 };
 #endif // MAINWINDOW_H

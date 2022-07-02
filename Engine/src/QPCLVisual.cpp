@@ -1,18 +1,19 @@
 #include "QPCLVisual.h"
+#include <thread>
 
 QPCLVisual::QPCLVisual(QObject *parent)
     : QObject{parent}
 {
     // pcl win
 
-    this->_allPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>();
+    this->m_allPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    this->viewer = boost::make_shared<pcl::visualization::PCLVisualizer>();
     //
     viewer->removeAllPointClouds();
     //
     this->viewer->setSize(1000, 640);
     this->viewer->setBackgroundColor(0.9f, 0.9f, 0.9f);
-    this->_count = 0;
+    this->m_count = 0;
 
     Eigen::Isometry3f origin(Eigen::Quaternionf::Identity());
     origin.pretranslate(Eigen::Vector3f::Zero());
@@ -28,16 +29,16 @@ QPCLVisual::~QPCLVisual()
 }
 
 void QPCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
-    if (this->_mode == PCL_VISUAL_MODE::RENDER_MODE) {
+    if (this->m_mode == PCL_VISUAL_MODE::RENDER_MODE) {
         this->renderMode(frameCloud, Tcw);
-    } else if (this->_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
+    } else if (this->m_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
         {
             pcl::VoxelGrid<pcl::PointXYZRGB> filter;
             filter.setLeafSize(0.02, 0.02, 0.02);
-            filter.setInputCloud(_allPts);
-            filter.filter(*_allPts);
+            filter.setInputCloud(m_allPts);
+            filter.filter(*m_allPts);
             viewer->removeAllPointClouds();
-            viewer->addPointCloud(this->_allPts, "cloud");
+            viewer->addPointCloud(this->m_allPts, "cloud");
         }
         {
             //            ns_timer::Timer timer;
@@ -51,7 +52,7 @@ void QPCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameClou
             //            this->viewer->addPolygonMesh(*_allPtsPoMesh, "PolygonMesh");
         }
         //
-        while (!this->viewer->wasStopped() && this->_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
+        while (!this->viewer->wasStopped() && this->m_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
             this->viewer->spinOnce();
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
@@ -70,11 +71,11 @@ double QPCLVisual::curTime() {
 }
 
 void QPCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
-    ++this->_count;
+    ++this->m_count;
     if (Tcw.log() == Sophus::SE3f().log()) {
         // remove pts
-        this->_allPts->clear();
-        this->_allPts->reserve(0);
+        this->m_allPts->clear();
+        this->m_allPts->reserve(0);
         // camera
         viewer->setCameraPosition(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
         viewer->spinOnce();
@@ -85,18 +86,18 @@ void QPCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, S
     auto quat = Twc.unit_quaternion();
     auto trans = Twc.translation();
     // add new point cloud
-    this->_allPts->resize(this->_allPts->size() + frameCloud->size());
-    std::copy(frameCloud->cbegin(), frameCloud->cend(), this->_allPts->end() - frameCloud->size());
+    this->m_allPts->resize(this->m_allPts->size() + frameCloud->size());
+    std::copy(frameCloud->begin(), frameCloud->end(), this->m_allPts->end() - frameCloud->size());
 
-    if (this->_count % 20 == 0) {
+    if (this->m_count % 20 == 0) {
         pcl::VoxelGrid<pcl::PointXYZRGB> filter;
         filter.setLeafSize(0.02, 0.02, 0.02);
-        filter.setInputCloud(_allPts);
-        filter.filter(*_allPts);
+        filter.setInputCloud(m_allPts);
+        filter.filter(*m_allPts);
         viewer->removeAllPointClouds();
-        viewer->addPointCloud(this->_allPts, "cloud");
+        viewer->addPointCloud(this->m_allPts, "cloud");
     } else {
-        viewer->addPointCloud(frameCloud, "cloud_" + std::to_string(this->_count));
+        viewer->addPointCloud(frameCloud, "cloud_" + std::to_string(this->m_count));
     }
     // set camera pos
     Eigen::Vector3f pos(0.0f, 0.0f, -3.0f);

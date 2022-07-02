@@ -1,7 +1,6 @@
 #include "QRecognizer.h"
 #include "QEmbeddedWindow.h"
 
-#include <QDebug>
 #include <QThread>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -28,12 +27,12 @@ void QRecognizer::processNewColorFrame(cv::Mat srcImg) {
 }
 
 void QRecognizer::init(QConfigDialog *cof) {
-    qDebug() << "Recognizer thread: " << QThread::currentThread();
+//    qDebug() << "Recognizer thread: " << QThread::currentThread();
 
     std::ifstream ifs(cof->m_classes.toStdString().c_str());
     std::string line;
     while (std::getline(ifs, line))
-        this->_classesVec.push_back(line);
-    this->_detector = std::make_shared<Detector>(cof->m_modelConfig.toStdString(),
+        this->m_classesVec.push_back(line);
+    this->m_detector = std::make_shared<Detector>(cof->m_modelConfig.toStdString(),
                                                  cof->m_modelWeights.toStdString(), 0);
 }

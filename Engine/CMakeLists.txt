@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_PREFIX_PATH "~/Qt/5.15.2/gcc_64")
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
@@ -18,6 +20,7 @@ find_package(OpenCV 4.2 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(PCL)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 include_directories(
     include
@@ -25,6 +28,7 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${Pangolin_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/../Slam
     ${CMAKE_SOURCE_DIR}/../Slam/include
     ${CMAKE_SOURCE_DIR}/../Slam/include/CameraModels
@@ -53,6 +57,8 @@ include_directories(
 )
 
 link_directories(${PCL_LIBRARY_DIRS})
+link_directories(${Boost_LIBRARY_DIR})
+
 add_definitions(${PCL_DEFINITIONS})
 
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
@@ -63,8 +69,8 @@ source_group("Header Files" FILES ${HEADERS})
 source_group("Source Files" FILES ${SOURCES})
 
 set(UI ${CMAKE_CURRENT_LIST_DIR}/ui/mainwindow.ui
-    ${CMAKE_CURRENT_LIST_DIR}/ui/qconfigdialog.ui
-    ${CMAKE_CURRENT_LIST_DIR}/ui/qhelpdialog.ui)
+       ${CMAKE_CURRENT_LIST_DIR}/ui/qconfigdialog.ui
+       ${CMAKE_CURRENT_LIST_DIR}/ui/qhelpdialog.ui)
 
 qt5_wrap_ui(UI_HEADERS ${UI})
 
@@ -85,6 +91,7 @@ target_link_libraries(GreenHouseAR PRIVATE
     ${OpenCV_LIBS}
     ${EIGEN3_LIBS}
     ${Pangolin_LIBRARIES}
+    ${Boost_LIBRARIES}
     ${CMAKE_SOURCE_DIR}/../Slam/lib/libORB_SLAM3.so
     ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/DBoW2/lib/libDBoW2_New.so
     ${CMAKE_SOURCE_DIR}/../Slam/Thirdparty/g2o/lib/libg2o.so

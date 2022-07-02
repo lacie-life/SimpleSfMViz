@@ -36,11 +36,11 @@ public:
     private:
         Ui::QRecognizer *ui;
 
-        std::vector<std::string> _classesVec;
-        std::shared_ptr<Detector> _detector;
+        std::vector<std::string> m_classesVec;
+        std::shared_ptr<Detector> m_detector;
 
     public:
-        const std::string _cvWinName = "Recognizer";
+        const std::string m_cvWinName = "Recognizer";
 
 };
 

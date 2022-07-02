@@ -38,11 +38,11 @@ namespace ns_clp {
      *        v = 0.5
      */
         struct ColorType {
-            float _min;
-            float _max;
-            float _v1;
-            float _v2;
-            Elem _hsv;
+            float m_min;
+            float m_max;
+            float m_v1;
+            float m_v2;
+            Elem m_hsv;
         };
 
         /**

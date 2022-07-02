@@ -6,6 +6,7 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDir>
 #include "pcl/io/pcd_io.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -24,9 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
     // delete operations
-    delete this->_slam;
-    delete this->_rebuilder;
-    delete this->_recognizer;
+    delete this->m_slam;
+    delete this->m_rebuilder;
+    delete this->m_recognizer;
     delete ui;
 }
 
@@ -59,7 +60,7 @@ void MainWindow::connection() {
                     return;
                 }
 
-                auto slamSystem = this->_slam->getSlamSystem();
+                auto slamSystem = this->m_slam->getSlamSystem();
                 const auto atlas = slamSystem->mpAtlas;
                 std::vector<ORB_SLAM3::MapPoint *> mapPoints = atlas->GetAllMapPoints();
                 std::vector<ORB_SLAM3::KeyFrame *> keyFrames = atlas->GetAllKeyFrames();
@@ -92,7 +93,7 @@ void MainWindow::connection() {
                     }
                 }
 
-                auto cloud = this->_rebuilder->_pcl_visual->_allPts;
+                auto cloud = this->m_rebuilder->m_pcl_visual->m_allPts;
 
                 // save pcd file
                 pcl::io::savePCDFile(path.toStdString() + "/scene.pcd", *cloud, true);
@@ -108,43 +109,43 @@ void MainWindow::connection() {
     // for help button
     connect(ui->btn_help, &QPushButton::clicked,
             this, [=]() {
-                this->_helpDig.exec();
+                this->m_helpDig.exec();
             });
     // for configure button
     connect(ui->btn_config, &QPushButton::clicked,
             this, [=]() {
-                this->_configDig.display();
-                this->_configDig.exec();
+                this->m_configDig.display();
+                this->m_configDig.exec();
             });
     // init _rebuilder
     connect(this, &MainWindow::signalInitRebuilder,
-            this->_rebuilder, &QRebuilder::init);
+            this->m_rebuilder, &QRebuilder::init);
     // init _recognizer
     connect(this, &MainWindow::signalInitRecoginzer,
-            this->_recognizer, &QRecognizer::init);
+            this->m_recognizer, &QRecognizer::init);
     // [2] create slam system
     connect(this, &MainWindow::signalCreateSlamSystem,
-            this->_slam, &QSlam::createSlamSystem);
+            this->m_slam, &QSlam::createSlamSystem);
     // [3] run slam system
-    connect(this->_slam, &QSlam::createSlamSystemFinished,
+    connect(this->m_slam, &QSlam::createSlamSystemFinished,
             this, [=](float scale) {
                 // show message
                 this->statusBar()->showMessage("Create slam system finished, image scale is " +
                                                QString::number(scale, 'f', 3) + ", " +
-                                               QString::fromStdString(this->_timing.last_elapsed("cost")));
+                                               QString::fromStdString(this->m_timing.last_elapsed("cost")));
 
                 // get image scale, set current frame index to zero
-                this->_imgScale = scale;
-                this->_curFrameIdx = -1;
+                this->m_imgScale = scale;
+                this->m_curFrameIdx = -1;
 
                 // start slaming [process a new frame]
-                this->_timer.singleShot(0, this, &MainWindow::processNewFrame);
+                this->m_timer.singleShot(0, this, &MainWindow::processNewFrame);
             });
     // [1] run button [read config files, create slam system]
     connect(ui->btn_run, &QPushButton::clicked,
             this, [=]() {
                 // Check whether the configuration is complete
-                if (!this->_configDig.isSetted()) {
+                if (!this->m_configDig.isSetted()) {
                     QMessageBox::information(
                         this,
                         "Info",
@@ -153,20 +154,20 @@ void MainWindow::connection() {
                 }
 
                 // load configure info from files
-                this->loadImages(this->_configDig.m_assoPath.toStdString());
+                this->loadImages(this->m_configDig.m_assoPath.toStdString());
 
                 // get total image size
-                this->_nImages = this->_vstrImageFilenamesRGB.size();
-                this->_vTimesTrack.resize(_nImages);
+                this->m_nImages = this->m_vstrImageFilenamesRGB.size();
+                this->m_vTimesTrack.resize(m_nImages);
 
                 // if no images or quantity does not correspond, don't process
-                if (this->_vstrImageFilenamesRGB.empty()) {
+                if (this->m_vstrImageFilenamesRGB.empty()) {
                     QMessageBox::information(
                         this,
                         "Info",
                         "No images found in provided path.");
                     return;
-                } else if (this->_vstrImageFilenamesD.size() != this->_vstrImageFilenamesRGB.size()) {
+                } else if (this->m_vstrImageFilenamesD.size() != this->m_vstrImageFilenamesRGB.size()) {
                     QMessageBox::information(
                         this,
                         "Info",
@@ -175,15 +176,15 @@ void MainWindow::connection() {
                 }
 
                 // start the threads
-                this->_slamThread.start();
-                this->_rebulidThread.start();
-                this->_recogThread.start();
+                this->m_slamThread.start();
+                this->m_rebulidThread.start();
+                this->m_recogThread.start();
 
                 // start timing
-                this->_timing.reStart();
+                this->m_timing.reStart();
 
                 // some settings
-                this->_isRunning = true;
+                this->m_isRunning = true;
 
                 // some settings for buttons
                 ui->btn_run->setEnabled(false);
@@ -191,79 +192,79 @@ void MainWindow::connection() {
                 ui->btn_continue->setEnabled(false);
 
                 // init
-                emit this->signalInitRebuilder(&this->_configDig);
-                emit this->signalInitRecoginzer(&this->_configDig);
-                emit this->signalCreateSlamSystem(&this->_configDig);
+                emit this->signalInitRebuilder(&this->m_configDig);
+                emit this->signalInitRecoginzer(&this->m_configDig);
+                emit this->signalCreateSlamSystem(&this->m_configDig);
 
                 // sho message
                 this->statusBar()->showMessage("creating a new slam system.");
             });
     // [5] finish the frame
-    connect(this->_slam, &QSlam::processNewFrameFinished,
+    connect(this->m_slam, &QSlam::processNewFrameFinished,
             this, [=](Sophus::SE3f pose) {
                 // send to the rebulider
-                emit this->signalNewDepthFrameToReBulider(this->_imRGB, this->_imD, pose);
+                emit this->signalNewDepthFrameToReBulider(this->m_imRGB, this->m_imD, pose);
 
-                this->statusBar()->showMessage("Process frame [" + QString::number(this->_curFrameIdx) + "] finished.");
+                this->statusBar()->showMessage("Process frame [" + QString::number(this->m_curFrameIdx) + "] finished.");
 
                 // organize a new frame
-                double ttrack = this->_timing.last_elapsed<ns_timer::DurationType::S>();
-                _vTimesTrack[this->_curFrameIdx] = ttrack;
+                double ttrack = this->m_timing.last_elapsed<ns_timer::DurationType::S>();
+                m_vTimesTrack[this->m_curFrameIdx] = ttrack;
 
                 // compute gather cost time
                 double T = 0;
-                if (this->_curFrameIdx < _nImages - 1) {
-                    T = _vTimestamps[this->_curFrameIdx + 1] - _tframe;
-                } else if (this->_curFrameIdx > 0) {
-                    T = _tframe - _vTimestamps[this->_curFrameIdx - 1];
+                if (this->m_curFrameIdx < m_nImages - 1) {
+                    T = m_vTimestamps[this->m_curFrameIdx + 1] - m_tframe;
+                } else if (this->m_curFrameIdx > 0) {
+                    T = m_tframe - m_vTimestamps[this->m_curFrameIdx - 1];
                 }
 
-                qDebug() << "'frame idx':" << this->_curFrameIdx
+                qDebug() << "'frame idx':" << this->m_curFrameIdx
                          << ", 'gather delay':" << QString::number(T, 'f', 5)
                          << ", 'track delay':" << QString::number(ttrack, 'f', 5)
-                         << ", 'tframe':" << QString::number(_tframe, 'f', 5);
+                         << ", 'tframe':" << QString::number(m_tframe, 'f', 5);
 
                 // next frame
                 if (ttrack < T)
-                    this->_timer.singleShot(T - ttrack, this, &MainWindow::processNewFrame);
+                    this->m_timer.singleShot(T - ttrack, this, &MainWindow::processNewFrame);
                 else
-                    this->_timer.singleShot(0, this, &MainWindow::processNewFrame);
+                    this->m_timer.singleShot(0, this, &MainWindow::processNewFrame);
             });
     // [4] send a new frame
     connect(this, &MainWindow::signalNewFrameToSlamSystem,
-            this->_slam, &Slam::processNewFrame);
+            this->m_slam, &QSlam::processNewFrame);
     // stop
     connect(ui->btn_stop, &QPushButton::clicked,
             this, [=]() {
-                if (!this->_isRunning) {
+                if (!this->m_isRunning) {
                     return;
                 }
-                this->_isRunning = false;
+                this->m_isRunning = false;
                 ui->btn_continue->setEnabled(true);
                 ui->btn_stop->setEnabled(false);
-                this->_rebuilder->changeToInterMode();
+                this->m_rebuilder->changeToInterMode();
 
                 this->statusBar()->showMessage("process stoped.");
             });
     // continue
     connect(ui->btn_continue, &QPushButton::clicked,
             this, [=]() {
-                if (this->_curFrameIdx > 0 && this->_isRunning == false) {
-                    this->_rebuilder->changeToRenderMode();
-                    this->_isRunning = true;
+                if (this->m_curFrameIdx > 0 && this->m_isRunning == false) {
+                    this->m_rebuilder->changeToRenderMode();
+                    this->m_isRunning = true;
                     ui->btn_stop->setEnabled(true);
                     ui->btn_continue->setEnabled(false);
-                    this->_timer.singleShot(0, this, &MainWindow::processNewFrame);
+                    this->m_timer.singleShot(0, this, &MainWindow::processNewFrame);
                 }
             });
     // force quit
     connect(ui->btn_forcequit, &QPushButton::clicked,
             this, [=]() {
-                if (this->_curFrameIdx < 0) {
+                if (this->m_curFrameIdx < 0) {
                     return;
                 }
-                this->_curFrameIdx = -1;
-                this->_isRunning = false;
+                this->m_curFrameIdx = -1;
+                this->m_isRunning = false;
 
                 ui->btn_run->setEnabled(true);
                 ui->btn_config->setEnabled(true);
@@ -274,29 +275,29 @@ void MainWindow::connection() {
 
                 this->displayMapInfo();
 
-                this->_slam->shutdown();
+                this->m_slam->shutdown();
 
-                this->_rebuilder->changeToInterMode();
+                this->m_rebuilder->changeToInterMode();
             });
     // new color frame
     connect(this, &MainWindow::signalNewColorFrameToRecongnizer,
-            this->_recognizer, &QRecognizer::processNewColorFrame);
+            this->m_recognizer, &QRecognizer::processNewColorFrame);
     // recognize finished
-    connect(this->_recognizer, &QRecognizer::signalProcessNewFrameFinished,
+    connect(this->m_recognizer, &QRecognizer::signalProcessNewFrameFinished,
             this, [=](cv::Mat img) {
-                cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
-                if (this->_isRunning) {
-                    emit this->signalNewColorFrameToRecongnizer(_imRGB);
+                cv::imshow(this->m_recognizer->m_cvWinName.c_str(), img);
+                if (this->m_isRunning) {
+                    emit this->signalNewColorFrameToRecongnizer(m_imRGB);
                 }
             });
     // rebuild finished
-    connect(this->_rebuilder, &QRebuilder::signalProcessNewFrameFinished,
+    connect(this->m_rebuilder, &QRebuilder::signalProcessNewFrameFinished,
             this, [=](cv::Mat img) {
-                cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
+                cv::imshow(this->m_rebuilder->m_cvWinName.c_str(), img);
             });
     // new depth frame
     connect(this, &MainWindow::signalNewDepthFrameToReBulider,
-            this->_rebuilder, &QRebuilder::processNewDepthFrame);
+            this->m_rebuilder, &QRebuilder::processNewDepthFrame);
 }
 
 void MainWindow::init() {
@@ -311,14 +312,14 @@ void MainWindow::init() {
 
     this->statusBar()->setFont(QFont("Ubuntu Mono", -1, -1, true));
 
-    this->_slam = new QSlam();
-    this->_slam->moveToThread(&this->_slamThread);
+    this->m_slam = new QSlam();
+    this->m_slam->moveToThread(&this->m_slamThread);
 
-    this->_recognizer = new QRecognizer();
-    this->_recognizer->moveToThread(&this->_recogThread);
+    this->m_recognizer = new QRecognizer();
+    this->m_recognizer->moveToThread(&this->m_recogThread);
 
-    this->_rebuilder = new QRebuilder();
-    this->_rebuilder->moveToThread(&this->_rebulidThread);
+    this->m_rebuilder = new QRebuilder();
+    this->m_rebuilder->moveToThread(&this->m_rebulidThread);
 }
 
 void MainWindow::closeEvent(QCloseEvent *e) {
@@ -329,9 +330,9 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 
 void MainWindow::loadImages(const std::string &strAssociationFilename) {
     // load [imageName, association] from folder
-    this->_vstrImageFilenamesD.clear();
-    this->_vstrImageFilenamesRGB.clear();
-    this->_vTimestamps.clear();
+    this->m_vstrImageFilenamesD.clear();
+    this->m_vstrImageFilenamesRGB.clear();
+    this->m_vTimestamps.clear();
 
     ifstream fAssociation;
     fAssociation.open(strAssociationFilename.c_str());
@@ -344,25 +345,25 @@ void MainWindow::loadImages(const std::string &strAssociationFilename) {
             double t;
             std::string sRGB, sD;
             ss >> t;
-            _vTimestamps.push_back(t);
+            m_vTimestamps.push_back(t);
             ss >> sRGB;
-            _vstrImageFilenamesRGB.push_back(sRGB);
+            m_vstrImageFilenamesRGB.push_back(sRGB);
             ss >> t;
             ss >> sD;
-            _vstrImageFilenamesD.push_back(sD);
+            m_vstrImageFilenamesD.push_back(sD);
         }
     }
 }
 
 void MainWindow::processNewFrame() {
-    if (!this->_isRunning) {
+    if (!this->m_isRunning) {
         return;
     }
 
-    ++this->_curFrameIdx;
+    ++this->m_curFrameIdx;
 
     // if all images have been processed, then return
-    if (this->_curFrameIdx == this->_vstrImageFilenamesRGB.size()) {
+    if (this->m_curFrameIdx == this->m_vstrImageFilenamesRGB.size()) {
         this->statusBar()->showMessage("process for all frames finished.");
         qDebug() << "slam finished!";
         ui->btn_forcequit->click();
@@ -370,23 +371,23 @@ void MainWindow::processNewFrame() {
     }
 
     // load color and depth images
-    this->_imD = cv::imread(this->_configDig.m_seqPath.toStdString() + "/" +
-                                _vstrImageFilenamesD[this->_curFrameIdx],
+    this->m_imD = cv::imread(this->m_configDig.m_seqPath.toStdString() + "/" +
+                                m_vstrImageFilenamesD[this->m_curFrameIdx],
                             cv::IMREAD_UNCHANGED);
-    this->_imRGB = cv::imread(this->_configDig.m_seqPath.toStdString() + "/" +
-                                  _vstrImageFilenamesRGB[this->_curFrameIdx],
+    this->m_imRGB = cv::imread(this->m_configDig.m_seqPath.toStdString() + "/" +
+                                  m_vstrImageFilenamesRGB[this->m_curFrameIdx],
                               cv::IMREAD_UNCHANGED);
 
     // get frame time
-    _tframe = this->_vTimestamps[this->_curFrameIdx];
+    m_tframe = this->m_vTimestamps[this->m_curFrameIdx];
 
     // check color image
-    if (this->_imRGB.empty()) {
+    if (this->m_imRGB.empty()) {
         QMessageBox::information(
             this,
             "Info",
-            "Failed to load image at: " + this->_configDig.m_seqPath +
-                "/" + QString::fromStdString(this->_vstrImageFilenamesRGB[this->_curFrameIdx]));
+            "Failed to load image at: " + this->m_configDig.m_seqPath +
+                "/" + QString::fromStdString(this->m_vstrImageFilenamesRGB[this->m_curFrameIdx]));
         this->quitThreads();
 
         ui->btn_run->setEnabled(true);
@@ -396,41 +397,41 @@ void MainWindow::processNewFrame() {
     }
 
     // resize the image
-    if (this->_imgScale != 1.f) {
-        int width = _imRGB.cols * _imgScale;
-        int height = _imRGB.rows * _imgScale;
-        cv::resize(_imRGB, _imRGB, cv::Size(width, height));
-        cv::resize(_imD, _imD, cv::Size(width, height));
+    if (this->m_imgScale != 1.f) {
+        int width = m_imRGB.cols * m_imgScale;
+        int height = m_imRGB.rows * m_imgScale;
+        cv::resize(m_imRGB, m_imRGB, cv::Size(width, height));
+        cv::resize(m_imD, m_imD, cv::Size(width, height));
     }
 
     // restart timing
-    this->_timing.reStart();
+    this->m_timing.reStart();
 
     // process a new frame
 
     // slam
-    emit this->signalNewFrameToSlamSystem(_imRGB, _imD, _tframe);
+    emit this->signalNewFrameToSlamSystem(m_imRGB, m_imD, m_tframe);
 
-    if (this->_curFrameIdx == 0) {
-        emit this->signalNewColorFrameToRecongnizer(_imRGB);
+    if (this->m_curFrameIdx == 0) {
+        emit this->signalNewColorFrameToRecongnizer(m_imRGB);
     }
 }
 
 void MainWindow::quitThreads() {
     // quit the running thread
-    if (this->_slamThread.isRunning()) {
-        this->_slamThread.quit();
-        this->_slamThread.wait();
+    if (this->m_slamThread.isRunning()) {
+        this->m_slamThread.quit();
+        this->m_slamThread.wait();
     }
 
-    if (this->_recogThread.isRunning()) {
-        this->_recogThread.quit();
-        this->_recogThread.wait();
+    if (this->m_recogThread.isRunning()) {
+        this->m_recogThread.quit();
+        this->m_recogThread.wait();
     }
 
-    //    if (this->_rebulidThread.isRunning()) {
-    //        this->_rebulidThread.quit();
-    //        this->_rebulidThread.wait();
+    //    if (this->m_rebulidThread.isRunning()) {
+    //        this->m_rebulidThread.quit();
+    //        this->m_rebulidThread.wait();
     //    }
 }
 
@@ -441,7 +442,7 @@ void MainWindow::displayMapInfo() {
 }
 
 void MainWindow::displayMapPoints() {
-    auto slamSystem = this->_slam->getSlamSystem();
+    auto slamSystem = this->m_slam->getSlamSystem();
     const auto atlas = slamSystem->mpAtlas;
     std::vector<ORB_SLAM3::MapPoint *> mapPoints = atlas->GetAllMapPoints();
     int num = 0;
@@ -481,7 +482,7 @@ void MainWindow::displayMapPoints() {
 }
 
 void MainWindow::displayKeyFrames() {
-    auto slamSystem = this->_slam->getSlamSystem();
+    auto slamSystem = this->m_slam->getSlamSystem();
     const auto &atlas = slamSystem->mpAtlas;
     std::vector<ORB_SLAM3::KeyFrame *> keyFrames = atlas->GetAllKeyFrames();
     int num = 0;
@@ -540,17 +541,17 @@ void MainWindow::displayKeyFrames() {
 
 void MainWindow::createCVWins() {
     // create the first window
-    auto cvWin = cvEmbedWindow(this->_rebuilder->_cvWinName);
+    auto cvWin = cvEmbedWindow(this->m_rebuilder->m_cvWinName);
     ui->layout_rebuilder->addWidget(cvWin);
     auto img = cv::imread("../img/depth.png", cv::IMREAD_UNCHANGED);
-    cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
+    cv::imshow(this->m_rebuilder->m_cvWinName.c_str(), img);
 
     // create the second window
     QTimer::singleShot(0, this, [=]() {
-        auto cvWin = cvEmbedWindow(this->_recognizer->_cvWinName);
+        auto cvWin = cvEmbedWindow(this->m_recognizer->m_cvWinName);
         ui->layout_recognizer->addWidget(cvWin);
         auto img = cv::imread("../img/recognizer.png", cv::IMREAD_UNCHANGED);
-        cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
+        cv::imshow(this->m_recognizer->m_cvWinName.c_str(), img);
     });
 }
 

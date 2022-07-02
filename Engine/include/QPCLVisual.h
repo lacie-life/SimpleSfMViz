@@ -6,6 +6,7 @@
 #include "pcl/visualization/cloud_viewer.h"
 #include <QObject>
 #include <sophus/se3.hpp>
+#include <boost/shared_ptr.hpp>
 
 enum PCL_VISUAL_MODE {
     INTERACTIVE_MODE,
@@ -34,12 +35,12 @@ public:
 
     pcl::visualization::PCLVisualizer::Ptr viewer;
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr _allPts;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr m_allPts;
 
-    std::size_t _count;
+    std::size_t m_count;
 
 public:
-    PCL_VISUAL_MODE _mode = PCL_VISUAL_MODE::RENDER_MODE;
+    PCL_VISUAL_MODE m_mode = PCL_VISUAL_MODE::RENDER_MODE;
 
 };
 

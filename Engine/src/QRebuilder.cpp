@@ -3,7 +3,6 @@
 #include "QEmbeddedWindow.h"
 
 #include <QThread>
-#include <QDebug>
 #include <opencv2/highgui.hpp>
 
 QRebuilder::QRebuilder(QObject *parent)
@@ -15,7 +14,7 @@ QRebuilder::~QRebuilder() {
 }
 
 void QRebuilder::changeToInterMode() {
-    this->_pcl_visual->_mode = PCL_VISUAL_MODE::INTERACTIVE_MODE;
+    this->m_pcl_visual->m_mode = PCL_VISUAL_MODE::INTERACTIVE_MODE;
     emit this->signalPCLShowPointCloud(nullptr, Sophus::SE3f());
 }
 
@@ -27,13 +26,13 @@ double QRebuilder::curTime() {
 }
 
 void QRebuilder::changeToRenderMode() {
-    this->_pcl_visual->_mode = PCL_VISUAL_MODE::RENDER_MODE;
-    auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    tempPts->resize(this->_pts->size());
-    std::copy(this->_pts->cbegin(), this->_pts->cend(), tempPts->begin());
-    emit this->signalPCLShowPointCloud(tempPts, this->_curTcw);
-    this->_pts->clear();
-    this->_pcl_visual_need_data = false;
+    this->m_pcl_visual->m_mode = PCL_VISUAL_MODE::RENDER_MODE;
+    auto tempPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    tempPts->resize(this->m_pts->size());
+    std::copy(this->m_pts->begin(), this->m_pts->end(), tempPts->begin());
+    emit this->signalPCLShowPointCloud(tempPts, this->m_curTcw);
+    this->m_pts->clear();
+    this->m_pcl_visual_need_data = false;
 }
 
 void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus::SE3f Tcw) {
@@ -82,28 +81,28 @@ void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus
     // show image and point cloud
     emit this->signalProcessNewFrameFinished(color);
 
-    this->_pts->resize(this->_pts->size() + frameCloud->size());
-    std::copy(frameCloud->cbegin(), frameCloud->cend(), this->_pts->end() - frameCloud->size());
-    this->_curTcw = Tcw;
+    this->m_pts->resize(this->m_pts->size() + frameCloud->size());
+    std::copy(frameCloud->begin(), frameCloud->end(), this->m_pts->end() - frameCloud->size());
+    this->m_curTcw = Tcw;
 
-    if (this->_pcl_visual_need_data) {
-        auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-        tempPts->resize(this->_pts->size());
-        std::copy(this->_pts->cbegin(), this->_pts->cend(), tempPts->begin());
+    if (this->m_pcl_visual_need_data) {
+        auto tempPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+        tempPts->resize(this->m_pts->size());
+        std::copy(this->m_pts->begin(), this->m_pts->end(), tempPts->begin());
         {
             pcl::VoxelGrid<pcl::PointXYZRGB> filter;
             filter.setLeafSize(0.02, 0.02, 0.02);
             filter.setInputCloud(tempPts);
             filter.filter(*tempPts);
         }
-        emit this->signalPCLShowPointCloud(tempPts, this->_curTcw);
-        this->_pts->clear();
-        this->_pcl_visual_need_data = false;
+        emit this->signalPCLShowPointCloud(tempPts, this->m_curTcw);
+        this->m_pts->clear();
+        this->m_pcl_visual_need_data = false;
     }
 }
 
 void QRebuilder::init(QConfigDialog *cof) {
-    qDebug() << "Rebuilder thread: " << QThread::currentThread();
+//    qDebug() << "Rebuilder thread: " << QThread::currentThread();
 
     cv::FileStorage config(cof->m_settingPath.toStdString(), cv::FileStorage::READ);
     config["Camera1.fx"] >> this->fx;
@@ -112,14 +111,14 @@ void QRebuilder::init(QConfigDialog *cof) {
     config["Camera1.cy"] >> this->cy;
     config["RGBD.DepthMapFactor"] >> this->depthScale;
     config.release();
-    this->_pts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    this->m_pts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     // pcl visual
-    this->_pcl_visual = std::make_shared<PCLVisual>();
-    connect(this, &QRebuilder::signalPCLShowPointCloud, this->_pcl_visual.get(), &PCLVisual::showPointCloud);
-    connect(this->_pcl_visual.get(), &PCLVisual::signalShowPtsFinished, this, [=]() {
-        this->_pcl_visual_need_data = true;
+    this->m_pcl_visual = std::make_shared<QPCLVisual>();
+    connect(this, &QRebuilder::signalPCLShowPointCloud, this->m_pcl_visual.get(), &QPCLVisual::showPointCloud);
+    connect(this->m_pcl_visual.get(), &QPCLVisual::signalShowPtsFinished, this, [=]() {
+        this->m_pcl_visual_need_data = true;
     });
 
-    this->_pcl_visual->moveToThread(&this->_thread);
-    this->_thread.start();
+    this->m_pcl_visual->moveToThread(&this->m_thread);
+    this->m_thread.start();
 }
