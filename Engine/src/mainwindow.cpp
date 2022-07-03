@@ -3,6 +3,10 @@
 #include "QCSVHelper.h"
 #include "QEmbeddedWindow.h"
 
+// Ref: https://stackoverflow.com/questions/25311908/build-error-qt-headers-before-x11
+#include <X11/Xlib.h>
+#undef None
+#undef Unsorted
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>

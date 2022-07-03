@@ -2,10 +2,13 @@
 #define QREBUILDER_H
 
 #include "QConfigDialog.h"
+#include "QPCLVisual.h"
+
 #include "pcl/filters/voxel_grid.h"
 #include "pcl/point_types.h"
+#include "pcl/impl/point_types.hpp"
 #include "pcl/visualization/cloud_viewer.h"
-#include "QPCLVisual.h"
+
 #include <QGridLayout>
 #include <QLabel>
 #include <QObject>

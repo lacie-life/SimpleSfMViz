@@ -13,14 +13,16 @@ set(CMAKE_PREFIX_PATH "~/Qt/5.15.2/gcc_64")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 
 find_package(OpenCV 4.2 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(PCL)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
+
+add_definitions(${PCL_DEFINITIONS})
 
 include_directories(
     include
@@ -59,8 +61,6 @@ include_directories(
 link_directories(${PCL_LIBRARY_DIRS})
 link_directories(${Boost_LIBRARY_DIR})
 
-add_definitions(${PCL_DEFINITIONS})
-
 file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -85,8 +85,11 @@ add_executable(GreenHouseAR
     ${RCC_SOURCES}
 )
 
+target_compile_definitions(GreenHouseAR PRIVATE MESA_EGL_NO_X11_HEADERS)
+
 target_link_libraries(GreenHouseAR PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
     ${PCL_LIBRARIES}
     ${OpenCV_LIBS}
     ${EIGEN3_LIBS}
@@ -115,13 +118,6 @@ target_link_libraries(GreenHouseAR PRIVATE
     freetype
 )
 
-
-target_link_libraries(GreenHouseAR PRIVATE
-    ${PCL_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${EIGEN3_LIBS}
-    ${Pangolin_LIBRARIES}
-)
 
 
 
