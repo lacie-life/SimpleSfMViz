@@ -171,3 +171,58 @@ void QConfigDialog::connection()
         this->close();
     });
 }
+
+void QConfigDialog::display()
+{
+    // display the path accroding to the temp variables
+    ui->lineEdit_seq->setText(this->m_temp_seqPath);
+    ui->lineEdit_color->setText(this->m_temp_colorImgPath);
+    ui->lineEdit_depth->setText(this->m_temp_depthImgPath);
+    ui->lineEdit_asso->setText(this->m_temp_assoPath);
+
+    ui->lineEdit_set->setText(this->m_temp_settingPath);
+    ui->lineEdit_voc->setText(this->m_temp_vocPath);
+
+    ui->lineEdit_class->setText(this->m_temp_classes);
+    ui->lineEdit_modelConfig->setText(this->m_temp_modelConfig);
+    ui->lineEdit_modelWeight->setText(this->m_temp_modelWeights);
+}
+
+bool QConfigDialog::isSetted()
+{
+    return !this->m_seqPath.isEmpty() &
+            !this->m_assoPath.isEmpty() &
+            !this->m_colorImgPath.isEmpty() &
+            !this->m_depthImgPath.isEmpty() &
+            !this->m_settingPath.isEmpty() &
+            !this->m_vocPath.isEmpty() &
+            !this->m_classes.isEmpty() &
+            !this->m_modelConfig.isEmpty() &
+            !this->m_modelWeights.isEmpty();
+}
+
+void QConfigDialog::closeEvent(QCloseEvent *e)
+{
+    // if the configure is changed, then emit a warning
+    bool changed = (ui->lineEdit_seq->text() != this->m_seqPath) ||
+            (ui->lineEdit_asso->text() != this->m_assoPath) ||
+            (ui->lineEdit_color->text() != this->m_colorImgPath) ||
+            (ui->lineEdit_depth->text() != this->m_depthImgPath) ||
+            (ui->lineEdit_set->text() != this->m_settingPath) ||
+            (ui->lineEdit_voc->text() != this->m_vocPath) ||
+            (ui->lineEdit_class->text() != this->m_classes) ||
+            (ui->lineEdit_modelConfig->text() != this->m_modelConfig) ||
+            (ui->lineEdit_modelWeight->text() != this->m_temp_modelWeights);
+    if (changed) {
+        auto choice = QMessageBox::information(
+                    this,
+                    "Attention",
+                    "Your configure has been changed, do you want to save it?",
+                    QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
+
+        if (choice == QMessageBox::StandardButton::Yes) {
+            ui->btn_ok->click();
+        }
+    }
+    return QDialog::closeEvent(e);
+}

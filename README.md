@@ -22,6 +22,7 @@
 ```
 sudo apt-get install gtk+2.0
 sudo apt-get install build-essential libgtk2.0-dev
+sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
 ```
 
 - pcl-1.12
