@@ -19,7 +19,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 find_package(OpenCV 4.2 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
-find_package(PCL)
+find_package(PCL 1.12 REQUIRED)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 add_definitions(${PCL_DEFINITIONS})

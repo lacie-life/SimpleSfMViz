@@ -6,8 +6,8 @@ QPCLVisual::QPCLVisual(QObject *parent)
 {
     // pcl win
 
-    this->m_allPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    this->viewer = boost::make_shared<pcl::visualization::PCLVisualizer>();
+    this->m_allPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>();
     //
     viewer->removeAllPointClouds();
     //

@@ -24,6 +24,8 @@ sudo apt-get install gtk+2.0
 sudo apt-get install build-essential libgtk2.0-dev
 ```
 
+- pcl-1.12
+
 
 ## 1. Overview
 

@@ -27,7 +27,7 @@ double QRebuilder::curTime() {
 
 void QRebuilder::changeToRenderMode() {
     this->m_pcl_visual->m_mode = PCL_VISUAL_MODE::RENDER_MODE;
-    auto tempPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     tempPts->resize(this->m_pts->size());
     std::copy(this->m_pts->begin(), this->m_pts->end(), tempPts->begin());
     emit this->signalPCLShowPointCloud(tempPts, this->m_curTcw);
@@ -86,7 +86,7 @@ void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus
     this->m_curTcw = Tcw;
 
     if (this->m_pcl_visual_need_data) {
-        auto tempPts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+        auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
         tempPts->resize(this->m_pts->size());
         std::copy(this->m_pts->begin(), this->m_pts->end(), tempPts->begin());
         {
@@ -111,7 +111,7 @@ void QRebuilder::init(QConfigDialog *cof) {
     config["Camera1.cy"] >> this->cy;
     config["RGBD.DepthMapFactor"] >> this->depthScale;
     config.release();
-    this->m_pts = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    this->m_pts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     // pcl visual
     this->m_pcl_visual = std::make_shared<QPCLVisual>();
     connect(this, &QRebuilder::signalPCLShowPointCloud, this->m_pcl_visual.get(), &QPCLVisual::showPointCloud);
