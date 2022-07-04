@@ -14,5 +14,6 @@
         <file>data/imgs/r.png</file>
         <file>data/imgs/recognizer.png</file>
         <file>data/imgs/ros-server.png</file>
+        <file>data/imgs/depth.png</file>
     </qresource>
 </RCC>

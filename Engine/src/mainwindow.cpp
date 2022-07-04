@@ -306,11 +306,11 @@ void MainWindow::connection() {
 
 void MainWindow::init() {
     // set "QRGBD" images
-    ui->label_Q_2->setPixmap(QPixmap("../img/q.png").scaledToWidth(ui->label_Q_2->width()));
-    ui->label_R_2->setPixmap(QPixmap("../img/r.png").scaledToWidth(ui->label_R_2->width()));
-    ui->label_G_2->setPixmap(QPixmap("../img/g.png").scaledToWidth(ui->label_G_2->width()));
-    ui->label_B_2->setPixmap(QPixmap("../img/b.png").scaledToWidth(ui->label_B_2->width()));
-    ui->label_D_2->setPixmap(QPixmap("../img/d.png").scaledToWidth(ui->label_D_2->width()));
+    ui->label_Q_2->setPixmap(QPixmap(":/images/data/imgs/q.png").scaledToWidth(ui->label_Q_2->width()));
+    ui->label_R_2->setPixmap(QPixmap(":/images/data/imgs/r.png").scaledToWidth(ui->label_R_2->width()));
+    ui->label_G_2->setPixmap(QPixmap(":/images/data/imgs/g.png").scaledToWidth(ui->label_G_2->width()));
+    ui->label_B_2->setPixmap(QPixmap(":/images/data/imgs/b.png").scaledToWidth(ui->label_B_2->width()));
+    ui->label_D_2->setPixmap(QPixmap(":/images/data/imgs/d.png").scaledToWidth(ui->label_D_2->width()));
 
     qDebug() << "main thread: " << QThread::currentThread();
 
@@ -547,14 +547,14 @@ void MainWindow::createCVWins() {
     // create the first window
     auto cvWin = cvEmbedWindow(this->m_rebuilder->m_cvWinName);
     ui->layout_rebuilder->addWidget(cvWin);
-    auto img = cv::imread("../img/depth.png", cv::IMREAD_UNCHANGED);
+    auto img = cv::imread("./data/imgs/depth.png", cv::IMREAD_UNCHANGED);
     cv::imshow(this->m_rebuilder->m_cvWinName.c_str(), img);
 
     // create the second window
     QTimer::singleShot(0, this, [=]() {
         auto cvWin = cvEmbedWindow(this->m_recognizer->m_cvWinName);
         ui->layout_recognizer->addWidget(cvWin);
-        auto img = cv::imread("../img/recognizer.png", cv::IMREAD_UNCHANGED);
+        auto img = cv::imread("./data/imgs/recognizer.png", cv::IMREAD_UNCHANGED);
         cv::imshow(this->m_recognizer->m_cvWinName.c_str(), img);
     });
 }
