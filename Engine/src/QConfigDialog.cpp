@@ -52,7 +52,7 @@ void QConfigDialog::connection()
 
         this->m_temp_colorImgPath = seqPath + "/color";
         this->m_temp_depthImgPath = seqPath + "/depth";
-        this->m_temp_assoPath = seqPath + "/info/associate.txt";
+        this->m_temp_assoPath = seqPath + "associate.txt";
 
         this->display();
     });

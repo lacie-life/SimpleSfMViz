@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QDebug>
 #include "pcl/io/pcd_io.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -163,6 +164,8 @@ void MainWindow::connection() {
                 // get total image size
                 this->m_nImages = this->m_vstrImageFilenamesRGB.size();
                 this->m_vTimesTrack.resize(m_nImages);
+
+                qDebug() << this->m_nImages;
 
                 // if no images or quantity does not correspond, don't process
                 if (this->m_vstrImageFilenamesRGB.empty()) {

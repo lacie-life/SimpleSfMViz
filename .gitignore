@@ -10,3 +10,4 @@ Slam/build
 Slam/Thirdparty/DBoW2/build
 Slam/Thirdparty/g2o/build
 /build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug
+*.weights
