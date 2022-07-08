@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "QRebuilder.h"
 #include "QColorPrj.h"
 #include "QEmbeddedWindow.h"
@@ -102,7 +104,7 @@ void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus
 }
 
 void QRebuilder::init(QConfigDialog *cof) {
-//    qDebug() << "Rebuilder thread: " << QThread::currentThread();
+    qDebug() << "Rebuilder thread: " << QThread::currentThread();
 
     cv::FileStorage config(cof->m_settingPath.toStdString(), cv::FileStorage::READ);
     config["Camera1.fx"] >> this->fx;

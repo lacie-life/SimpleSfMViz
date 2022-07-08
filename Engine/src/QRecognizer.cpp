@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "QRecognizer.h"
 #include "QEmbeddedWindow.h"
 
@@ -27,7 +29,7 @@ void QRecognizer::processNewColorFrame(cv::Mat srcImg) {
 }
 
 void QRecognizer::init(QConfigDialog *cof) {
-//    qDebug() << "Recognizer thread: " << QThread::currentThread();
+    qDebug() << "Recognizer thread: " << QThread::currentThread();
 
     std::ifstream ifs(cof->m_classes.toStdString().c_str());
     std::string line;
