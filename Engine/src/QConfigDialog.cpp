@@ -14,16 +14,16 @@ QConfigDialog::QConfigDialog(QWidget *parent) :
     this->connection();
     {
         // pre setting
-        this->m_temp_seqPath = this->m_seqPath = "hmm hmm";
-        this->m_temp_colorImgPath = this->m_colorImgPath = "hmm hmm";
-        this->m_temp_depthImgPath = this->m_depthImgPath = "hmm hmm";
-        this->m_temp_assoPath = this->m_assoPath = "hmm hmm";
+        this->m_temp_seqPath = this->m_seqPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household";
+        this->m_temp_colorImgPath = this->m_colorImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb";
+        this->m_temp_depthImgPath = this->m_depthImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth";
+        this->m_temp_assoPath = this->m_assoPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/associate.txt";
         // -----------
-        this->m_temp_settingPath = this->m_settingPath = "config/rgbd.yaml";
-        this->m_temp_vocPath = this->m_vocPath = "ORB_SLAM3/Vocabulary/ORBvoc.txt";
-        this->m_temp_classes = this->m_classes = "yolov4-learn/yolo/coco.names";
-        this->m_temp_modelConfig = this->m_modelConfig = "yolov4-learn/yolo/yolov4.cfg";
-        this->m_temp_modelWeights = this->m_modelWeights = "yolov4-learn/yolo/yolov4.weights";
+        this->m_temp_settingPath = this->m_settingPath = "data/config/rgbd.yaml";
+        this->m_temp_vocPath = this->m_vocPath = "data/ORBvoc.txt";
+        this->m_temp_classes = this->m_classes = "data/model/coco.names";
+        this->m_temp_modelConfig = this->m_modelConfig = "data/model/yolov4.cfg";
+        this->m_temp_modelWeights = this->m_modelWeights = "data/model/yolov4.weights";
         // display
         this->display();
     }
@@ -50,7 +50,7 @@ void QConfigDialog::connection()
         }
         this->m_temp_seqPath = seqPath;
 
-        this->m_temp_colorImgPath = seqPath + "/color";
+        this->m_temp_colorImgPath = seqPath + "/rgb";
         this->m_temp_depthImgPath = seqPath + "/depth";
         this->m_temp_assoPath = seqPath + "associate.txt";
 

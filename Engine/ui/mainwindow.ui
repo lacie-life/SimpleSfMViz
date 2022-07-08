@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resource.qrc">
+   <iconset>
     <normaloff>:/img/ic.ico</normaloff>:/img/ic.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -27,7 +27,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_main">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -402,7 +402,7 @@
              <x>0</x>
              <y>0</y>
              <width>196</width>
-             <height>555</height>
+             <height>551</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
@@ -916,8 +916,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

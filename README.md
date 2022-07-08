@@ -1,8 +1,12 @@
 # GreenHouseAR
 
-<!-- [![Ubuntu 20 Build](https://github.com/lacie-life/GreenHouseAR/actions/workflows/main.yml/badge.svg)](https://github.com/acie-life/GreenHouseAR/actions/workflows/main.yml) -->
+## 1. Overview
 
-- [x] Point Cloud render by OpenGL
+​    **Slam** *(simultaneous localization and mapping), also known as* **CML** *(concurrent mapping and localization), real-time positioning and map construction, or concurrent mapping and positioning. The problem can be described as: put a robot into an unknown position in an unknown environment, and whether there is a way for the robot to gradually draw a complete map of the environment while moving. The so-called a consistent map refers to walking to every corner of the room without obstacles.*
+
+​    **V-SLAM** *is a branch of slam. It takes the camera as the data acquisition equipment to locate and build maps in real time through relevant image and estimation optimization algorithms. Relying on a special camera rgbd camera, this project realizes slam software based on RGB image and depth image based on* **ORB-SLAM** *algorithm library,* **Yolo** *image recognition library and* **Open3D** *visualization library. It has the functions of location, scene recognition and scene reconstruction.*
+
+<!-- - [x] Point Cloud render by OpenGL
 - [x] Mouse control view
 - [x] Point Cloud + Color Render (PCLPointCloud2 + Qt3D Renderer) => quite stupid method
 - [x] PCL PointCloud + OpenGL Render
@@ -15,46 +19,7 @@
 ## Use case
 
 - Record bag file screen
-- Load bag file and process screen (with some config input)
-
-## Requirement
-
-```
-sudo apt-get install gtk+2.0
-sudo apt-get install build-essential libgtk2.0-dev
-sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
-```
-
-- pcl-1.12
-
-
-## 1. Overview
-
-​    **Slam** *(simultaneous localization and mapping), also known as* **CML** *(concurrent mapping and localization), real-time positioning and map construction, or concurrent mapping and positioning. The problem can be described as: put a robot into an unknown position in an unknown environment, and whether there is a way for the robot to gradually draw a complete map of the environment while moving. The so-called a consistent map refers to walking to every corner of the room without obstacles.*
-
-​    **V-SLAM** *is a branch of slam. It takes the camera as the data acquisition equipment to locate and build maps in real time through relevant image and estimation optimization algorithms. Relying on a special camera rgbd camera, this project realizes slam software based on RGB image and depth image based on* **ORB-SLAM** *algorithm library,* **Yolo** *image recognition library and* **Open3D** *visualization library. It has the functions of location, scene recognition and scene reconstruction.*
-
-<!-- ​    *You can find("git clone") our project on GitHub:*
-
-​    *[1]* **QRGBD-SLAM***:* [*https://github.com/Unsigned-Long/QRGBD-SLAM*](https://github.com/Unsigned-Long/QRGBD-SLAM)
-
-​        Desktop software for processing image data and slam. That is, the software currently in use.
-
-<img src="./img/qrgbd.png">
-
-<img src="./img/qrgbd-2.png">
-
-​    *[2]* **Kinect-Controller***:*  [*https://github.com/Unsigned-Long/kinect-controller*](https://github.com/Unsigned-Long/kinect-controller)
-
-​        A data acquisition and control device based on Android, which communicates with the host through WiFi.
-
-<img src="./img/android.png">
-
-​    *[3]* **ROS-Kinect-Server:** [*https://github.com/Unsigned-Long/Ros-Kinect-Server*](https://github.com/Unsigned-Long/Ros-Kinect-Server)
-
-​       It exists on the host (Ubuntu) and controls the server of Kinect camera through ROS, which is controlled by Android client.
-
-<img src="./img/ros-server.png"> -->
+- Load bag file and process screen (with some config input) -->
 
 ## 2. Details
 
@@ -90,7 +55,49 @@ sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
 
 ​        *b) Rendering visualization: when slam is performed, the PCL window is performed in a rendering visualization manner. Specifically, visualize the point cloud to be incrementally visualized in each frame, track the position of the camera, and change the viewport to simulate the perspective during data collection.*
 
-## 3. RunTime
+## 3. Requirement
+
+```
+sudo apt-get install gtk+2.0
+sudo apt-get install build-essential libgtk2.0-dev
+sudo apt install libcanberra-gtk-module libcanberra-gtk3-module
+```
+
+- pcl-1.12
+- OpenCV 4.2
+- Qt 5.15.2
+
+## 4. Build
+
+### Thirdparty 
+```
+# SLAM system
+cd ORB_SLAM3
+./build.sh
+
+# Object detection lib (no-gpu) 
+cd darknet
+mkdir build
+cmake ..
+make
+cd -
+
+# Object detection lib (gpu)
+cd darknet-gpu
+mkdir build
+cmake ..
+make
+cd -
+
+# darklib[no-gpu]
+cp darknet/build/libdarknet.so  yolov4-learn/lib/
+
+```
+### Application
+
+- Build in Qt 5.15.2
+
+## 5. RunTime
 
 <img src="./Resources/img/screen/2022-06-03_02-16.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-20.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-23.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-24.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-25.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-30.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-51.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-52.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-53.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-56.png" width=50%><img src="./Resources/img/screen/2022-06-03_02-57.png" width=50%>
 
