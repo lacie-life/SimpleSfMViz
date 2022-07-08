@@ -1,5 +1,7 @@
 #include "QPCLVisual.h"
+#include "QTimerHelper.h"
 #include <thread>
+#include <QDebug>
 
 QPCLVisual::QPCLVisual(QObject *parent)
     : QObject{parent}
@@ -29,27 +31,30 @@ QPCLVisual::~QPCLVisual()
 }
 
 void QPCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
+
+    std::cout << "Size:" << frameCloud->size() << std::endl;
+
     if (this->m_mode == PCL_VISUAL_MODE::RENDER_MODE) {
         this->renderMode(frameCloud, Tcw);
     } else if (this->m_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
         {
             pcl::VoxelGrid<pcl::PointXYZRGB> filter;
-            filter.setLeafSize(0.02, 0.02, 0.02);
+            filter.setLeafSize(0.2f, 0.2f, 0.2f);
             filter.setInputCloud(m_allPts);
             filter.filter(*m_allPts);
             viewer->removeAllPointClouds();
             viewer->addPointCloud(this->m_allPts, "cloud");
         }
         {
-            //            ns_timer::Timer timer;
-            //            timer.reStart();
-            //            SurfelCloudPtr _allPtsSur = Optimize::reconstructionSurface(_allPts, 0.05);
-            //            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
-            //            timer.reStart();
-            //            pcl::PolygonMeshPtr _allPtsPoMesh = Optimize::triangulateMesh(_allPtsSur);
-            //            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
-            //            this->viewer->addPolylineFromPolygonMesh(*_allPtsPoMesh, "PolylineFromPolygonMesh");
-            //            this->viewer->addPolygonMesh(*_allPtsPoMesh, "PolygonMesh");
+//            ns_timer::Timer timer;
+//            timer.reStart();
+//            SurfelCloudPtr m_allPtsSur = QOptimize::reconstructionSurface(m_allPts, 0.05);
+//            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
+//            timer.reStart();
+//            pcl::PolygonMeshPtr m_allPtsPoMesh = QOptimize::triangulateMesh(m_allPtsSur);
+//            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
+//            this->viewer->addPolylineFromPolygonMesh(*m_allPtsPoMesh, "PolylineFromPolygonMesh");
+//            this->viewer->addPolygonMesh(*m_allPtsPoMesh, "PolygonMesh");
         }
         //
         while (!this->viewer->wasStopped() && this->m_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
@@ -57,7 +62,7 @@ void QPCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameClou
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         {
-            //            this->viewer->removePolygonMesh("PolygonMesh");
+//            this->viewer->removePolygonMesh("PolygonMesh");
         }
         emit this->signalShowPtsFinished();
     }
@@ -71,6 +76,9 @@ double QPCLVisual::curTime() {
 }
 
 void QPCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
+
+    qDebug() << this->m_count;
+
     ++this->m_count;
     if (Tcw.log() == Sophus::SE3f().log()) {
         // remove pts

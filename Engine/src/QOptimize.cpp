@@ -1,4 +1,5 @@
 #include "QOptimize.h"
+#include "QTimerHelper.h"
 
 SurfelCloudPtr QOptimize::reconstructionSurface(
     const PointCloudPtr &input,
@@ -10,7 +11,7 @@ SurfelCloudPtr QOptimize::reconstructionSurface(
     mls.setSearchRadius(radius);
     mls.setComputeNormals(true);
     mls.setSqrGaussParam(radius * radius);
-    //    mls.setPolynormialFit(polynomial_order > 1);
+//    mls.setPolynormialFit(polynomial_order > 1);
     mls.setPolynomialOrder(polynomial_order);
     mls.setInputCloud(input);
     SurfelCloudPtr output(new SurfelCloud);

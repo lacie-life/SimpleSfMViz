@@ -21,8 +21,8 @@ void QRecognizer::processNewColorFrame(cv::Mat srcImg) {
     cv::Mat dstImg = srcImg.clone();
 
     // do process
-
-    //yoloDetector(dstImg, this->_classesVec, *(this->_detector));
+    // TODO: Update YoLov5 TensorRT version
+//    yoloDetector(dstImg, this->m_classesVec, *(this->m_detector));
 
     // show image
     emit this->signalProcessNewFrameFinished(dstImg);

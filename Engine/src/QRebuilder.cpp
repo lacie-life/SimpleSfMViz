@@ -16,6 +16,7 @@ QRebuilder::~QRebuilder() {
 }
 
 void QRebuilder::changeToInterMode() {
+    qDebug() << "PCL Viewer mode INTERACTIVE";
     this->m_pcl_visual->m_mode = PCL_VISUAL_MODE::INTERACTIVE_MODE;
     emit this->signalPCLShowPointCloud(nullptr, Sophus::SE3f());
 }
@@ -28,6 +29,7 @@ double QRebuilder::curTime() {
 }
 
 void QRebuilder::changeToRenderMode() {
+    qDebug() << "PCL Viewer mode RENDER";
     this->m_pcl_visual->m_mode = PCL_VISUAL_MODE::RENDER_MODE;
     auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     tempPts->resize(this->m_pts->size());
@@ -76,7 +78,7 @@ void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus
     }
 
     pcl::VoxelGrid<pcl::PointXYZRGB> filter;
-    filter.setLeafSize(0.02, 0.02, 0.02);
+    filter.setLeafSize(0.2f, 0.2f, 0.2f);
     filter.setInputCloud(frameCloud);
     filter.filter(*frameCloud);
 
@@ -93,7 +95,7 @@ void QRebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus
         std::copy(this->m_pts->begin(), this->m_pts->end(), tempPts->begin());
         {
             pcl::VoxelGrid<pcl::PointXYZRGB> filter;
-            filter.setLeafSize(0.02, 0.02, 0.02);
+            filter.setLeafSize(0.2f, 0.2f, 0.2f);
             filter.setInputCloud(tempPts);
             filter.filter(*tempPts);
         }
@@ -118,6 +120,7 @@ void QRebuilder::init(QConfigDialog *cof) {
     this->m_pcl_visual = std::make_shared<QPCLVisual>();
     connect(this, &QRebuilder::signalPCLShowPointCloud, this->m_pcl_visual.get(), &QPCLVisual::showPointCloud);
     connect(this->m_pcl_visual.get(), &QPCLVisual::signalShowPtsFinished, this, [=]() {
+        qDebug() << "WTFFF";
         this->m_pcl_visual_need_data = true;
     });
 
