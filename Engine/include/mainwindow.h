@@ -31,7 +31,7 @@ public:
 
     void closeEvent(QCloseEvent *e) override;
 
-    void loadImages(const std::string &strAssociationFilename);
+    void loadImages(const std::string &strAssociationDFilename, const std::string &strAssociationRGBFilename);
 
     void processNewFrame();
 

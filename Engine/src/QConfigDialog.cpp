@@ -17,7 +17,8 @@ QConfigDialog::QConfigDialog(QWidget *parent) :
         this->m_temp_seqPath = this->m_seqPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household";
         this->m_temp_colorImgPath = this->m_colorImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb";
         this->m_temp_depthImgPath = this->m_depthImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth";
-        this->m_temp_assoPath = this->m_assoPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/associate.txt";
+        this->m_temp_assoPath_d = this->m_assoPath_d = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt";
+        this->m_temp_assoPath_rgb = this->m_assoPath_rgb = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt";
         // -----------
         this->m_temp_settingPath = this->m_settingPath = "data/config/rgbd.yaml";
         this->m_temp_vocPath = this->m_vocPath = "data/ORBvoc.txt";
@@ -52,7 +53,8 @@ void QConfigDialog::connection()
 
         this->m_temp_colorImgPath = seqPath + "/rgb";
         this->m_temp_depthImgPath = seqPath + "/depth";
-        this->m_temp_assoPath = seqPath + "associate.txt";
+        this->m_temp_assoPath_d = seqPath + "depth.txt";
+        this->m_temp_assoPath_rgb = seqPath + "rgb.txt";
 
         this->display();
     });
@@ -149,7 +151,8 @@ void QConfigDialog::connection()
         this->m_temp_seqPath = this->m_seqPath;
         this->m_temp_colorImgPath = this->m_colorImgPath;
         this->m_temp_depthImgPath = this->m_depthImgPath;
-        this->m_temp_assoPath = this->m_assoPath;
+        this->m_temp_assoPath_d = this->m_assoPath_d;
+        this->m_temp_assoPath_rgb = this->m_assoPath_rgb;
 
         this->m_temp_settingPath = this->m_settingPath;
         this->m_temp_vocPath = this->m_vocPath;
@@ -161,7 +164,7 @@ void QConfigDialog::connection()
     connect(ui->btn_ok, &QPushButton::clicked, this, [=]() {
         // should get path form lineedit
         this->m_seqPath = this->m_temp_seqPath = ui->lineEdit_seq->text();
-        this->m_assoPath = this->m_temp_assoPath = ui->lineEdit_asso->text();
+        this->m_assoPath_d = this->m_temp_assoPath_d = ui->lineEdit_asso->text();
         this->m_colorImgPath = this->m_temp_colorImgPath = ui->lineEdit_color->text();
         this->m_depthImgPath = this->m_temp_depthImgPath = ui->lineEdit_depth->text();
 
@@ -178,7 +181,7 @@ void QConfigDialog::display()
     ui->lineEdit_seq->setText(this->m_temp_seqPath);
     ui->lineEdit_color->setText(this->m_temp_colorImgPath);
     ui->lineEdit_depth->setText(this->m_temp_depthImgPath);
-    ui->lineEdit_asso->setText(this->m_temp_assoPath);
+    ui->lineEdit_asso->setText(this->m_temp_assoPath_d);
 
     ui->lineEdit_set->setText(this->m_temp_settingPath);
     ui->lineEdit_voc->setText(this->m_temp_vocPath);
@@ -191,7 +194,7 @@ void QConfigDialog::display()
 bool QConfigDialog::isSetted()
 {
     return !this->m_seqPath.isEmpty() &
-            !this->m_assoPath.isEmpty() &
+            !this->m_assoPath_d.isEmpty() &
             !this->m_colorImgPath.isEmpty() &
             !this->m_depthImgPath.isEmpty() &
             !this->m_settingPath.isEmpty() &
@@ -205,7 +208,7 @@ void QConfigDialog::closeEvent(QCloseEvent *e)
 {
     // if the configure is changed, then emit a warning
     bool changed = (ui->lineEdit_seq->text() != this->m_seqPath) ||
-            (ui->lineEdit_asso->text() != this->m_assoPath) ||
+            (ui->lineEdit_asso->text() != this->m_assoPath_d) ||
             (ui->lineEdit_color->text() != this->m_colorImgPath) ||
             (ui->lineEdit_depth->text() != this->m_depthImgPath) ||
             (ui->lineEdit_set->text() != this->m_settingPath) ||

@@ -34,7 +34,8 @@ public:
 
     QString m_vocPath;
     QString m_settingPath;
-    QString m_assoPath;
+    QString m_assoPath_d;
+    QString m_assoPath_rgb;
 
     QString m_classes;
     QString m_modelConfig;
@@ -46,7 +47,8 @@ public:
 
     QString m_temp_vocPath;
     QString m_temp_settingPath;
-    QString m_temp_assoPath;
+    QString m_temp_assoPath_d;
+    QString m_temp_assoPath_rgb;
 
     QString m_temp_classes;
     QString m_temp_modelConfig;

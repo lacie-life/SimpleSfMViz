@@ -159,7 +159,7 @@ void MainWindow::connection() {
                 }
 
                 // load configure info from files
-                this->loadImages(this->m_configDig.m_assoPath.toStdString());
+                this->loadImages(this->m_configDig.m_assoPath_d.toStdString(), this->m_configDig.m_assoPath_rgb.toStdString());
 
                 // get total image size
                 this->m_nImages = this->m_vstrImageFilenamesRGB.size();
@@ -335,31 +335,51 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     return QMainWindow::closeEvent(e);
 }
 
-void MainWindow::loadImages(const std::string &strAssociationFilename) {
+void MainWindow::loadImages(const std::string &strAssociationDFilename, const std::string &strAssociationRGBFilename) {
     // load [imageName, association] from folder
     this->m_vstrImageFilenamesD.clear();
     this->m_vstrImageFilenamesRGB.clear();
     this->m_vTimestamps.clear();
 
-    ifstream fAssociation;
-    fAssociation.open(strAssociationFilename.c_str());
-    while (!fAssociation.eof()) {
-        std::string s;
-        getline(fAssociation, s);
-        if (!s.empty()) {
+    ifstream fAssociationD;
+    fAssociationD.open(strAssociationDFilename.c_str());
+
+    ifstream fAssociationRGB;
+    fAssociationRGB.open(strAssociationRGBFilename.c_str());
+
+    while (!fAssociationD.eof()) {
+
+        std::string s_d;
+        getline(fAssociationD, s_d);
+        if (!s_d.empty()) {
             std::stringstream ss;
-            ss << s;
+            ss << s_d;
             double t;
-            std::string sRGB, sD;
-            ss >> t;
-            m_vTimestamps.push_back(t);
-            ss >> sRGB;
-            m_vstrImageFilenamesRGB.push_back(sRGB);
+            std::string sD;
             ss >> t;
             ss >> sD;
             m_vstrImageFilenamesD.push_back(sD);
+            qDebug() << QString::fromStdString(sD);
+
+            std::string s;
+            getline(fAssociationRGB, s);
+            qDebug() << QString::fromStdString(s);
+            if (!s.empty()) {
+                std::stringstream ss;
+                ss << s;
+                double t;
+                std::string sRGB;
+                ss >> t;
+                m_vTimestamps.push_back(t);
+                ss >> sRGB;
+                m_vstrImageFilenamesRGB.push_back(sRGB);
+                qDebug() << QString::fromStdString(sRGB);
+            }
         }
     }
+
+    qDebug() << "Depth: " << m_vstrImageFilenamesD.size();
+    qDebug() << "RGB: " << m_vstrImageFilenamesRGB.size();
 }
 
 void MainWindow::processNewFrame() {
@@ -376,6 +396,8 @@ void MainWindow::processNewFrame() {
         ui->btn_forcequit->click();
         return;
     }
+
+    qDebug() << QString(this->m_configDig.m_seqPath + "/" + QString::fromStdString(m_vstrImageFilenamesD[this->m_curFrameIdx]));
 
     // load color and depth images
     this->m_imD = cv::imread(this->m_configDig.m_seqPath.toStdString() + "/" +
