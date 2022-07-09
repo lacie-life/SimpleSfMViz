@@ -41,12 +41,12 @@ Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 /**
  * @brief Construct a new System:: System object
  * 
- * @param strVocFile 词袋文件
- * @param strSettingsFile 配置文件
- * @param sensor 传感器类型
- * @param bUseViewer 是否启用地图浏览器
- * @param initFr 用于调试的参数
- * @param strSequence 序列名称
+ * @param strVocFile 
+ * @param strSettingsFile 
+ * @param sensor 
+ * @param bUseViewer 
+ * @param initFr 
+ * @param strSequence 
  */
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
                const bool bUseViewer, const int initFr, const string &strSequence):
@@ -63,7 +63,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     cout << "Input sensor was set to: ";
 
-    // 输出传感器类型（单目、双目、深度、以及和IMU结合的类型）
+    
     if(mSensor==MONOCULAR)
         cout << "Monocular" << endl;
     else if(mSensor==STEREO)
@@ -78,22 +78,21 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << "RGB-D-Inertial" << endl;
 
     //Check settings file
-    // 检查配置文件
     cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
     if(!fsSettings.isOpened())
     {
        cerr << "Failed to open settings file at: " << strSettingsFile << endl;
        exit(-1);
     }
-    // 检查版本
+    
     cv::FileNode node = fsSettings["File.version"];
     if(!node.empty() && node.isString() && node.string() == "1.0"){
-        // 构造配置文件
+        
         settings_ = new Settings(strSettingsFile,mSensor);
 
         mStrLoadAtlasFromFile = settings_->atlasLoadFile();
         mStrSaveAtlasToFile = settings_->atlasSaveFile();
-        // 输出读取到的配置信息
+        
         cout << (*settings_) << endl;
     }
     else{
@@ -111,7 +110,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         }
     }
 
-    // 读取与闭环相关的配置信息
+    
     node = fsSettings["loopClosing"];
     bool activeLC = true;
     if(!node.empty())
@@ -129,7 +128,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
 
         mpVocabulary = new ORBVocabulary();
-        // 读取ORB词袋
+        
         bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
         if(!bVocLoad)
         {
@@ -140,12 +139,12 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         cout << "Vocabulary loaded!" << endl << endl;
 
         //Create KeyFrame Database
-        // 构建关键帧的数据库
+        
         mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
         //Create the Atlas
         cout << "Initialization of Atlas from scratch " << endl;
-        // 构建地图集
+        
         mpAtlas = new Atlas(0);
     }
     else
@@ -194,26 +193,26 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         //usleep(10*1000*1000);
     }
 
-    // 如果有IMU数据，设定地图集
+    
     if (mSensor==IMU_STEREO || mSensor==IMU_MONOCULAR || mSensor==IMU_RGBD)
         mpAtlas->SetInertialSensor();
 
     //Create Drawers. These are used by the Viewer
-    // 地图浏览器相关的初始化
+    
     mpFrameDrawer = new FrameDrawer(mpAtlas);
     mpMapDrawer = new MapDrawer(mpAtlas, strSettingsFile, settings_);
 
     //Initialize the Tracking thread
     //(it will live in the main thread of execution, the one that called this constructor)
     cout << "Seq. Name: " << strSequence << endl;
-    // 追踪对象的初始化
+    
     mpTracker = new Tracking(this, mpVocabulary, mpFrameDrawer, mpMapDrawer,
                              mpAtlas, mpKeyFrameDatabase, strSettingsFile, mSensor, settings_, strSequence);
 
     //Initialize the Local Mapping thread and launch
     mpLocalMapper = new LocalMapping(this, mpAtlas, mSensor==MONOCULAR || mSensor==IMU_MONOCULAR,
                                      mSensor==IMU_MONOCULAR || mSensor==IMU_STEREO || mSensor==IMU_RGBD, strSequence);
-    // 局部映射线程的初始化
+    
     mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run,mpLocalMapper);
     mpLocalMapper->mInitFr = initFr;
     if(settings_)
@@ -230,12 +229,10 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Initialize the Loop Closing thread and launch
     // mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR
-    // 闭环线程的初始化
     mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR, activeLC); // mSensor!=MONOCULAR);
     mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
 
     //Set pointers between threads
-    // 在各个线程间建立通信
     mpTracker->SetLocalMapper(mpLocalMapper);
     mpTracker->SetLoopClosing(mpLoopCloser);
 
@@ -248,7 +245,6 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     //usleep(10*1000*1000);
 
     //Initialize the Viewer thread and launch
-    // 地图浏览器线程的初始化
     if(bUseViewer)
     //if(false) // TODO
     {
@@ -421,7 +417,7 @@ Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const
 
 Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 {
-    // 如果系统停止了就返回无参李代数
+    
     {
         unique_lock<mutex> lock(mMutexReset);
         if(mbShutDown)
@@ -433,7 +429,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
         cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular nor Monocular-Inertial." << endl;
         exit(-1);
     }
-    // 复制图像，如果需要改变尺寸，则改变尺寸
+    
     cv::Mat imToFeed = im.clone();
     if(settings_ && settings_->needToResize()){
         cv::Mat resizedIm;
