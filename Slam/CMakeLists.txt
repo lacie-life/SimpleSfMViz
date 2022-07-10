@@ -18,7 +18,7 @@ add_definitions(-w)
 
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Pangolin REQUIRED)
+find_package(Pangolin 0.6 REQUIRED)
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
@@ -53,4 +53,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Examples/RGB-D)
 
 add_executable(orb_test Examples/RGB-D/test_slam_system.cpp)
 
-target_link_libraries(orb_test PRIVATE ${CMAKE_PROJECT_NAME})
+target_link_libraries(orb_test PRIVATE ${CMAKE_PROJECT_NAME} 
+                                        ${OpenCV_LIBS}
+                                        ${EIGEN3_LIBS}
+                                        ${Pangolin_LIBRARIES}
+                                        )
