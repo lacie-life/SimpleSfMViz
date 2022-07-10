@@ -21,12 +21,27 @@
 
 #endif
 
+#define Lacie 1
+
+#ifdef Lacie
+
+// Dataset
+#define SEQ_PATH "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop"
+#define RGB_IMAGE_PATH "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb"
+#define DEPTH_IMAGE_PATH "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth"
+#define ASSO_DEPTH_PATH "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth.txt"
+#define ASSO_RGB_PATH "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb.txt"
+
+#else
+
 // Dataset
 #define SEQ_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household"
 #define RGB_IMAGE_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb"
 #define DEPTH_IMAGE_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth"
 #define ASSO_DEPTH_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt"
 #define ASSO_RGB_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt"
+
+#endif
 
 // SLAM System
 #define SETTING_PATH "data/config/rgbd.yaml"
