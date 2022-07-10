@@ -6,8 +6,8 @@ SET(CMAKE_BUILD_TYPE "Release")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall   -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -49,8 +49,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # RGB-D examples
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Examples/RGB-D)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Examples/RGB-D)
 
-# add_executable(kinect Examples/RGB-D/kinect.cc)
+add_executable(orb_test Examples/RGB-D/test_slam_system.cpp)
 
-# target_link_libraries(kinect PRIVATE ${CMAKE_PROJECT_NAME})
+target_link_libraries(orb_test PRIVATE ${CMAKE_PROJECT_NAME})

@@ -1,5 +1,5 @@
 #include "QPCLVisual.h"
-#include "QTimerHelper.h"
+// #include "QTimerHelper.h"
 #include <thread>
 #include <QDebug>
 

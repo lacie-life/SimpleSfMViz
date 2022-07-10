@@ -26,7 +26,7 @@
 #define RGB_IMAGE_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb"
 #define DEPTH_IMAGE_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth"
 #define ASSO_DEPTH_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt"
-#define ASSO_RGB_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgn.txt"
+#define ASSO_RGB_PATH "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt"
 
 // SLAM System
 #define SETTING_PATH "data/config/rgbd.yaml"

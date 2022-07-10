@@ -16,34 +16,41 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include<iostream>
-#include<algorithm>
-#include<fstream>
-#include<chrono>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <chrono>
+#include <string>
 
-#include<opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
 
-#include<System.h>
+#include <System.h>
+
+// Dataset
+std::string SEQ_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household";
+std::string RGB_IMAGE_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb";
+std::string DEPTH_IMAGE_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth";
+std::string ASSO_DEPTH_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt";
+std::string ASSO_RGB_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt";
+
+// SLAM System
+std::string SETTING_PATH = "/home/jun/Github/GreenHouseAR/Engine/data/config/rgbd.yaml";
+std::string VOCABULARY_PATH = "/home/jun/Github/GreenHouseAR/Slam/Vocabulary/ORBvoc.txt";
+
+#define COMPILEDWITHC11 1
 
 using namespace std;
 
-void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
+void LoadImages(const string &strAssociationDFilename, const string &strAssociationRGBFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps);
 
 int main(int argc, char **argv)
 {
-    if(argc != 5)
-    {
-        cerr << endl << "Usage: ./rgbd_tum path_to_vocabulary path_to_settings path_to_sequence path_to_association" << endl;
-        return 1;
-    }
-
-    // Retrieve paths to images
     vector<string> vstrImageFilenamesRGB;
     vector<string> vstrImageFilenamesD;
     vector<double> vTimestamps;
-    string strAssociationFilename = string(argv[4]);
-    LoadImages(strAssociationFilename, vstrImageFilenamesRGB, vstrImageFilenamesD, vTimestamps);
+
+    LoadImages(ASSO_DEPTH_PATH, ASSO_RGB_PATH, vstrImageFilenamesRGB, vstrImageFilenamesD, vTimestamps);
 
     // Check consistency in the number of images and depthmaps
     int nImages = vstrImageFilenamesRGB.size();
@@ -59,7 +66,7 @@ int main(int argc, char **argv)
     }
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM3::System SLAM(argv[1],argv[2],ORB_SLAM3::System::RGBD,true);
+    ORB_SLAM3::System SLAM(VOCABULARY_PATH, SETTING_PATH,ORB_SLAM3::System::RGBD,true);
     float imageScale = SLAM.GetImageScale();
 
     // Vector for tracking time statistics
@@ -75,8 +82,8 @@ int main(int argc, char **argv)
     for(int ni=0; ni<nImages; ni++)
     {
         // Read image and depthmap from file
-        imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
-        imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
+        imRGB = cv::imread(SEQ_PATH +"/" +vstrImageFilenamesRGB[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
+        imD = cv::imread(SEQ_PATH +"/" + vstrImageFilenamesD[ni],cv::IMREAD_UNCHANGED); //,cv::IMREAD_UNCHANGED);
         double tframe = vTimestamps[ni];
 
         if(imRGB.empty())
@@ -145,29 +152,46 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
+void LoadImages(const string &strAssociationDFilename, const string &strAssociationRGBFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps)
 {
-    ifstream fAssociation;
-    fAssociation.open(strAssociationFilename.c_str());
-    while(!fAssociation.eof())
-    {
-        string s;
-        getline(fAssociation,s);
-        if(!s.empty())
-        {
-            stringstream ss;
-            ss << s;
+
+    ifstream fAssociationD;
+    fAssociationD.open(strAssociationDFilename.c_str());
+
+    ifstream fAssociationRGB;
+    fAssociationRGB.open(strAssociationRGBFilename.c_str());
+
+    while (!fAssociationD.eof()) {
+
+        std::string s_d;
+        getline(fAssociationD, s_d);
+        if (!s_d.empty()) {
+            std::stringstream ss;
+            ss << s_d;
             double t;
-            string sRGB, sD;
-            ss >> t;
-            vTimestamps.push_back(t);
-            ss >> sRGB;
-            vstrImageFilenamesRGB.push_back(sRGB);
+            std::string sD;
             ss >> t;
             ss >> sD;
             vstrImageFilenamesD.push_back(sD);
+            std::cout << sD << std::endl;
 
+            std::string s;
+            getline(fAssociationRGB, s);
+            if (!s.empty()) {
+                std::stringstream ss;
+                ss << s;
+                double t;
+                std::string sRGB;
+                ss >> t;
+                vTimestamps.push_back(t);
+                ss >> sRGB;
+                vstrImageFilenamesRGB.push_back(sRGB);
+                std::cout << sRGB << std::endl;
+            }
         }
     }
+
+    std::cout << "Depth: " << vstrImageFilenamesD.size() << std::endl;
+    std::cout << "RGB: " << vstrImageFilenamesRGB.size() << std::endl;
 }

@@ -458,10 +458,10 @@ void MainWindow::quitThreads() {
         this->m_recogThread.wait();
     }
 
-    if (this->m_rebulidThread.isRunning()) {
-        this->m_rebulidThread.quit();
-        this->m_rebulidThread.wait();
-    }
+    // if (this->m_rebulidThread.isRunning()) {
+    //     this->m_rebulidThread.quit();
+    //     this->m_rebulidThread.wait();
+    // }
 }
 
 void MainWindow::displayMapInfo() {
