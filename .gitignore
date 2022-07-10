@@ -1,13 +1,17 @@
 /test/build
 Model/yolov4-learn/yolo/yolov4.weights
 Model/yolov4-learn/build
+Model/yolov4-learn/lib
 Model/darknet/build
 Model/darknet-gpu/build
 Slam/Vocabulary/ORBvoc.txt
 /ic.png
 /Engine/build
 Slam/build
+Slam/lib
 Slam/Thirdparty/DBoW2/build
+Slam/Thirdparty/DBoW2/lib
 Slam/Thirdparty/g2o/build
+Slam/Thirdparty/g2o/lib
 /build-Engine-Desktop_Qt_5_15_2_GCC_64bit-Debug
 *.weights
