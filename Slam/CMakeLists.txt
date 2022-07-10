@@ -16,7 +16,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_definitions(-w)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.2 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin 0.6 REQUIRED)
 

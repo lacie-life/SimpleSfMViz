@@ -27,15 +27,15 @@
 #include <System.h>
 
 // Dataset
-std::string SEQ_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household";
-std::string RGB_IMAGE_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb";
-std::string DEPTH_IMAGE_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth";
-std::string ASSO_DEPTH_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt";
-std::string ASSO_RGB_PATH = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt";
+std::string SEQ_PATH = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop";
+std::string RGB_IMAGE_PATH = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb";
+std::string DEPTH_IMAGE_PATH = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth";
+std::string ASSO_DEPTH_PATH = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth.txt";
+std::string ASSO_RGB_PATH = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb.txt";
 
 // SLAM System
-std::string SETTING_PATH = "/home/jun/Github/GreenHouseAR/Engine/data/config/rgbd.yaml";
-std::string VOCABULARY_PATH = "/home/jun/Github/GreenHouseAR/Slam/Vocabulary/ORBvoc.txt";
+std::string SETTING_PATH = "/home/lacie/Github/GreenHouseAR/Engine/data/config/rgbd.yaml";
+std::string VOCABULARY_PATH = "/home/lacie/Github/GreenHouseAR/Slam/Vocabulary/ORBvoc.txt";
 
 #define COMPILEDWITHC11 1
 
