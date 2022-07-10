@@ -169,7 +169,7 @@ void Viewer::Run()
     params.Set<std::string>("default_font", "/usr/share/fonts/truetype/ubuntu/UbuntuMono-RI.ttf");
     params.Set("default_font_size", 18);
 
-    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768, params);
+    pangolin::CreateWindowAndBind("Map Viewer",1024,768, params);
 
     // 3D Mouse handler requires depth testing to be enabled
     glEnable(GL_DEPTH_TEST);

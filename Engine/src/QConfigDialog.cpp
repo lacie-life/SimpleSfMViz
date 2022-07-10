@@ -14,11 +14,12 @@ QConfigDialog::QConfigDialog(QWidget *parent) :
     this->connection();
     {
         // pre setting
-        this->m_temp_seqPath = this->m_seqPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household";
-        this->m_temp_colorImgPath = this->m_colorImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb";
-        this->m_temp_depthImgPath = this->m_depthImgPath = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth";
-        this->m_temp_assoPath_d = this->m_assoPath_d = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/depth.txt";
-        this->m_temp_assoPath_rgb = this->m_assoPath_rgb = "/home/jun/Github/Data/SLAM-Dataset/rgbd_dataset_freiburg3_long_office_household/rgb.txt";
+        this->m_temp_seqPath = this->m_seqPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop";
+        this->m_temp_colorImgPath = this->m_colorImgPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb";
+        this->m_temp_depthImgPath = this->m_depthImgPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth";
+        this->m_temp_assoPath_d = this->m_assoPath_d = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth.txt";
+        this->m_temp_assoPath_rgb = this->m_assoPath_rgb = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb.txt";
+
         // -----------
         this->m_temp_settingPath = this->m_settingPath = "data/config/rgbd.yaml";
         this->m_temp_vocPath = this->m_vocPath = "data/ORBvoc.txt";

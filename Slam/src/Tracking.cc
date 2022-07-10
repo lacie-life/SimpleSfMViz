@@ -43,16 +43,16 @@ namespace ORB_SLAM3 {
 /**
  * @brief Construct a new Tracking:: Tracking object
  *
- * @param pSys ORB-SLAM系统
- * @param pVoc ORB词袋
- * @param pFrameDrawer 帧绘图器
- * @param pMapDrawer 地图绘图器
- * @param pAtlas 地图集
- * @param pKFDB 关键帧数据库
- * @param strSettingPath 配置文件路径
- * @param sensor 传感器类型
- * @param settings 配置信息
- * @param _nameSeq 序列影像名称
+ * @param pSys 
+ * @param pVoc 
+ * @param pFrameDrawer 
+ * @param pMapDrawer 
+ * @param pAtlas 
+ * @param pKFDB 
+ * @param strSettingPath 
+ * @param sensor 
+ * @param settings 
+ * @param _nameSeq 
  */
   Tracking::Tracking(System *pSys, ORBVocabulary *pVoc, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Atlas *pAtlas,
                      KeyFrameDatabase *pKFDB, const string &strSettingPath, const int sensor, Settings *settings,

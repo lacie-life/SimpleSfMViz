@@ -127,15 +127,14 @@ namespace ORB_SLAM3 {
     /**
      * @brief Construct a new Settings:: Settings object
      * 
-     * @param configFile 配置文件路径
-     * @param sensor 传感器类型
+     * @param configFile 
+     * @param sensor 
      */
     Settings::Settings(const std::string &configFile, const int& sensor) :
     bNeedToUndistort_(false), bNeedToRectify_(false), bNeedToResize1_(false), bNeedToResize2_(false) {
         sensor_ = sensor;
 
         //Open settings file
-        // 读取配置文件内容
         cv::FileStorage fSettings(configFile, cv::FileStorage::READ);
         if (!fSettings.isOpened()) {
             cerr << "[ERROR]: could not open configuration file at: " << configFile << endl;
@@ -148,47 +147,41 @@ namespace ORB_SLAM3 {
         }
 
         //Read first camera
-        // 读取第一个相机的参数
         readCamera1(fSettings);
         cout << "\t-Loaded camera 1" << endl;
 
         //Read second camera if stereo (not rectified)
-        // 如果是双目，就需要读取第二个相机的参数
         if(sensor_ == System::STEREO || sensor_ == System::IMU_STEREO){
             readCamera2(fSettings);
             cout << "\t-Loaded camera 2" << endl;
         }
 
         //Read image info
-        // 读取图像的信息（相片的宽度和高度）
         readImageInfo(fSettings);
         cout << "\t-Loaded image info" << endl;
 
-        // 如果有IMU数据，就进行IMU数据的读取
         if(sensor_ == System::IMU_MONOCULAR || sensor_ == System::IMU_STEREO || sensor_ == System::IMU_RGBD){
             readIMU(fSettings);
             cout << "\t-Loaded IMU calibration" << endl;
         }
 
-        // 如果是深度相机，就进行深度的读取
         if(sensor_ == System::RGBD || sensor_ == System::IMU_RGBD){
             readRGBD(fSettings);
             cout << "\t-Loaded RGB-D calibration" << endl;
         }
-        // 读取ORB特征的配置信息
+
         readORB(fSettings);
         cout << "\t-Loaded ORB settings" << endl;
-        // 读取地图浏览器的配置信息
+
         readViewer(fSettings);
         cout << "\t-Loaded viewer settings" << endl;
-        // 读取保存和加载相关的配置信息
+
         readLoadAndSave(fSettings);
         cout << "\t-Loaded Atlas settings" << endl;
-        // 读取其余的配置信息
+
         readOtherParameters(fSettings);
         cout << "\t-Loaded misc parameters" << endl;
         
-        // 如果需要矫正
         if(bNeedToRectify_){
             precomputeRectificationMaps();
             cout << "\t-Computed rectification maps" << endl;
@@ -201,16 +194,13 @@ namespace ORB_SLAM3 {
         bool found;
 
         //Read camera model
-        // 读取相机模型
         string cameraModel = readParameter<string>(fSettings,"Camera.type",found);
 
         vector<float> vCalibration;
-        // 针孔模型
         if (cameraModel == "PinHole") {
             cameraType_ = PinHole;
 
             //Read intrinsic parameters
-            // 读取针孔相机的内参
             float fx = readParameter<float>(fSettings,"Camera1.fx",found);
             float fy = readParameter<float>(fSettings,"Camera1.fy",found);
             float cx = readParameter<float>(fSettings,"Camera1.cx",found);
@@ -222,7 +212,6 @@ namespace ORB_SLAM3 {
             originalCalib1_ = new Pinhole(vCalibration);
 
             //Check if it is a distorted PinHole
-            // 将畸变参数读进来（先根据设定的畸变参数对容器进行resize）
             readParameter<float>(fSettings,"Camera1.k1",found,false);
             if(found){
                 readParameter<float>(fSettings,"Camera1.k3",found,false);
@@ -240,17 +229,16 @@ namespace ORB_SLAM3 {
             }
 
             //Check if we need to correct distortion from the images
-            // 如果有畸变参数就需要进行畸变调整
             if((sensor_ == System::MONOCULAR || sensor_ == System::IMU_MONOCULAR) && vPinHoleDistorsion1_.size() != 0){
                 bNeedToUndistort_ = true;
             }
         }
-        // 矫正模型
+
         else if(cameraModel == "Rectified"){
             cameraType_ = Rectified;
 
             //Read intrinsic parameters
-            // 读取相机内参
+
             float fx = readParameter<float>(fSettings,"Camera1.fx",found);
             float fy = readParameter<float>(fSettings,"Camera1.fy",found);
             float cx = readParameter<float>(fSettings,"Camera1.cx",found);
@@ -465,13 +453,13 @@ namespace ORB_SLAM3 {
 
     void Settings::readORB(cv::FileStorage &fSettings) {
         bool found;
-        // 特征点的数量
+
         nFeatures_ = readParameter<int>(fSettings,"ORBextractor.nFeatures",found);
-        // 尺度因子
+
         scaleFactor_ = readParameter<float>(fSettings,"ORBextractor.scaleFactor",found);
-        // 金字塔层
+
         nLevels_ = readParameter<int>(fSettings,"ORBextractor.nLevels",found);
-        // FAST
+
         initThFAST_ = readParameter<int>(fSettings,"ORBextractor.iniThFAST",found);
         minThFAST_ = readParameter<int>(fSettings,"ORBextractor.minThFAST",found);
     }
