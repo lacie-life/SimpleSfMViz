@@ -1,4 +1,5 @@
 #include "QConfigDialog.h"
+#include "AppConstants.h"
 #include "ui_qconfigdialog.h"
 
 #include <QMessageBox>
@@ -14,18 +15,18 @@ QConfigDialog::QConfigDialog(QWidget *parent) :
     this->connection();
     {
         // pre setting
-        this->m_temp_seqPath = this->m_seqPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop";
-        this->m_temp_colorImgPath = this->m_colorImgPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb";
-        this->m_temp_depthImgPath = this->m_depthImgPath = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth";
-        this->m_temp_assoPath_d = this->m_assoPath_d = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/depth.txt";
-        this->m_temp_assoPath_rgb = this->m_assoPath_rgb = "/home/lacie/Github/Dataset/rgbd_dataset_freiburg2_large_no_loop/rgb.txt";
+        this->m_temp_seqPath = this->m_seqPath = SEQ_PATH;
+        this->m_temp_colorImgPath = this->m_colorImgPath = RGB_IMAGE_PATH;
+        this->m_temp_depthImgPath = this->m_depthImgPath = DEPTH_IMAGE_PATH;
+        this->m_temp_assoPath_d = this->m_assoPath_d = ASSO_DEPTH_PATH;
+        this->m_temp_assoPath_rgb = this->m_assoPath_rgb = ASSO_RGB_PATH;
 
         // -----------
-        this->m_temp_settingPath = this->m_settingPath = "data/config/rgbd.yaml";
-        this->m_temp_vocPath = this->m_vocPath = "data/ORBvoc.txt";
-        this->m_temp_classes = this->m_classes = "data/model/coco.names";
-        this->m_temp_modelConfig = this->m_modelConfig = "data/model/yolov4.cfg";
-        this->m_temp_modelWeights = this->m_modelWeights = "data/model/yolov4.weights";
+        this->m_temp_settingPath = this->m_settingPath = SETTING_PATH;
+        this->m_temp_vocPath = this->m_vocPath = VOCABULARY_PATH;
+        this->m_temp_classes = this->m_classes = CLASSES_PATH;
+        this->m_temp_modelConfig = this->m_modelConfig = MODEL_CONFIG;
+        this->m_temp_modelWeights = this->m_modelWeights = MODEL_WEIGHTS;
         // display
         this->display();
     }
