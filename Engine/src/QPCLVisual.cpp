@@ -1,5 +1,6 @@
 #include "QPCLVisual.h"
-// #include "QTimerHelper.h"
+#include "QTimerHelper.h"
+#include "QOptimize.h"
 #include <thread>
 #include <QDebug>
 
@@ -46,15 +47,15 @@ void QPCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameClou
             viewer->addPointCloud(this->m_allPts, "cloud");
         }
         {
-//            ns_timer::Timer timer;
-//            timer.reStart();
-//            SurfelCloudPtr m_allPtsSur = QOptimize::reconstructionSurface(m_allPts, 0.05);
-//            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
-//            timer.reStart();
-//            pcl::PolygonMeshPtr m_allPtsPoMesh = QOptimize::triangulateMesh(m_allPtsSur);
-//            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
-//            this->viewer->addPolylineFromPolygonMesh(*m_allPtsPoMesh, "PolylineFromPolygonMesh");
-//            this->viewer->addPolygonMesh(*m_allPtsPoMesh, "PolygonMesh");
+           ns_timer::Timer timer;
+           timer.reStart();
+           SurfelCloudPtr m_allPtsSur = QOptimize::reconstructionSurface(m_allPts, 0.05);
+           qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
+           timer.reStart();
+           pcl::PolygonMeshPtr m_allPtsPoMesh = QOptimize::triangulateMesh(m_allPtsSur);
+           qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
+           this->viewer->addPolylineFromPolygonMesh(*m_allPtsPoMesh, "PolylineFromPolygonMesh");
+           this->viewer->addPolygonMesh(*m_allPtsPoMesh, "PolygonMesh");
         }
         //
         while (!this->viewer->wasStopped() && this->m_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
