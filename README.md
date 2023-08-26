@@ -8,6 +8,7 @@
 - [x] PCL PointCloud + OpenGL Render
 - [x] Improve camera control interface
 - [x] SfM plugin (GTSAM SfM/[SimpleSfM](https://github.com/lacie-life/visual-slam/tree/main/SfM))
+- [ ] Update app Usage
 
 ## Use case
 
