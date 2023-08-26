@@ -10,7 +10,7 @@
 - [ ] Open file and load 3D plant model 
 - [ ] Add text in view widget
 - [ ] Camera capture and viewer interface
-- [x] SfM plugin (GTSAM SfM)
+- [x] SfM plugin (GTSAM SfM/[SimpleSfM](https://github.com/lacie-life/visual-slam/tree/main/SfM))
 
 ## Use case
 
