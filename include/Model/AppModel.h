@@ -29,6 +29,7 @@ class AppModel : public QObject
     Q_PROPERTY(int currentScreenID READ currentScreenID WRITE setCurrentScreenID NOTIFY currentScreenIDChanged)
     Q_PROPERTY(AppEnums::APP_STATE state READ state WRITE setState NOTIFY stateChanged)
     Q_PROPERTY(QString rosBagPath READ rosBagPath WRITE setRosBagPath NOTIFY rosBagPathChanged)
+    Q_PROPERTY(QString SfMConfigPath READ SfMConfigPath WRITE setSfMConfigPath NOTIFY SfMConfigPathChanged)
     Q_PROPERTY(int detectModel READ detectModel WRITE setDetectModel NOTIFY detectModelChanged)
 
 public:
@@ -37,17 +38,20 @@ public:
     AppEnums::APP_STATE state() const;
     int currentScreenID() const;
     QString rosBagPath() const;
+    QString SfMConfigPath() const;
     int detectModel() const;
 
     void setDefaultConfig();
 
     void runSfM(QString path);
+    void runSimpleSfM(QString path);
     void cameraRun();
 
 public slots:
     void setState(AppEnums::APP_STATE state);
     void setCurrentScreenID(int currentScreenID);
     void setRosBagPath(QString path);
+    void setSfMConfigPath(QString path);
     void setDetectModel(int model);
     void setCurrentFrame(QImage img);
 
@@ -55,6 +59,7 @@ signals:
     void stateChanged();
     void currentScreenIDChanged(int currentScreenID);
     void rosBagPathChanged(QString path);
+    void SfMConfigPathChanged(QString path);
     void detectModelChanged(int model);
     void currentFrameChanged(QImage &image);
 
@@ -71,6 +76,7 @@ private:
     int m_currentScreenID;
 
     QString m_rosBag;
+    QString m_SfMConfigPath;
     QConfig* m_config;
     QCameraCapture* m_camera;
     QImage m_currentFrame;

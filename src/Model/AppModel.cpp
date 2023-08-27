@@ -43,6 +43,11 @@ QString AppModel::rosBagPath() const
     return m_rosBag;
 }
 
+QString AppModel::SfMConfigPath() const
+{
+    return m_SfMConfigPath;
+}
+
 int AppModel::detectModel() const
 {
     return m_config->modelType();
@@ -71,6 +76,11 @@ void AppModel::runSfM(QString path)
 
     sfm->init(path);
     sfm->run();
+}
+
+void AppModel::runSimpleSfM(QString path)
+{
+    CONSOLE << "Testing SimpleSfM";
 }
 
 void AppModel::cameraRun()
@@ -102,6 +112,15 @@ void AppModel::setRosBagPath(QString path)
     CONSOLE << m_rosBag;
 
     emit rosBagPathChanged(m_rosBag);
+}
+
+void AppModel::setSfMConfigPath(QString path)
+{
+    m_SfMConfigPath = path;
+
+    CONSOLE << m_SfMConfigPath;
+
+    emit SfMConfigPathChanged(m_SfMConfigPath);
 }
 
 void AppModel::setDetectModel(int model)

@@ -10,46 +10,95 @@ QRec {
     id: root
     border.color: "red"
 
-    ComboBox {
-        id: modelBox
+    // ComboBox {
+    //     id: modelBox
+
+    //     anchors.top: root.top
+    //     anchors.topMargin: QmlConst.OFFSET*2
+
+    //     anchors.left: root.left
+    //     anchors.leftMargin: QmlConst.OFFSET*2
+
+    //     anchors.right: root.right
+    //     anchors.rightMargin: QmlConst.OFFSET*2
+
+    //     textRole: "display"
+
+    //     model: comboboxModel
+    // }
+
+    Button {
+        id: cameraProcessButton
+
+        width: 150
+        height: 50
+
+        text: qsTr("Camera Process")
 
         anchors.top: root.top
         anchors.topMargin: QmlConst.OFFSET*2
 
         anchors.left: root.left
-        anchors.leftMargin: QmlConst.OFFSET*2
+        anchors.leftMargin: QmlConst.OFFSET
 
         anchors.right: root.right
-        anchors.rightMargin: QmlConst.OFFSET*2
+        anchors.rightMargin: QmlConst.OFFSET
 
-        textRole: "display"
+        onClicked: {
+            // QmlHandler.qmlMessage(modelBox.currentIndex)
+            // QmlModel.setDetectModel(parseInt(modelBox.currentIndex))
 
-        model: comboboxModel
+            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_CAMERA_RUN)
+        }
     }
 
     Button {
-        id: processButton
+        id: sfMProcessButton
 
-        width: 100
+        width: 150
         height: 50
 
-        text: qsTr("Process")
+        text: qsTr("SfM Process")
 
-        anchors.bottom: root.bottom
-        anchors.bottomMargin: QmlConst.OFFSET*2
+        anchors.top: cameraProcessButton.bottom
+        anchors.topMargin: QmlConst.OFFSET*2
 
         anchors.left: root.left
-        anchors.leftMargin: QmlConst.OFFSET*2
+        anchors.leftMargin: QmlConst.OFFSET
 
         anchors.right: root.right
-        anchors.rightMargin: QmlConst.OFFSET*2
+        anchors.rightMargin: QmlConst.OFFSET
 
         onClicked: {
-            QmlHandler.qmlMessage(modelBox.currentIndex)
+            // QmlHandler.qmlMessage(modelBox.currentIndex)
+            // QmlModel.setDetectModel(parseInt(modelBox.currentIndex))
 
-            QmlModel.setDetectModel(parseInt(modelBox.currentIndex))
+            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_SFM_RUN)
+        }
+    }
 
-            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_RUN)
+    Button {
+        id: simepleSfMProcessButton
+
+        width: 150
+        height: 50
+
+        text: qsTr("SimpleSfM Process")
+
+        anchors.top: sfMProcessButton.bottom
+        anchors.topMargin: QmlConst.OFFSET*2
+
+        anchors.left: root.left
+        anchors.leftMargin: QmlConst.OFFSET
+
+        anchors.right: root.right
+        anchors.rightMargin: QmlConst.OFFSET
+
+        onClicked: {
+            // QmlHandler.qmlMessage(modelBox.currentIndex)
+            // QmlModel.setDetectModel(parseInt(modelBox.currentIndex))
+
+            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_SIMPLESFM_RUN)
         }
     }
 }

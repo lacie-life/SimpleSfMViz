@@ -80,12 +80,20 @@ void AppEngine::slotReceiveEvent(int event)
         CONSOLE << "Change screen";
         MODEL->setCurrentScreenID(AppEnums::PROCESS_SCREEN);
         break;
-    case static_cast<int>(AppEnums::EVT_CLICK_CHOOSE_ROSBAG):
-        CONSOLE << MODEL->rosBagPath();
+    case static_cast<int>(AppEnums::EVT_CLICK_CHOOSE_CONFIG):
+        CONSOLE << MODEL->SfMConfigPath();
         break;
-    case static_cast<int>(AppEnums::EVT_CLICK_RUN):
-        CONSOLE << "RUN ?";
-        MODEL->cameraRun();
+    case static_cast<int>(AppEnums::EVT_CLICK_CAMERA_RUN):
+        CONSOLE << "CAMREA RUN ?";
+        // MODEL->cameraRun();
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_SFM_RUN):
+        CONSOLE << "SfM RUN ?";
+        // MODEL->runSfM(MODEL->SfMConfigPath());
+        break;
+    case static_cast<int>(AppEnums::EVT_CLICK_SIMPLESFM_RUN):
+        CONSOLE << "SimpleSfM RUN ?";
+        MODEL->runSimpleSfM(MODEL->SfMConfigPath());
         break;
     default:
         break;

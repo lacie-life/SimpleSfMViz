@@ -11,7 +11,7 @@ QRec {
     id: homeScreen
 
     Button {
-        id: rosPath
+        id: configPath
 
         text: qsTr("Choose path")
 
@@ -22,7 +22,7 @@ QRec {
         anchors.topMargin: QmlConst.OFFSET
 
         anchors.right: homeScreen.right
-        anchors.rightMargin: QmlConst.OFFSET + configBox.width - rosPath.width
+        anchors.rightMargin: QmlConst.OFFSET + configBox.width - configPath.width
 
         anchors.bottom: configBox.top
         anchors.bottomMargin: QmlConst.OFFSET
@@ -48,6 +48,8 @@ QRec {
 
         width: 200
 
+        enabled: false
+
         anchors.right: homeScreen.right
         anchors.rightMargin: QmlConst.OFFSET
 
@@ -60,7 +62,7 @@ QRec {
 
 
     FileDialog {
-        id: chooseRosBag
+        id: chooseConfig
 
         title: "Please choose a file"
 
@@ -70,17 +72,18 @@ QRec {
         height: 400
 
         onAccepted: {
-            QmlHandler.qmlMessage("Path: " + chooseRosBag.fileUrl)
-            QmlModel.setRosBagPath(chooseRosBag.fileUrl)
-            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_CHOOSE_ROSBAG)
-            chooseRosBag.close()
+            QmlHandler.qmlMessage("Path: " + chooseConfig.fileUrl)
+            QmlModel.setSfMConfigPath(chooseConfig.fileUrl)
+            QmlHandler.notifyQMLEvent(ENUMS.EVT_CLICK_CHOOSE_CONFIG)
+            chooseConfig.close()
+            configBox.enabled = true
         }
     }
 
     Connections {
-        target: rosPath
+        target: configPath
         function onClicked(mouse) {
-            chooseRosBag.open()
+            chooseConfig.open()
         }
     }
 }
