@@ -8,23 +8,37 @@
 
 #include "Utils/Timer.h"
 #include "Utils/Database.h"
+#include "Utils/Utils.h"
+
 #include "Feature/FeatureExtraction.h"
+#include "Feature/FeatureMatching.h"
+#include "Feature/FeatureUtils.h"
+
+#include "SfM/MapBuilder.h"
+
 
 class QSimpleSfMHepler
 {
 public:
-    QSimpleSfMHepler(QString path);
+    QSimpleSfMHepler(QString path, bool isGPU = false, bool matchcheck = true);
 
     void init();
-    void run();
+    bool run();
+
+
+signals:
+    void sfmInitFailed();
 
 private:
 
     QString m_configPath;
+    bool isGPU = false;
+    bool matchcheck = true;
 
     // Config parameters
     QString m_imagesPath;
     QString m_databasePath;
+    QString m_outputPath;
 
     int m_max_image_size = 3200;
     int m_num_features = 8024;
@@ -33,7 +47,7 @@ private:
     double m_max_distance = 0.7;
     double m_distance_ratio = 0.8;
     bool m_cross_check = true;
-    SimpleSfM::MapBuilder::Parameters params;
+    SimpleSfM::MapBuilder::Parameters m_params;
 
     // Worker
     SimpleSfM::Timer m_timer;

@@ -30,7 +30,7 @@ include_directories(/opt/ros/noetic/include /opt/ros/noetic/lib)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SfM/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SimpleSfM/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SQLite/
     )
 
