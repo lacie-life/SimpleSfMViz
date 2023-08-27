@@ -14,7 +14,7 @@ Window {
     maximumWidth: QmlConst.DEFAULT_WIDTH
     minimumWidth: QmlConst.DEFAULT_WIDTH
 
-    title: qsTr("GreenHouseAR")
+    title: qsTr("SimpleSfMViz")
     Loader {
         id: loader
         anchors.fill: parent

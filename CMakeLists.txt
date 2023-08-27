@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(GreenHouseAR)
+project(SimpleSfMViz)
 
 set(CMAKE_CXX_STANDARD 11)
 SET(COMPILE_FLAGS "-m64 -std=c++11 -Wall -Wextra -pedantic")
@@ -14,8 +14,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND QML_IMPORT_PATH "/home/jun/Qt/5.15.2/gcc_64/qml")
-set(CMAKE_PREFIX_PATH "/home/jun/Qt/5.15.2/gcc_64")
+list(APPEND QML_IMPORT_PATH "/home/lacie/Qt/5.15.2/gcc_64/qml")
+set(CMAKE_PREFIX_PATH "/home/lacie/Qt/5.15.2/gcc_64")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
     CACHE STRING "Qt Creator 4.1 extra qml import paths"
@@ -26,13 +26,20 @@ list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 # ROS package
 ## Add include directories
-include_directories(/opt/ros/melodic/include /opt/ros/melodic/lib)
+include_directories(/opt/ros/noetic/include /opt/ros/noetic/lib)
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SfM/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SQLite/
+    )
+
+add_subdirectory(thirdparty)
 
 set(GLEW_USE_STATIC_LIBS OFF)
 add_definitions( -DGLEW_STATIC )
 
-set(WITH_PCL OFF  CACHE BOOL "Enable pcl")
+set(WITH_PCL OFF  CACHE BOOL "Enable PCL")
 set(WITH_OPENGL ON CACHE BOOL "Enable OpenGL")
 
 set(GLEW_VERBOSE ON)
@@ -127,7 +134,8 @@ qt5_add_resources(QT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/assets/qml.qrc)
 add_executable(${PROJECT_NAME}
                 ${HEADERS}
                 ${SOURCES}
-                ${QT_RESOURCES})
+                ${QT_RESOURCES}
+                )
 
 target_compile_definitions(${PROJECT_NAME}
                 PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
@@ -147,8 +155,8 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
                                         ${OpenCV_LIBS}
                                         -lgtsam
                                         -ltbb
-                                        -I/opt/ros/melodic/include
-                                        -L/opt/ros/melodic/lib)
+                                        -I/opt/ros/noetic/include
+                                        -L/opt/ros/noetic/lib)
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)
@@ -158,6 +166,3 @@ qt5_use_modules(${PROJECT_NAME} Qml Widgets Quick 3DCore 3DQuick 3DRender 3DQuic
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-execute_process(
-     COMMAND "${CMAKE_COMMAND}" "-E" "create_symlink" ${CMAKE_CURRENT_SOURCE_DIR}/assets/data ${CMAKE_CURRENT_BINARY_DIR}/assets/data
-)

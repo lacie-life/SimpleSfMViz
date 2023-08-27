@@ -2,6 +2,7 @@
 #define QPOINTCLOUD_H
 
 #include <QObject>
+#include <QVector>
 #include <QVector3D>
 #include <QQmlListProperty>
 #include <QVector2D>
