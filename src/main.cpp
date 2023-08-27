@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 
     CONSOLE << "LOL";
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QSurfaceFormat fmt;
     fmt.setVersion( 1, 4 );

@@ -64,6 +64,9 @@ namespace SimpleSfM
         };
 
     public:
+
+        MapBuilder();
+
         MapBuilder(const std::string &database_path, const MapBuilder::Parameters &params);
 
         ////////////////////////////////////////////////////////////////////////////////

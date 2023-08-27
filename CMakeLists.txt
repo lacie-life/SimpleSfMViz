@@ -156,7 +156,12 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
                                         -lgtsam
                                         -ltbb
                                         -I/opt/ros/noetic/include
-                                        -L/opt/ros/noetic/lib)
+                                        -L/opt/ros/noetic/lib
+                                        SimpleSfM_lib
+                                        sqlite3
+                                        -lpthread
+                                        dl
+                                        )
 
 target_include_directories(${PROJECT_NAME} PRIVATE PRIVATE ${PCL_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_PCL=1)

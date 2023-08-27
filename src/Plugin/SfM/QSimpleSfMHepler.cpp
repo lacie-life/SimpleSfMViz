@@ -4,7 +4,9 @@
 
 QSimpleSfMHepler::QSimpleSfMHepler(QString path, bool isGPU, bool matchcheck)
 {
-    m_configPath = path;
+    m_configPath = path.mid(7, path.length());
+
+    CONSOLE << "SfM Config Path: " << m_configPath;
 
     this->isGPU = isGPU;
     this->matchcheck = matchcheck;
@@ -14,11 +16,11 @@ QSimpleSfMHepler::QSimpleSfMHepler(QString path, bool isGPU, bool matchcheck)
 
 void QSimpleSfMHepler::init(){
 
-    cv::FileStorage fs(argv[1], cv::FileStorage::READ);
+    cv::FileStorage fs(m_configPath.toStdString(), cv::FileStorage::READ);
 
     if (!fs.isOpened())
     {
-        std::cout << "YAML file : " << argv[1] << " can't not open!" << std::endl;
+        std::cout << "YAML file : " << m_configPath.toStdString() << " can't not open!";
         emit sfmInitFailed();
         return;
     }
@@ -88,19 +90,29 @@ bool QSimpleSfMHepler::run(){
 
     CONSOLE << "SimpleSfM started...";
 
-    m_timer.start();
-    extractor->RunExtraction();
+    CONSOLE << "SimepleSfM Setting: ";
+    CONSOLE << "images_path: " << m_imagesPath.c_str();
+    CONSOLE << "database_path: " << m_databasePath.c_str();
+
+    m_timer.Start();
+    m_extractor->RunExtraction();
     m_timer.PrintMinutes();
 
+    CONSOLE << "Feature extraction finished...";
+
+    CONSOLE << "Feature matching started...";
     m_timer.Start();
     m_matcher->RunMatching();
     m_timer.PrintMinutes();
 
+    CONSOLE << "Feature matching finished...";
+
     if(matchcheck)
     {
+        CONSOLE << "Matching check ...";
         m_database.Open(m_databasePath);
 
-        std::vector<std::pair<image_pair_t, std::vector<cv::DMatch>>> all_matches = m_database.ReadAllMatches();
+        std::vector<std::pair<SimpleSfM::image_pair_t, std::vector<cv::DMatch>>> all_matches = m_database.ReadAllMatches();
 
         for (const auto &matches : all_matches)
         {
@@ -110,8 +122,8 @@ bool QSimpleSfMHepler::run(){
             SimpleSfM::Database::Image image1 = m_database.ReadImageById(image_id1);
             SimpleSfM::Database::Image image2 = m_database.ReadImageById(image_id2);
 
-            cv::Mat cv_image1 = cv::imread(UnionPath(images_path, image1.name));
-            cv::Mat cv_image2 = cv::imread(UnionPath(images_path, image2.name));
+            cv::Mat cv_image1 = cv::imread(SimpleSfM::Utils::UnionPath(m_imagesPath, image1.name));
+            cv::Mat cv_image2 = cv::imread(SimpleSfM::Utils::UnionPath(m_imagesPath, image2.name));
 
             std::vector<cv::KeyPoint> kpts1 = m_database.ReadKeyPoints(image_id1);
             std::vector<cv::KeyPoint> kpts2 = m_database.ReadKeyPoints(image_id2);
@@ -123,16 +135,20 @@ bool QSimpleSfMHepler::run(){
             SimpleSfM::FeatureUtils::ShowMatches(cv_image1, cv_image2, pts1, pts2, matches.second, "Matching Results", 1);
         }
 
-        database.Close();
+        m_database.Close();
     }
+
+    CONSOLE << "Reconstruction started...";
 
     m_mapBuilder.SetUp();
     m_mapBuilder.DoBuild();
 
     m_mapBuilder.WriteCOLMAP(m_outputPath);
     m_mapBuilder.WriteOpenMVS(m_outputPath);
-    m_mapBuilder.WritePLY(Utils::UnionPath(m_outputPath, "points3D.ply"));
-    m_mapBuilder.WritePLYBinary(Utils::UnionPath(m_outputPath, "points3D_binary.ply"));
+    m_mapBuilder.WritePLY(SimpleSfM::Utils::UnionPath(m_outputPath, "points3D.ply"));
+    m_mapBuilder.WritePLYBinary(SimpleSfM::Utils::UnionPath(m_outputPath, "points3D_binary.ply"));
+
+    CONSOLE << "Reconstruction finished...";
 
     return true;
 }

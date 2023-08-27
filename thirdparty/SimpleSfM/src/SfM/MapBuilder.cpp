@@ -22,6 +22,11 @@ namespace SimpleSfM
         }
     }
 
+    MapBuilder::MapBuilder()
+    {
+        
+    }
+
     MapBuilder::MapBuilder(const std::string &database_path, const MapBuilder::Parameters &params)
             : database_path_(database_path), params_(params)
     {

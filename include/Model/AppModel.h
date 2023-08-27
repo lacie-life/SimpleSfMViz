@@ -18,6 +18,7 @@
 #include "SfM/QSfM.h"
 #include "DataVisualize/QProgressBarDialog.h"
 #include "Camera/QCameraCapture.h"
+#include "SfM/QSimpleSfMHepler.h"
 
 #define MODEL AppModel::instance()
 
@@ -80,6 +81,7 @@ private:
     QConfig* m_config;
     QCameraCapture* m_camera;
     QImage m_currentFrame;
+    QSimpleSfMHepler* m_simpleSfMHepler;
 
 public:
     QProgressBarDialog m_progressDialog;

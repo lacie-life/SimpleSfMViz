@@ -81,6 +81,23 @@ void AppModel::runSfM(QString path)
 void AppModel::runSimpleSfM(QString path)
 {
     CONSOLE << "Testing SimpleSfM";
+
+    m_simpleSfMHepler = new QSimpleSfMHepler(path);
+
+    // QThread *sfm_thread = new QThread;
+    // m_simpleSfMHepler->moveToThread(sfm_thread);
+    // m_simpleSfMHepler->connect(sfm_thread, &QThread::started, m_simpleSfMHepler, &QSimpleSfMHepler::run);
+    // m_simpleSfMHepler->connect(m_simpleSfMHepler, &QSimpleSfMHepler::sfmFinished, sfm_thread, &QThread::quit);
+    // sfm_thread->start();
+
+    if(m_simpleSfMHepler->run())
+    {
+        CONSOLE << "SimpleSfM finished";
+    }
+    else
+    {
+        CONSOLE << "SimpleSfM failed";
+    }
 }
 
 void AppModel::cameraRun()

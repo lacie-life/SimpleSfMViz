@@ -17,17 +17,18 @@
 #include "SfM/MapBuilder.h"
 
 
-class QSimpleSfMHepler
+class QSimpleSfMHepler : public QObject
 {
+    Q_OBJECT
 public:
     QSimpleSfMHepler(QString path, bool isGPU = false, bool matchcheck = true);
 
     void init();
     bool run();
 
-
 signals:
     void sfmInitFailed();
+    void sfmFinished();
 
 private:
 
@@ -36,9 +37,9 @@ private:
     bool matchcheck = true;
 
     // Config parameters
-    QString m_imagesPath;
-    QString m_databasePath;
-    QString m_outputPath;
+    std::string m_imagesPath;
+    std::string m_databasePath;
+    std::string m_outputPath;
 
     int m_max_image_size = 3200;
     int m_num_features = 8024;
