@@ -72,23 +72,23 @@ void AppModel::setDefaultConfig()
 
 void AppModel::runSfM(QString path)
 {
-    QSfM *sfm = new QSfM(this);
+    // QSfM *sfm = new QSfM(this);
 
-    sfm->init(path);
-    sfm->run();
+    // sfm->init(path);
+    // sfm->run();
 }
 
 void AppModel::runSimpleSfM(QString path)
 {
-    CONSOLE << "Testing SimpleSfM";
+    // CONSOLE << "Testing SimpleSfM";
 
-    m_simpleSfMHepler = new QSimpleSfMHepler(path);
+    // m_simpleSfMHepler = new QSimpleSfMHepler(path);
 
-    QThread *sfm_thread = new QThread;
-    m_simpleSfMHepler->moveToThread(sfm_thread);
-    m_simpleSfMHepler->connect(sfm_thread, &QThread::started, m_simpleSfMHepler, &QSimpleSfMHepler::run);
-    m_simpleSfMHepler->connect(m_simpleSfMHepler, &QSimpleSfMHepler::sfmFinished, sfm_thread, &QThread::quit);
-    sfm_thread->start();
+    // QThread *sfm_thread = new QThread;
+    // m_simpleSfMHepler->moveToThread(sfm_thread);
+    // m_simpleSfMHepler->connect(sfm_thread, &QThread::started, m_simpleSfMHepler, &QSimpleSfMHepler::run);
+    // m_simpleSfMHepler->connect(m_simpleSfMHepler, &QSimpleSfMHepler::sfmFinished, sfm_thread, &QThread::quit);
+    // sfm_thread->start();
 
     // if(m_simpleSfMHepler->run())
     // {

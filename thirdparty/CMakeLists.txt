@@ -1,2 +1,5 @@
 add_subdirectory(SQLite)
-add_subdirectory(SimpleSfM)
+# add_subdirectory(SimpleSfM)
+
+
+

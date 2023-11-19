@@ -30,7 +30,7 @@ include_directories(/opt/ros/noetic/include /opt/ros/noetic/lib)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SimpleSfM/include/
+    # ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SimpleSfM/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SQLite/
     )
 
@@ -109,7 +109,7 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/Model/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/View/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Handler/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/OpenGL/*.h
-                      ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/SfM/*.h
+                    #   ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/SfM/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/Camera/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Plugin/DataVisualize/*.h
                       ${CMAKE_CURRENT_SOURCE_DIR}/include/Common/*.h
@@ -119,7 +119,7 @@ file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Model/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Handler/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/OpenGL/*.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/SfM/*.cpp
+                    #   ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/SfM/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/Camera/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/Plugin/DataVisualize/*.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/src/View/*.cpp
@@ -157,7 +157,7 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARY}
                                         -ltbb
                                         -I/opt/ros/noetic/include
                                         -L/opt/ros/noetic/lib
-                                        SimpleSfM_lib
+                                        # SimpleSfM_lib
                                         sqlite3
                                         -lpthread
                                         dl
